@@ -65,7 +65,32 @@
 	</span>
 </div></div>
 		</header>
-		<div class="content post__content clearfix">
+		
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#为什么要开个人博客">为什么要开个人博客</a>
+      <ul>
+        <li><a href="#个人知识整理">个人知识整理</a></li>
+        <li><a href="#建立真实世界的链接">建立真实世界的链接</a></li>
+        <li><a href="#以后准备在博客上写点什么">以后准备在博客上写点什么</a></li>
+      </ul>
+    </li>
+    <li><a href="#博客搭建过程">博客搭建过程</a>
+      <ul>
+        <li><a href="#hugo搭建静态博客网站">hugo搭建静态博客网站</a></li>
+        <li><a href="#markdown插件的选择和配置">Markdown插件的选择和配置</a></li>
+        <li><a href="#本地写作过程">本地写作过程</a></li>
+        <li><a href="#公众号编辑发布">公众号编辑发布</a></li>
+        <li><a href="#github-pages和个人博客网站">github pages和个人博客网站</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
 			<p><strong>大家好</strong> 我的第一篇博客文章发布了， 感谢你从茫茫的互联网找到这里，第一篇文章我就先写一写为啥要公开写作，以及博客系统搭建过程</p>
 <h2 id="为什么要开个人博客">为什么要开个人博客</h2>
 <p>想写公众号和个人博客念头已经很久，但是<strong>追求完美的心理</strong>，觉得网络上已经有非常优质的文章，生怕自己的文章写的不够好。<strong>拖延症毛病</strong>觉得公开写作很麻烦又不能带来立马可见的好处一直没动手写，最近对以上两个心理有了些</p>
@@ -107,27 +132,27 @@ Katex公式语法基于Latex，在浏览器上渲染速度快，关键是输出�
 <h4 id="配置katex支持数学公式">配置Katex，支持数学公式</h4>
 <p><strong>步骤一</strong> 新建html文件，统一引入katex支持
 在themes/{YOUR_THEME}/layouts/partials/math/katex.html，内容</p>
-<pre tabindex="0"><code>&lt;link rel=&#34;stylesheet&#34; href=&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css&#34; integrity=&#34;sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X&#34; crossorigin=&#34;anonymous&#34;&gt;
-
-    &lt;!-- The loading of KaTeX is deferred to speed up page rendering --&gt;
-    &lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js&#34; integrity=&#34;sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz&#34; crossorigin=&#34;anonymous&#34;&gt;&lt;/script&gt;
-
-    &lt;!-- To automatically render math in text elements, include the auto-render extension: --&gt;
-    &lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js&#34; integrity=&#34;sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05&#34; crossorigin=&#34;anonymous&#34;
-        onload=&#34;renderMathInElement(document.body);&#34;&gt;&lt;/script&gt;
-
-        &lt;script&gt;
-            window.WebFontConfig = {
-              custom: {
-                families: [&#39;KaTeX_AMS&#39;, &#39;KaTeX_Caligraphic:n4,n7&#39;, &#39;KaTeX_Fraktur:n4,n7&#39;,
-                  &#39;KaTeX_Main:n4,n7,i4,i7&#39;, &#39;KaTeX_Math:i4,i7&#39;, &#39;KaTeX_Script&#39;,
-                  &#39;KaTeX_SansSerif:n4,n7,i4&#39;, &#39;KaTeX_Size1&#39;, &#39;KaTeX_Size2&#39;, &#39;KaTeX_Size3&#39;,
-                  &#39;KaTeX_Size4&#39;, &#39;KaTeX_Typewriter&#39;],
-              },
-            };
-          &lt;/script&gt;
-          &lt;script defer src=&#34;https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js&#34; integrity=&#34;sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=&#34; crossorigin=&#34;anonymous&#34;&gt;&lt;/script&gt;
-</code></pre><p><strong>步骤二</strong>  新增文件 themes/{YOUR_THEME}/layouts/partials/header.html,内容</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#309;font-weight:bold">link</span> <span style="color:#309">rel</span><span style="color:#555">=</span><span style="color:#c30">&#34;stylesheet&#34;</span> <span style="color:#309">href</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css&#34;</span> <span style="color:#309">integrity</span><span style="color:#555">=</span><span style="color:#c30">&#34;sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X&#34;</span> <span style="color:#309">crossorigin</span><span style="color:#555">=</span><span style="color:#c30">&#34;anonymous&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">&lt;!-- The loading of KaTeX is deferred to speed up page rendering --&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#309;font-weight:bold">script</span> <span style="color:#309">defer</span> <span style="color:#309">src</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js&#34;</span> <span style="color:#309">integrity</span><span style="color:#555">=</span><span style="color:#c30">&#34;sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz&#34;</span> <span style="color:#309">crossorigin</span><span style="color:#555">=</span><span style="color:#c30">&#34;anonymous&#34;</span>&gt;&lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">&lt;!-- To automatically render math in text elements, include the auto-render extension: --&gt;</span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#309;font-weight:bold">script</span> <span style="color:#309">defer</span> <span style="color:#309">src</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js&#34;</span> <span style="color:#309">integrity</span><span style="color:#555">=</span><span style="color:#c30">&#34;sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05&#34;</span> <span style="color:#309">crossorigin</span><span style="color:#555">=</span><span style="color:#c30">&#34;anonymous&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#309">onload</span><span style="color:#555">=</span><span style="color:#c30">&#34;renderMathInElement(document.body);&#34;</span>&gt;&lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#366">window</span>.WebFontConfig <span style="color:#555">=</span> {
+</span></span><span style="display:flex;"><span>              custom<span style="color:#555">:</span> {
+</span></span><span style="display:flex;"><span>                families<span style="color:#555">:</span> [<span style="color:#c30">&#39;KaTeX_AMS&#39;</span>, <span style="color:#c30">&#39;KaTeX_Caligraphic:n4,n7&#39;</span>, <span style="color:#c30">&#39;KaTeX_Fraktur:n4,n7&#39;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#c30">&#39;KaTeX_Main:n4,n7,i4,i7&#39;</span>, <span style="color:#c30">&#39;KaTeX_Math:i4,i7&#39;</span>, <span style="color:#c30">&#39;KaTeX_Script&#39;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#c30">&#39;KaTeX_SansSerif:n4,n7,i4&#39;</span>, <span style="color:#c30">&#39;KaTeX_Size1&#39;</span>, <span style="color:#c30">&#39;KaTeX_Size2&#39;</span>, <span style="color:#c30">&#39;KaTeX_Size3&#39;</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#c30">&#39;KaTeX_Size4&#39;</span>, <span style="color:#c30">&#39;KaTeX_Typewriter&#39;</span>],
+</span></span><span style="display:flex;"><span>              },
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>          &lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>          &lt;<span style="color:#309;font-weight:bold">script</span> <span style="color:#309">defer</span> <span style="color:#309">src</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js&#34;</span> <span style="color:#309">integrity</span><span style="color:#555">=</span><span style="color:#c30">&#34;sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=&#34;</span> <span style="color:#309">crossorigin</span><span style="color:#555">=</span><span style="color:#c30">&#34;anonymous&#34;</span>&gt;&lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span></code></pre></div><p><strong>步骤二</strong>  新增文件 themes/{YOUR_THEME}/layouts/partials/header.html,内容</p>
 <pre tabindex="0"><code>{{ if .Page.Params.math }}{{ partial &#34;math/katex.html&#34; . }}{{ end }}
 </code></pre><p>表示如果Markdown文件元数据描述里如果需要数学公式，则页面html增加步骤一内容</p>
 <p><strong>步骤三</strong>  Markdown文件元数据启用数学公式
@@ -143,29 +168,29 @@ Katex支持行内公式和行间公式
 通过Markdown增强插件可以，在Markdown在直接用代码来画图</p>
 <p>配置mermaid，支持在博客中用mermaid画图
 <strong>步骤一</strong> 在目录themes/{YOUR_THEME}/layouts/partials 创建mermaid.html 模板内容,引入mermaid库需要的镜头文件和样式</p>
-<pre tabindex="0"><code>&lt;script
-  type=&#34;application/javascript&#34;
-  src=&#34;https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js&#34;
-&gt;&lt;/script&gt;
-&lt;script&gt;
-  var config = {
-    startOnLoad: true,
-    theme:&#39;{{ if site.Params.mermaid.theme }}{{ site.Params.mermaid.theme }}{{ else }}dark{{ end }}&#39;,
-    align:&#39;{{ if site.Params.mermaid.align }}{{ site.Params.mermaid.align }}{{ else }}center{{ end }}&#39;,
-  };
-  mermaid.initialize(config);
-&lt;/script&gt;
-</code></pre><p><strong>步骤二</strong>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#309;font-weight:bold">script</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#309">type</span><span style="color:#555">=</span><span style="color:#c30">&#34;application/javascript&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#309">src</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js&#34;</span>
+</span></span><span style="display:flex;"><span>&gt;&lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#069;font-weight:bold">var</span> config <span style="color:#555">=</span> {
+</span></span><span style="display:flex;"><span>    startOnLoad<span style="color:#555">:</span> <span style="color:#069;font-weight:bold">true</span>,
+</span></span><span style="display:flex;"><span>    theme<span style="color:#555">:</span><span style="color:#c30">&#39;{{ if site.Params.mermaid.theme }}{{ site.Params.mermaid.theme }}{{ else }}dark{{ end }}&#39;</span>,
+</span></span><span style="display:flex;"><span>    align<span style="color:#555">:</span><span style="color:#c30">&#39;{{ if site.Params.mermaid.align }}{{ site.Params.mermaid.align }}{{ else }}center{{ end }}&#39;</span>,
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  mermaid.initialize(config);
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#309;font-weight:bold">script</span>&gt;
+</span></span></code></pre></div><p><strong>步骤二</strong>
 hugo博客引擎配置文件config.toml，增加mermaid的全局配置</p>
 <pre tabindex="0"><code>params.mermaid.theme = &#34;light&#34;
 params.mermaid.align = &#34;center&#34;
 </code></pre><p><strong>步骤三</strong>
 页面按需加载mermaid.html模板
 修改themes/YOUR_SCHEME/layouts/_default/single.html 在<code>&lt;div class=&quot;post-content&quot;&gt;</code> 这个dom节点里增加配置代码</p>
-<pre tabindex="0"><code>{{- if (.Page.Params.mermaid) }}
-          {{ partial &#34;mermaid.html&#34; }}
- {{- end }}
-</code></pre><p>如果Markdown页面定义了变量<code>mermaid: true</code>则加载文件mermaid.html引入的资源文件</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>{{- if (.Page.Params.mermaid) }}
+</span></span><span style="display:flex;"><span>          {{ partial &#34;mermaid.html&#34; }}
+</span></span><span style="display:flex;"><span> {{- end }}
+</span></span></code></pre></div><p>如果Markdown页面定义了变量<code>mermaid: true</code>则加载文件mermaid.html引入的资源文件</p>
 <p><strong>步骤四</strong> 创建mermaid 代码片段(shortcode)
 文件 themes/YOUR_SCHEME/layouts/shortcodes/mermaid.html  写入内容</p>
 <pre tabindex="0"><code>&lt;div class=&#34;mermaid&#34;&gt;{{.Inner}}&lt;/div&gt;

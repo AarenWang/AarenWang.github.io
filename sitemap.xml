@@ -3,21 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://example.org/</loc>
-    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/</loc>
-    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/hugo/</loc>
-    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+    <loc>http://example.org/tags/consul/</loc>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/posts/service-mesh-consul-part-1/</loc>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/microservice/</loc>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
     <loc>http://example.org/posts/</loc>
-    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/servicemesh/</loc>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/</loc>
-    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/%E5%86%99%E4%BD%9C/</loc>
+    <lastmod>2022-12-17T16:14:12+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/hugo/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</loc>

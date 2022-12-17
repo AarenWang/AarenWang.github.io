@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Posts - Aaron Wang的博客</title>
+	<title>consul实战系列-之一 consul介绍和初体验 - Aaron Wang的博客</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,6 @@
 
 	<link rel="stylesheet" href="/css/style.css">
 	
-	<link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Aaron Wang的博客">
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
@@ -56,67 +55,159 @@
 		<div class="wrapper flex">
 			<div class="primary">
 			
-<main class="main list" role="main">
-	<header class="main__header">
-		<h1 class="main__title">Posts</h1>
-	</header><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/posts/service-mesh-consul-part-1/" rel="bookmark">
-			consul实战系列-之一 consul介绍和初体验
-			</a>
-		</h2>
-		<div class="list__meta meta">
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">consul实战系列-之一 consul介绍和初体验</h1>
+			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-12-17T16:14:12&#43;08:00">December 17, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E5%86%99%E4%BD%9C/" rel="category">写作</a>
 	</span>
 </div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		本文作为consul实战系列第一篇，介绍下consul功能和初步
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍">介绍</a></li>
+    <li><a href="#本地开发环境体验">本地开发环境体验</a></li>
+  </ul>
+</nav>
 	</div>
-</article><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/posts/my-first-post/" rel="bookmark">
-			我的第一篇博客文章
-			</a>
-		</h2>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-09-23T03:30:30&#43;08:00">September 23, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E5%86%99%E4%BD%9C/" rel="category">写作</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		讲讲为什么写博客，记录下博客搭建过程
-	</div>
-</article><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/posts/about/" rel="bookmark">
-			关于
-			</a>
-		</h2>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-09-02T21:27:58&#43;08:00">September 02, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E5%85%B3%E4%BA%8E/" rel="category">关于</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		我是谁，我来自哪里
-	</div>
-</article>
+</div><div class="content post__content clearfix">
+			<h2 id="介绍">介绍</h2>
+<p>互联网软件的后台技术架构已经从单体到微服务，微服务再进一步演化为服务网格技术(Service Mesh)，当前服务网格的技术选项中<a href="https://istio.io/">Istio</a>最为火热，但是也有不少公司选择<a href="https://www.consul.io/">consul</a></p>
+<p>根据最近的工作，聊聊consul这个开源的服务网格工具实战技术，consul是<a href="https://www.hashicorp.com/">HashiCorp</a>这家做云计算IAAS软件的一个开源产品。</p>
+<p>consul提供服务网格能力主要有以下这些功能</p>
+<ul>
+<li>基于DNS和HTTP接口的服务注册和发现</li>
+<li>服务访问控制</li>
+<li>动态负载均</li>
+<li>网络任务自动化</li>
+<li>应用件请求流量mTLS加密</li>
+<li>多云环境服务网格</li>
+<li>应用可观测性</li>
+<li>七层网络流量管理<br>
+这些基本上都是微服务常见概念了，做后端的同学应该都比较清楚， 本文就不深入去介绍，大家可以找相关资料来了解</li>
+</ul>
+<p>Consul还可以与HashiCorp公司其它产品进行深度整合，简化应用的开发和运维工作</p>
+<h2 id="本地开发环境体验">本地开发环境体验</h2>
+<p>大家可以从<a href="https://developer.hashicorp.com/consul/downloads">Consul下载页</a>直接下载二进制包，或则通过操作系统的包管理工具来安装consul</p>
+<p>安装完成之后，我们以<strong>开发模式</strong>运行一个consul实例</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>consul agent -dev 
+</span></span></code></pre></div><p>启动输出信息如下，
+<img src="image/consul_agent_dev.jpeg" alt="consul agent -dev"></p>
+<p>这里解释下，这些选项意思</p>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NodeId</td>
+<td>生成的随机ID</td>
+</tr>
+<tr>
+<td>Node Name</td>
+<td>运行机器的Hostname</td>
+</tr>
+<tr>
+<td>DataCenter</td>
+<td>数据中心，默认用dc1</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>以Server模式运行，consul 有server和clien两种模式</td>
+</tr>
+<tr>
+<td>Client Addr</td>
+<td>启动监听的IP地址，开发模式只监听127.0.0.1</td>
+</tr>
+<tr>
+<td>Cluster Addr</td>
+<td>集群地址，因为只有一台开发模式机器，因此只有127.0.0.1</td>
+</tr>
+<tr>
+<td>Gossip Encryption</td>
+<td>Gossip是consul的采用的分布式节点消息传播协议</td>
+</tr>
+<tr>
+<td>Auto-Encrypt-TLS</td>
+<td>是否自动加密通信，本地开发模式不启用加密</td>
+</tr>
+<tr>
+<td>HTTPS TLS</td>
+<td>是否校验入站和出站的HTTP请求</td>
+</tr>
+<tr>
+<td>gRPC TLS</td>
+<td>是否校验入站和出站的gRPC请求</td>
+</tr>
+<tr>
+<td>Internal RPC TLS</td>
+<td>是否交易consul内部集群接gRPC入站和出站请求</td>
+</tr>
+</tbody>
+</table>
+<p>浏览器访问<a href="http://127.0.0.1:8500/">http://127.0.0.1:8500/</a></p>
+<p>consul启动之后有一个自带的service，名称为consul
+<img src="image/consul_ui_service.jpeg" alt="Consul UI Service"></p>
+<p>单节点模式运行，一个运行节点
+<img src="image/consul_ui_node.jpeg" alt="Consul UI Node"></p>
+<p>使用<code>consul kv</code> 体验KV功能</p>
+<pre tabindex="0"><code>consul kv put consul/configuration/db_port 5432
+# 输出提示:  Success! Data written to: consul/configuration/db_port
+
+consul kv get consul/configuration/db_port 
+# 输出5432
+</code></pre><p>当然本地的<code>consul kv </code>命令，最终转为HTTP Rest请求，可以看到输出日志 分别进行 PUT和GET的请求</p>
+<pre tabindex="0"><code>2022-12-17T16:57:40.248+0800 [DEBUG] agent.http: Request finished: method=PUT url=/v1/kv/consul/configuration/db_port from=127.0.0.1:50386 latency=&#34;159.084µs&#34;
+2022-12-17T16:57:42.473+0800 [DEBUG] agent.http: Request finished: method=GET url=/v1/kv/consul/configuration/db_port from=127.0.0.1:50401 latency=&#34;87.083µs&#34;
+</code></pre><p>作为本系列的的第一篇文章，简单介绍了下consul是什么，下篇文章我们讲讲如何用consul搭建一个简单的继续、用使用spring cloud consul来做服务注册和服务发现</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/consul/" rel="tag">Consul</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/servicemesh/" rel="tag">ServiceMesh</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/microservice/" rel="tag">MicroService</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
 </main>
 
 
+
+
 			</div>
-			
-<aside class="sidebar"><div class="widget-search widget">
+			<aside class="sidebar"><div class="widget-search widget">
 	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
 		<label>
 			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">

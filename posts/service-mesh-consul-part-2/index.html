@@ -71,7 +71,7 @@
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
-    <li><a href="#服务注册和发现功能体验">服务注册和发现功能体验</a></li>
+    <li><a href="#服务注册和发现功能准备">服务注册和发现功能准备</a></li>
     <li><a href="#provider端应用代码">Provider端应用代码</a></li>
     <li><a href="#consumer端代码">Consumer端代码</a></li>
   </ul>
@@ -81,7 +81,7 @@
 			<p>在上一篇<a href="../service-mesh-consul-part-1/">文章</a>中，我们对consul最了基本减少，然后动手运行一个最简单的单机版本consul，体验了UI功能KV命令使用
 这篇文章，我们来介绍consul的服务注册和发现功能和配置中心。通过一个Java的Spring Cloud例子来进行服务注册和发现,Spring Cloud官方已经整合了Consul功能，<a href="https://cloud.spring.io/spring-cloud-consul/reference/html/index.html">官方文档</a>
 Github代码<a href="https://github.com/spring-cloud/spring-cloud-consul">仓库</a></p>
-<h2 id="服务注册和发现功能体验">服务注册和发现功能体验</h2>
+<h2 id="服务注册和发现功能准备">服务注册和发现功能准备</h2>
 <p>注册中心、服务提供者、服务消费者，三种之间关系如图
 <img src="image/service_register_arch.png" alt=""></p>
 <p>服务提供者(provider)启动时讲服务注册到consul，服务消费者(consumer)在进行远程调用时，根据注册中心提供的服务信息，远程调用Provider</p>

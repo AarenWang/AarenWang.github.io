@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 17 Dec 2022 16:14:12 +0800</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 18 Dec 2022 09:43:53 +0800</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>consul实战系列-之二 Consul服务注册和发现功能</title>
+      <link>http://example.org/posts/service-mesh-consul-part-2/</link>
+      <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
+      
+      <guid>http://example.org/posts/service-mesh-consul-part-2/</guid>
+      <description>本文作为consul实战系列第二篇，介绍下consul的服务注册和发现功能</description>
+    </item>
+    
     <item>
       <title>consul实战系列-之一 consul介绍和初体验</title>
       <link>http://example.org/posts/service-mesh-consul-part-1/</link>

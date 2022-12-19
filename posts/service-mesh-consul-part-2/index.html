@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>consul实战系列-之二 Consul服务注册和发现功能 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">consul实战系列-之二 Consul服务注册和发现功能</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-12-18T09:43:53&#43;08:00">December 18, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/" rel="category">服务网格</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务注册和发现功能体验">服务注册和发现功能体验</a></li>
+    <li><a href="#provider端应用代码">Provider端应用代码</a></li>
+    <li><a href="#consumer端代码">Consumer端代码</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<p>在上一篇<a href="../service-mesh-consul-part-1/">文章</a>中，我们对consul最了基本减少，然后动手运行一个最简单的单机版本consul，体验了UI功能KV命令使用
+这篇文章，我们来介绍consul的服务注册和发现功能和配置中心。通过一个Java的Spring Cloud例子来进行服务注册和发现,Spring Cloud官方已经整合了Consul功能，<a href="https://cloud.spring.io/spring-cloud-consul/reference/html/index.html">官方文档</a>
+Github代码<a href="https://github.com/spring-cloud/spring-cloud-consul">仓库</a></p>
+<h2 id="服务注册和发现功能体验">服务注册和发现功能体验</h2>
+<p>注册中心、服务提供者、服务消费者，三种之间关系如图
+<img src="image/service_register_arch.png" alt=""></p>
+<p>服务提供者(provider)启动时讲服务注册到consul，服务消费者(consumer)在进行远程调用时，根据注册中心提供的服务信息，远程调用Provider</p>
+<p>下面我们看看spring cloud consul服务注册和服务调用的例子,分成provider和consumer两个工程
+pom.xml 引入依赖</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#309;font-weight:bold">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-consul-discovery<span style="color:#309;font-weight:bold">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#309;font-weight:bold">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;artifactId&gt;</span>spring-cloud-starter-bootstrap<span style="color:#309;font-weight:bold">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">&lt;!-- 不是必须的，主要用actuator提供HTTP健康检测接口 --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#309;font-weight:bold">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#309;font-weight:bold">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span style="color:#309;font-weight:bold">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h2 id="provider端应用代码">Provider端应用代码</h2>
+<p>Provider应用的application.yml</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">spring</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">application</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>demo-provider<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">cloud</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">consul</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">host</span>:<span style="color:#bbb"> </span><span style="color:#f60">192.168.31.208</span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">#consul服务IP</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">port</span>:<span style="color:#bbb"> </span><span style="color:#f60">8500</span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">#consul HTTP端口</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">discovery</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">instance-id</span>:<span style="color:#bbb"> </span>demo-provider <span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">#服务ID</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">serviceName</span>:<span style="color:#bbb"> </span>${spring.application.name}-service <span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">#服务名称</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">healthCheckPath</span>:<span style="color:#bbb"> </span>/actuator/health <span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">#健康检查URL</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">healthCheckInterval</span>:<span style="color:#bbb"> </span>5s  <span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">#健康检查间隔时间</span><span style="color:#bbb">
+</span></span></span></code></pre></div><p>我们定义一个HTTP接口，输出下discoveryClient.getInstances(SERVICE_NAME)返回的JSON信息</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#99f">@GetMapping</span><span style="color:#555">(</span><span style="color:#c30">&#34;/listProvider&#34;</span><span style="color:#555">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#99f">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">public</span> List<span style="color:#555">&lt;</span>ServiceInstance<span style="color:#555">&gt;</span> <span style="color:#c0f">listProvider</span><span style="color:#555">(){</span>
+</span></span><span style="display:flex;"><span>		List<span style="color:#555">&lt;</span>ServiceInstance<span style="color:#555">&gt;</span> list <span style="color:#555">=</span> discoveryClient<span style="color:#555">.</span><span style="color:#309">getInstances</span><span style="color:#555">(</span><span style="color:#c30">&#34;demo-provider-service&#34;</span><span style="color:#555">);</span> 
+</span></span><span style="display:flex;"><span>		StringBuffer sb <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> StringBuffer<span style="color:#555">();</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span><span style="color:#555">(</span>list <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">null</span> <span style="color:#555">&amp;&amp;</span> list<span style="color:#555">.</span><span style="color:#309">size</span><span style="color:#555">()</span> <span style="color:#555">&gt;</span> 0 <span style="color:#555">)</span> <span style="color:#555">{</span>
+</span></span><span style="display:flex;"><span>			ServiceInstance si <span style="color:#555">=</span> list<span style="color:#555">.</span><span style="color:#309">get</span><span style="color:#555">(</span>0<span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>			String info <span style="color:#555">=</span> String<span style="color:#555">.</span><span style="color:#309">format</span><span style="color:#555">(</span><span style="color:#c30">&#34;host=%s,port=%d,ServiceId=%s,InstanceId=%s \n&#34;</span><span style="color:#555">,</span> si<span style="color:#555">.</span><span style="color:#309">getHost</span><span style="color:#555">(),</span>si<span style="color:#555">.</span><span style="color:#309">getPort</span><span style="color:#555">(),</span>si<span style="color:#555">.</span><span style="color:#309">getServiceId</span><span style="color:#555">(),</span>si<span style="color:#555">.</span><span style="color:#309">getInstanceId</span><span style="color:#555">());</span>
+</span></span><span style="display:flex;"><span>			sb<span style="color:#555">.</span><span style="color:#309">append</span><span style="color:#555">(</span>info<span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>			System<span style="color:#555">.</span><span style="color:#309">out</span><span style="color:#555">.</span><span style="color:#309">println</span><span style="color:#555">(</span>si<span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#555">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span> list<span style="color:#555">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#555">}</span>
+</span></span></code></pre></div><p>另外定义一个HTTP接口，用来演示consumer调用</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#99f">@GetMapping</span><span style="color:#555">(</span><span style="color:#c30">&#34;/listOrder&#34;</span><span style="color:#555">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#99f">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">public</span> List<span style="color:#555">&lt;</span>Order<span style="color:#555">&gt;</span> <span style="color:#c0f">listOrder</span><span style="color:#555">(){</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		List<span style="color:#555">&lt;</span>Order<span style="color:#555">&gt;</span> orderList <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> ArrayList<span style="color:#555">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>		Order order1 <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> Order<span style="color:#555">(</span><span style="color:#c30">&#34;1&#34;</span><span style="color:#555">,</span><span style="color:#c30">&#34;Jack Ma&#34;</span><span style="color:#555">,</span><span style="color:#c30">&#34;杭州余杭&#34;</span><span style="color:#555">,</span><span style="color:#069;font-weight:bold">new</span> BigDecimal<span style="color:#555">(</span><span style="color:#c30">&#34;888.00&#34;</span><span style="color:#555">));</span>
+</span></span><span style="display:flex;"><span>		Order order2 <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> Order<span style="color:#555">(</span><span style="color:#c30">&#34;2&#34;</span><span style="color:#555">,</span><span style="color:#c30">&#34;Pony Ma&#34;</span><span style="color:#555">,</span><span style="color:#c30">&#34;深圳南山&#34;</span><span style="color:#555">,</span><span style="color:#069;font-weight:bold">new</span> BigDecimal<span style="color:#555">(</span><span style="color:#c30">&#34;8888.00&#34;</span><span style="color:#555">));</span>
+</span></span><span style="display:flex;"><span>		orderList<span style="color:#555">.</span><span style="color:#309">add</span><span style="color:#555">(</span>order1<span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>		orderList<span style="color:#555">.</span><span style="color:#309">add</span><span style="color:#555">(</span>order2<span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span> orderList<span style="color:#555">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#555">}</span>
+</span></span><span style="display:flex;"><span> 
+</span></span></code></pre></div><p>启动Provider端，我们看到日志里如下信息</p>
+<pre tabindex="0"><code>Registering service with consul: NewService{id=&#39;demo-provider&#39;, name=&#39;demo-provider-service&#39;, tags=[], address=&#39;XXXXX&#39;, meta={secure=false}, port=8080, enableTagOverride=null, check=Check{script=&#39;null&#39;, dockerContainerID=&#39;null&#39;, shell=&#39;null&#39;, interval=&#39;5s&#39;, ttl=&#39;null&#39;, http=&#39;http://XXXXXX:8080/actuator/health&#39;, method=&#39;null&#39;, header={}, tcp=&#39;null&#39;, timeout=&#39;null&#39;, deregisterCriticalServiceAfter=&#39;null&#39;, tlsSkipVerify=null, status=&#39;null&#39;, grpc=&#39;null&#39;, grpcUseTLS=null}, checks=null}
+</code></pre><p>从日志中可以看到我们在yaml文件里配置的注册信息，已经当前运行节点实例信息</p>
+<h2 id="consumer端代码">Consumer端代码</h2>
+<p>pom.xml跟Provider端一样，这里不重复</p>
+<p>Consumer应用的application.yml</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">spring</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">application</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>demo-consumer<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">cloud</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#309;font-weight:bold">consul</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">host</span>:<span style="color:#bbb"> </span><span style="color:#f60">192.168.31.208</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">port</span>:<span style="color:#bbb"> </span><span style="color:#f60">8500</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">      </span><span style="color:#309;font-weight:bold">discovery</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">instance-id</span>:<span style="color:#bbb"> </span>demo-consumer<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">serviceName</span>:<span style="color:#bbb"> </span>${spring.application.name}-service<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">healthCheckPath</span>:<span style="color:#bbb"> </span>/actuator/health<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#309;font-weight:bold">healthCheckInterval</span>:<span style="color:#bbb"> </span>5s<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">server</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">port</span>:<span style="color:#bbb"> </span><span style="color:#f60">8090</span><span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">#在本机跑，单独设置一个端口</span><span style="color:#bbb">
+</span></span></span></code></pre></div><p>编写一个Controller方法，调用Provider方法，这里调用</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#99f">@Autowired</span>
+</span></span><span style="display:flex;"><span>RestTemplate restTemplate<span style="color:#555">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#99f">@GetMapping</span><span style="color:#555">(</span><span style="color:#c30">&#34;/listOrder&#34;</span><span style="color:#555">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#99f">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">public</span> List<span style="color:#555">&lt;</span>Order<span style="color:#555">&gt;</span> <span style="color:#c0f">listOrder</span><span style="color:#555">(){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic">//注册直接通过服务名&#34;demo-provider-service&#34; 直接访问
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		ResponseEntity<span style="color:#555">&lt;</span>List<span style="color:#555">&gt;</span> forEntity <span style="color:#555">=</span> restTemplate<span style="color:#555">.</span><span style="color:#309">getForEntity</span><span style="color:#555">(</span><span style="color:#c30">&#34;http://demo-provider-service/listOrder&#34;</span><span style="color:#555">,</span> List<span style="color:#555">.</span><span style="color:#309">class</span><span style="color:#555">);</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">if</span><span style="color:#555">(</span>forEntity <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">null</span><span style="color:#555">)</span> <span style="color:#555">{</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> forEntity<span style="color:#555">.</span><span style="color:#309">getBody</span><span style="color:#555">();</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#555">}</span> <span style="color:#069;font-weight:bold">else</span><span style="color:#555">{</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">new</span> ArrayList<span style="color:#555">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#555">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#555">}</span>
+</span></span></code></pre></div><p>其中listOrder方法使用到的RestTemplate类Bean实例化代码如下</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#99f">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#99f">@ComponentScan</span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">public</span> <span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">BeanConfiguration</span> <span style="color:#555">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#99f">@LoadBalanced</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#99f">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">public</span> RestTemplate <span style="color:#c0f">loadbalancedRestTemplate</span><span style="color:#555">()</span> <span style="color:#555">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">new</span> RestTemplate<span style="color:#555">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#555">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#555">}</span>
+</span></span></code></pre></div><p>两个应用启动后，用命令<code>consul catalog services -http-addr=http://192.168.31.208:8500  </code>查看已注册的服务
+注意-http-addr默认值为http://127.0.0.1:8500,如果consul catalog执行命令集群和consul agent server在同一台机器上，不需要加<code>-http-addr</code>参数</p>
+<p>已注册服务如下:</p>
+<ul>
+<li>consul</li>
+<li>demo-consumer-service</li>
+<li>demo-provider-service</li>
+</ul>
+<p>通过<a href="http://192.168.31.208:8500">Web UI /192.168.31.208:8500</a>  可以看到注册服务如下图
+<img src="image/all_registered_service.jpeg" alt="注册的服务"></p>
+<p>我们访问本地demo-consumer应用的<code>listOrder</code> <a href="http://127.0.0.1:8090/listOrder">http://127.0.0.1:8090/listOrder</a></p>
+<p>可以看到输出的JSON信息</p>
+<p><img src="image/call_result.jpeg" alt="listOrder展示"></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/consul/" rel="tag">Consul</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/servicemesh/" rel="tag">ServiceMesh</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/microservice/" rel="tag">MicroService</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/springcloud/" rel="tag">SpringCloud</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
+</main>
+
+
+
+
+			</div>
+			<aside class="sidebar"><div class="widget-search widget">
+	<form class="widget-search__form" role="search" method="get" action="https://google.com/search">
+		<label>
+			<input class="widget-search__field" type="search" placeholder="SEARCH…" value="" name="q" aria-label="SEARCH…">
+		</label>
+		<input class="widget-search__submit" type="submit" value="Search">
+		<input type="hidden" name="sitesearch" value="http://example.org/">
+	</form>
+</div>
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-2/">consul实战系列-之二 Consul服务注册和发现功能</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-1/">consul实战系列-之一 consul介绍和初体验</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/my-first-post/">我的第一篇博客文章</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/about/">关于</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">Social</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2022 Aaron Wang的博客.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

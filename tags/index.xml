@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 17 Dec 2022 16:14:12 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 18 Dec 2022 09:43:53 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Consul</title>
       <link>http://example.org/tags/consul/</link>
-      <pubDate>Sat, 17 Dec 2022 16:14:12 +0800</pubDate>
+      <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
       
       <guid>http://example.org/tags/consul/</guid>
       <description></description>
@@ -19,7 +19,7 @@
     <item>
       <title>MicroService</title>
       <link>http://example.org/tags/microservice/</link>
-      <pubDate>Sat, 17 Dec 2022 16:14:12 +0800</pubDate>
+      <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
       
       <guid>http://example.org/tags/microservice/</guid>
       <description></description>
@@ -28,9 +28,18 @@
     <item>
       <title>ServiceMesh</title>
       <link>http://example.org/tags/servicemesh/</link>
-      <pubDate>Sat, 17 Dec 2022 16:14:12 +0800</pubDate>
+      <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
       
       <guid>http://example.org/tags/servicemesh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SpringCloud</title>
+      <link>http://example.org/tags/springcloud/</link>
+      <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
+      
+      <guid>http://example.org/tags/springcloud/</guid>
       <description></description>
     </item>
     

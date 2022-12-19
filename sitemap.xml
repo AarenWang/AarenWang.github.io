@@ -26,10 +26,13 @@
     <loc>http://example.org/tags/</loc>
     <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/%E5%86%99%E4%BD%9C/</loc>
+    <loc>http://example.org/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/</loc>
     <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/hugo/</loc>
+    <lastmod>2022-09-23T03:30:30+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/categories/%E5%86%99%E4%BD%9C/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</loc>

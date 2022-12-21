@@ -6,7 +6,16 @@
     <description>Recent content in ServiceMesh on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 18 Dec 2022 09:43:53 +0800</lastBuildDate><atom:link href="http://example.org/tags/servicemesh/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Dec 2022 14:48:49 +0800</lastBuildDate><atom:link href="http://example.org/tags/servicemesh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</title>
+      <link>http://example.org/posts/service-mesh-consul-part-3/</link>
+      <pubDate>Wed, 21 Dec 2022 14:48:49 +0800</pubDate>
+      
+      <guid>http://example.org/posts/service-mesh-consul-part-3/</guid>
+      <description>本文作为consul实战系列第三篇，介绍consul服务器搭建过程，实现加密通信和认证访问</description>
+    </item>
+    
     <item>
       <title>consul实战系列-之二 Consul服务注册和发现功能</title>
       <link>http://example.org/posts/service-mesh-consul-part-2/</link>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>consul实战系列-之四 基于Consul和Envoy搭建服务网格 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
+}
+</script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">consul实战系列-之四 基于Consul和Envoy搭建服务网格</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-12-23T17:13:41&#43;08:00">December 23, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/" rel="category">服务网格</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">Page content</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#servuce-mesh介绍">Servuce Mesh介绍</a></li>
+    <li><a href="#部署servicemesh例子">部署ServiceMesh例子</a>
+      <ul>
+        <li><a href="#准备">准备</a></li>
+        <li><a href="#service-mesh注册">Service Mesh注册</a></li>
+        <li><a href="#浏览应用">浏览应用</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<h1 id="consul实战系列-之四-基于consul和envoy搭建服务网格">consul实战系列-之四 基于Consul和Envoy搭建服务网格</h1>
+<h2 id="servuce-mesh介绍">Servuce Mesh介绍</h2>
+<p>在应用从单体架构向微服务架构演进的过程中，微服务之间的服务发现、负载均衡、熔断、限流等服务治理需求是无法回避的问题。
+在 Service Mesh 出现之前，通常的做法是将这些基础功能以 SDK 的形式嵌入业务代码中，但是这种强耦合的方案会增加开发的难度，增加维护成本，增加质量风险。</p>
+<p>比如 SDK 需要新增新特性，业务侧也很难配合 SDK 开发人员进行升级，所以很容易造成 SDK 的版本碎片化问题。</p>
+<p>如果再存在跨语言应用间的交互，对于多语言 SDK 的支持也非常的低效。 一方面是相当于相同的代码以不同语言重复实现，实现这类代码既很难给开发人员带来成就感，团队稳定性难以保障；</p>
+<p>另一方面是如果实现这类基础框架时涉及到了语言特性，其他语言的开发者也很难直接翻译。 而 Service Mesh 的本质则是将此类通用的功能沉淀至 sidecar 中，由 sidecar 接管服务的流量并对其进行治理。</p>
+<p>在这个思路下，可以通过流量劫持的手段，做到代码零侵入性。这样可以让业务开发人员更关心业务功能。 而底层功能由于对业务零侵入，也使得基础功能的升级和快速的更新迭代成为可能。</p>
+<p>Service A，B，C之间的通过sidecar来通信
+<img src="image/sidecar.png" alt=""></p>
+<p>本文，我们以<a href="https://developer.hashicorp.com/consul/tutorials/developer-mesh/service-mesh-with-envoy-proxy">consul官方一篇教程文档</a> 为例，讲述如何基于consul和envoy建立Service Mesh微服务调用</p>
+<h2 id="部署servicemesh例子">部署ServiceMesh例子</h2>
+<h3 id="准备">准备</h3>
+<ol>
+<li>dev模式运行的consul agent</li>
+<li>安装envoy。去Envoy项目的<a href="https://github.com/envoyproxy/envoy/releases">Github Relsease</a>下载， 或操作系统包管理工具安装</li>
+<li>准备两个Demo应用程序，通过Service Mesh加密通信，一个计数器服务<strong>Counting Service</strong>，一个大盘服务 <strong>Dashboard Service</strong> 查看计数值,例子<a href="https://github.com/hashicorp/demo-consul-101">github仓库</a></li>
+</ol>
+<p>Dashboard和Counting网络架构
+<img src="image/dashboard_count_arch.png" alt="Dashboard and Counting Network"></p>
+<h3 id="service-mesh注册">Service Mesh注册</h3>
+<p>Couning应用注册配置 counting.hcl</p>
+<pre tabindex="0"><code>service {
+  name = &#34;counting&#34;
+  id = &#34;counting-1&#34;
+  port = 9003
+
+  connect {
+    sidecar_service {}
+  }
+
+  check {
+    id       = &#34;counting-check&#34;
+    http     = &#34;http://localhost:9003/health&#34;
+    method   = &#34;GET&#34;
+    interval = &#34;5s&#34;
+    timeout  = &#34;1s&#34;
+  }
+}
+</code></pre><p>Dashboard应用注册配置 dashboard.hcl</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">service {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#309">name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;dashboard&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  id = &#34;dashboard-1&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  port = 9002</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#309">connect {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#309">sidecar_service {</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#309">proxy {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#309">upstreams</span> <span style="color:#555">=</span> <span style="color:#c30">[
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">          {
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">            destination_name = &#34;counting&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">            local_bind_port  = 5000
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">          }
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">        ]
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">      }
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    }
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  }</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#309">check {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#309">id</span>       <span style="color:#555">=</span> <span style="color:#c30">&#34;dashboard-check&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    http     = &#34;http://localhost:9002/health&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    method   = &#34;GET&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    interval = &#34;5s&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    timeout  = &#34;1s&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  }</span>
+</span></span><span style="display:flex;"><span><span style="color:#309">}</span>
+</span></span></code></pre></div><p>根据服务定义文件，将服务注册到consul</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>consul services register counting.hcl
+</span></span><span style="display:flex;"><span>consul services register dashboard.hcl
+</span></span></code></pre></div><p>校验已注册的服务<code>consul catalog services </code></p>
+<pre tabindex="0"><code>consul
+counting
+counting-sidecar-proxy
+dashboard
+dashboard-sidecar-proxy
+</code></pre><p>可以看到额外注册了 <strong>-sidecar-proxy</strong> 结尾的sidecar代理服务</p>
+<p>通过consul的<strong>intention</strong> 配置，设置服务访问权限,counting服务允许来自dashboard服务访问 intention-allow-config.hcl</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">Kind</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;service-intentions&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309">Name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;counting&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#309">Sources</span> <span style="color:#555">=</span> <span style="color:#c30">[
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  {
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    Name   = &#34;dashboard&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">    Action = &#34;allow&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#c30">  }</span>
+</span></span><span style="display:flex;"><span><span style="color:#309">]</span>
+</span></span></code></pre></div><p>更新服务访问规则</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul config write intention-allow-config.hcl
+</span></span></code></pre></div><p>启动<strong>dashboard-service</strong> 和<strong>counting-service</strong> (demo-consul-101从开头准备的github仓库拉取)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 将**PORT**和**COUNTING_SERVICE_URL**作为环境变量传递给dashboard-service</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">cd</span> demo-consul-101/dashboard-service
+</span></span><span style="display:flex;"><span><span style="color:#033">PORT</span><span style="color:#555">=</span><span style="color:#f60">9002</span> <span style="color:#033">COUNTING_SERVICE_URL</span><span style="color:#555">=</span><span style="color:#c30">&#34;http://127.0.0.1:5000&#34;</span>  go run ./main.go &amp;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#366">cd</span> demo-consul-101/counting-service
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 将**PORT** 作为环境变量传递给counting-service</span>
+</span></span><span style="display:flex;"><span><span style="color:#033">PORT</span><span style="color:#555">=</span><span style="color:#f60">9003</span>  go run ./main.go 
+</span></span></code></pre></div><p>启动envoy代理转发</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 启动窗口1</span>
+</span></span><span style="display:flex;"><span>consul connect envoy -sidecar-for counting-1 -admin-bind localhost:19001 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 启动窗口2</span>
+</span></span><span style="display:flex;"><span>consul connect envoy -sidecar-for dashboard-1 
+</span></span></code></pre></div><h3 id="浏览应用">浏览应用</h3>
+<p>访问 <a href="http://127.0.0.1:9002">http://127.0.0.1:9002</a>，验证每次刷新页面计数器递加</p>
+<p><img src="image/Dashboard.jpeg" alt=""></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/consul/" rel="tag">Consul</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/servicemesh/" rel="tag">ServiceMesh</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/microservice/" rel="tag">MicroService</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
+</main>
+
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-4/">consul实战系列-之四 基于Consul和Envoy搭建服务网格</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-3/">consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-2/">consul实战系列-之二 Consul服务注册和发现功能</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-1/">consul实战系列-之一 consul介绍和初体验</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/my-first-post/">我的第一篇博客文章</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/about/">关于</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">Social</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2022 Aaron Wang的博客.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

@@ -6,11 +6,11 @@
     <description>Recent content in Tags on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 21 Dec 2022 14:48:49 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Dec 2022 17:13:41 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Consul</title>
       <link>http://example.org/tags/consul/</link>
-      <pubDate>Wed, 21 Dec 2022 14:48:49 +0800</pubDate>
+      <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
       
       <guid>http://example.org/tags/consul/</guid>
       <description></description>
@@ -19,7 +19,7 @@
     <item>
       <title>MicroService</title>
       <link>http://example.org/tags/microservice/</link>
-      <pubDate>Wed, 21 Dec 2022 14:48:49 +0800</pubDate>
+      <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
       
       <guid>http://example.org/tags/microservice/</guid>
       <description></description>
@@ -28,7 +28,7 @@
     <item>
       <title>ServiceMesh</title>
       <link>http://example.org/tags/servicemesh/</link>
-      <pubDate>Wed, 21 Dec 2022 14:48:49 +0800</pubDate>
+      <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
       
       <guid>http://example.org/tags/servicemesh/</guid>
       <description></description>

@@ -6,7 +6,16 @@
     <description>Recent content in Consul on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 21 Dec 2022 14:48:49 +0800</lastBuildDate><atom:link href="http://example.org/tags/consul/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Dec 2022 17:13:41 +0800</lastBuildDate><atom:link href="http://example.org/tags/consul/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>consul实战系列-之四 基于Consul和Envoy搭建服务网格</title>
+      <link>http://example.org/posts/service-mesh-consul-part-4/</link>
+      <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
+      
+      <guid>http://example.org/posts/service-mesh-consul-part-4/</guid>
+      <description>本文作为consul实战系列第四篇，介绍用consul和envoy实现服务网格(Service Mesh)</description>
+    </item>
+    
     <item>
       <title>consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</title>
       <link>http://example.org/posts/service-mesh-consul-part-3/</link>

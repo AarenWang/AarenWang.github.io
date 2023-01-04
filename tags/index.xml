@@ -6,7 +6,25 @@
     <description>Recent content in Tags on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Dec 2022 17:13:41 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 Jan 2023 19:32:35 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>etcd</title>
+      <link>http://example.org/tags/etcd/</link>
+      <pubDate>Wed, 04 Jan 2023 19:32:35 +0800</pubDate>
+      
+      <guid>http://example.org/tags/etcd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TLS</title>
+      <link>http://example.org/tags/tls/</link>
+      <pubDate>Wed, 04 Jan 2023 19:32:35 +0800</pubDate>
+      
+      <guid>http://example.org/tags/tls/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Consul</title>
       <link>http://example.org/tags/consul/</link>

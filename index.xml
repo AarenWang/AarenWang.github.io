@@ -6,7 +6,16 @@
     <description>Recent content on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Dec 2022 17:13:41 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 Jan 2023 19:32:35 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>etcd设置Server和Client TLS证书</title>
+      <link>http://example.org/posts/etcd-action-part-1/</link>
+      <pubDate>Wed, 04 Jan 2023 19:32:35 +0800</pubDate>
+      
+      <guid>http://example.org/posts/etcd-action-part-1/</guid>
+      <description>本文介绍单机etcd设置server和clientTLS证书配置，保证client和server通信安全</description>
+    </item>
+    
     <item>
       <title>consul实战系列-之四 基于Consul和Envoy搭建服务网格</title>
       <link>http://example.org/posts/service-mesh-consul-part-4/</link>

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>etcd设置TLS证书证书 - Aaron Wang的博客</title>
+	<title>etcd设置TLS证书 - Aaron Wang的博客</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +69,7 @@ if (!doNotTrack) {
 <main class="main" role="main">
 	<article class="post">
 		<header class="post__header">
-			<h1 class="post__title">etcd设置TLS证书证书</h1>
+			<h1 class="post__title">etcd设置TLS证书</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-04T19:32:35&#43;08:00">January 04, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/etcd/" rel="category">etcd</a>
@@ -84,7 +84,7 @@ if (!doNotTrack) {
   <ul>
     <li><a href="#介绍">介绍</a></li>
     <li><a href="#快速体验">快速体验</a></li>
-    <li><a href="#etcd-server端和client-tls认证">etcd server端和client TLS认证</a>
+    <li><a href="#etcd-client-tls认证">etcd client TLS认证</a>
       <ul>
         <li><a href="#证书生成">证书生成</a></li>
         <li><a href="#etcd启动证书">etcd启动证书</a></li>
@@ -96,7 +96,7 @@ if (!doNotTrack) {
 </nav>
 	</div>
 </div><div class="content post__content clearfix">
-			<h1 id="etcd--server和clienttls-证书认证配置">etcd  server和clientTLS 证书认证配置</h1>
+			<h1 id="etcd-client-tls-证书配置和go客户端访问">etcd client TLS 证书配置和go客户端访问</h1>
 <h2 id="介绍">介绍</h2>
 <p>etcd 是一个强一致的分布式键值(key-value)存储，它提供了一种可靠的方式来存储需要由分布式系统或机器集群访问的数据。它可以优雅地处理网络分区期间的领导者选举，即使在
 领导者节点中也可以容忍机器故障。etcd 是用Go语言编写的，它具有出色的跨平台支持，小的二进制文件和强大的社区。etcd机器之间的通信通过Raft共识算法处理。</p>
@@ -124,7 +124,10 @@ etcd启动之后会监听两个端口</p>
 </span></span><span style="display:flex;"><span>etcdctl watch db_ --prefix
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 以db_开头的key都可以watch到</span>
 </span></span></code></pre></div><p>etcd更多使用这里就不做详细介绍，可以参考etcd官网文档<a href="https://etcd.io/docs/v3.5/tutorials/">教程</a></p>
-<h2 id="etcd-server端和client-tls认证">etcd server端和client TLS认证</h2>
+<h2 id="etcd-client-tls认证">etcd client TLS认证</h2>
+<p>etcd证书分client请求证书、和etcd集群模式下peer节点之间通信证书,本文讲client证书生成和使用，下次介绍peer证书。
+etcd的client证书和我们浏览网站时https证书有一点不一样，浏览HTTPS网站时证书是由网站服务器提供，浏览器校验证书合法性。
+而etcd client端访问时etcd server，则是client端请求时携带证书，由etcd server校验client证书的合法性</p>
 <h3 id="证书生成">证书生成</h3>
 <p>话不多说，敲的命令比较多，我们直接用bash脚本来生成</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#099">#!/bin/bash -x
@@ -337,7 +340,7 @@ etcd启动之后会监听两个端口</p>
 	<h4 class="widget__title">Recent Posts</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
-			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-1/">etcd设置TLS证书证书</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-1/">etcd设置TLS证书</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-4/">consul实战系列-之四 基于Consul和Envoy搭建服务网格</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-3/">consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-2/">consul实战系列-之二 Consul服务注册和发现功能</a></li>

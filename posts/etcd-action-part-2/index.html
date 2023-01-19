@@ -124,7 +124,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PRI_IP2</span><span style="color:#555">=</span><span style="color:#c30">&#34;172.19.56.73&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PUB_IP2</span><span style="color:#555">=</span><span style="color:#c30">&#34;公网IP3&#34;</span>
-</span></span></code></pre></div><p>云服务器ssh登录采用密钥方式，密钥本地存储路径 <code>$HOME/certs/etcd-temp.pem</code></p>
+</span></span></code></pre></div><p>云服务器ssh登录采用密钥方式，云服务器密钥本地存储路径 <code>$HOME/certs/etcd-temp.pem</code></p>
 <p>比如可以通过以下ssh登录到第一台服务器上  <code>ssh -i ~/certs/etcd-temp.pem root@$PUB_IP0</code></p>
 <h2 id="生成证书-发布到etcd服务器上">生成证书 发布到etcd服务器上</h2>
 <p>一 证书生成工具选择

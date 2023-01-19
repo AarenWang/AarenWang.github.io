@@ -6,7 +6,16 @@
     <description>Recent content on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 04 Jan 2023 19:32:35 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 19 Jan 2023 15:26:16 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>etcd集群自动化部署</title>
+      <link>http://example.org/posts/etcd-action-part-2/</link>
+      <pubDate>Thu, 19 Jan 2023 15:26:16 +0800</pubDate>
+      
+      <guid>http://example.org/posts/etcd-action-part-2/</guid>
+      <description>本文介绍etcd集群自签名证书生成 证书推送 命令行启动参数生成 配置生成</description>
+    </item>
+    
     <item>
       <title>etcd设置TLS证书</title>
       <link>http://example.org/posts/etcd-action-part-1/</link>

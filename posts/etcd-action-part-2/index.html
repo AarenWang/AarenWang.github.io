@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>etcd集群自动化部署 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
+}
+</script>
+
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">Menu</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">etcd集群自动化部署</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-19T15:26:16&#43;08:00">January 19, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/etcd/" rel="category">etcd</a>
+	</span>
+</div></div>
+		</header>
+		<div class="content post__content clearfix">
+			<h1 id="etcd集群自动化部署">etcd集群自动化部署</h1>
+<p>etcd集群部署涉及到证书生成和推送、etcd节点配置生成和推送,etcd配置文件维护等工作。本文记录下，我自己搭建etcd集群工作过程，以及为提供效率，介绍出错
+写的一些自动化脚本</p>
+<p>按照etcd官方设计，etcd集群成员节点发现三种方式</p>
+<ul>
+<li>静态成员</li>
+<li>etcd服务发现</li>
+<li>DNS发现etcd节点
+他们有各自的优缺点，根据目前我们项目和环境情况，我选择了&quot;方式一静态成员&quot;。出于安全性考虑我们启用etcd client证书和 etcd peer证书</li>
+</ul>
+<h2 id="机器准备">机器准备</h2>
+<p>在公有云上申请三个带公网的节点</p>
+<table>
+<thead>
+<tr>
+<th>etcd节点名称</th>
+<th>私有IP</th>
+<th>公网IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>infra0</td>
+<td>172.19.56.72</td>
+<td>公网IP1</td>
+</tr>
+<tr>
+<td>infra0</td>
+<td>172.19.56.71</td>
+<td>公网IP2</td>
+</tr>
+<tr>
+<td>infra0</td>
+<td>172.19.56.73</td>
+<td>公网IP3</td>
+</tr>
+</tbody>
+</table>
+<p>为方便后续操作，我们将IP地址导入到环境变量</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PRI_IP0</span><span style="color:#555">=</span><span style="color:#c30">&#34;172.19.56.72&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PUB_IP0</span><span style="color:#555">=</span><span style="color:#c30">&#34;公网IP1&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PRI_IP1</span><span style="color:#555">=</span><span style="color:#c30">&#34;172.19.56.71&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PUB_IP1</span><span style="color:#555">=</span><span style="color:#c30">&#34;公网IP2&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PRI_IP2</span><span style="color:#555">=</span><span style="color:#c30">&#34;172.19.56.73&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">PUB_IP2</span><span style="color:#555">=</span><span style="color:#c30">&#34;公网IP3&#34;</span>
+</span></span></code></pre></div><p>云服务器ssh登录采用密钥方式，密钥本地存储路径 <code>$HOME/certs/etcd-temp.pem</code></p>
+<p>比如可以通过以下ssh登录到第一台服务器上  <code>ssh -i ~/certs/etcd-temp.pem root@$PUB_IP0</code></p>
+<h2 id="生成证书-发布到etcd服务器上">生成证书 发布到etcd服务器上</h2>
+<p>一 证书生成工具选择
+目前涉及密码学PKI(公钥基础设施)使用最广泛的是<code>openssl</code>,Cloudflare公司开源的cfssl<a href="https://github.com/cloudflare/cfssl">链接</a>密码学和PKI工具箱也不错，能让证书生成过程简化一些，我们本次证书生成就用cfssl这个工具箱</p>
+<p>etcd代码仓库里有使用cfssl生成证书的<a href="https://github.com/etcd-io/etcd/tree/main/hack/tls-setup">例子</a>,我做了一些改造<a href="https://github.com/AarenWang/etcd-deploy/tree/master/tls-setup">链接</a></p>
+<p>二  安装cfssl命令行工具</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>go install  github.com/cloudflare/cfssl/cmd/cfssl@latest
+</span></span><span style="display:flex;"><span>go install  github.com/cloudflare/cfssl/cmd/cfssljson@latest
+</span></span><span style="display:flex;"><span>go install  github.com/mattn/goreman@latest
+</span></span></code></pre></div><p>三 使用工具生成证书
+git clone我们的<a href="https://github.com/AarenWang/etcd-deploy">代码仓库</a>，然后修改tls-setup/config/req-csr.json，设置节点IP。
+其它两个配置文件，自己根据需求可以做调整，不做修改，默认也是可以的</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 需要导入下环境变量，设置节点infra0到infra2对应的私有IP</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">infra0</span><span style="color:#555">=</span><span style="color:#033">$PRI_IP0</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">infra1</span><span style="color:#555">=</span><span style="color:#033">$PRI_IP1</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">infra2</span><span style="color:#555">=</span><span style="color:#033">$PRI_IP2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 进入tls-setup</span>
+</span></span><span style="display:flex;"><span><span style="color:#366">cd</span> tls-setup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 生成证书</span>
+</span></span><span style="display:flex;"><span>make all
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#client证书在certs，peer证书再peer-certs目录下</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make 其它目标任务</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make clean ：清理证书,</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make ca :生成client CA证书</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make peerca  ：生成peer CA证书</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make req  :生成client证书</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># make peerreq  :生成peer 节点证书</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 推送证书 IP按infra0、 infra1、infra2以此类推命名</span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 证书名称以私有IP命名，推送通过公网IP，因此参数&#34;私有IP:公网IP&#34;, IP对的形式</span>
+</span></span></code></pre></div><p>每个节点都有6个文件，三个节点，需要推送18个文件，写了个python脚本来推送</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 推送证书到目标机器</span>
+</span></span><span style="display:flex;"><span>python3 etcd_cert_push.py  -l <span style="color:#033">$PRI_IP0</span>:<span style="color:#033">$PUB_IP0</span>,<span style="color:#033">$PRI_IP1</span>:<span style="color:#033">$PUB_IP1</span>,<span style="color:#033">$PRI_IP2</span>:<span style="color:#033">$PUB_IP2</span>
+</span></span></code></pre></div><h2 id="发布etcd和etcdctl二进制文件">发布etcd和etcdctl二进制文件</h2>
+<p>去 etcd仓<a href="https://github.com/etcd-io/etcd/releases">库release页面</a>  页面下载最新etcd包，我下载的是etcd-v3.4.23-linux-amd64.tar.gz。</p>
+<p>etcd-v3.4.23-linux-amd64.tar.gz 本地解压，将etcd和etcdctl两个二进制文件发布到目标机器</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># etcd和etcdctl二进制文件发布到第一台机器</span>
+</span></span><span style="display:flex;"><span>scp -i certs/etcd-temp.pem ~/Downloads/etcd-v3.4.23-linux-amd64/etcd   root@<span style="color:#033">$PUB_IP0</span>:/usr/local/bin/
+</span></span><span style="display:flex;"><span>scp -i certs/etcd-temp.pem ~/Downloads/etcd-v3.4.23-linux-amd64/etcdctl   root@<span style="color:#033">$PUB_IP0</span>:/usr/local/bin/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 第二台和第三台 省略</span>
+</span></span></code></pre></div><h2 id="启动etcd集群节点验证">启动etcd集群节点验证</h2>
+<p>etcd集群节点启动过程需要设置大量参数，可以通过两种方式</p>
+<ul>
+<li>方式一，命令行参数</li>
+<li>方式二、指定配置文件</li>
+<li>方式三、指定环境变量
+本次 我们先生成命令行参数进行启动，验证没问题了，再生成配置文件，用指定配置文件方式启动
+完整的参数列表可以参考etcd文档<a href="https://etcd.io/docs/v3.5/op-guide/configuration/">链接</a></li>
+</ul>
+<p>一  生成启动命令参数
+启动命令生成，etcd_start_cmd.py文件里</p>
+<p><code>python3 etcd_start_cmd.py -l $PRI_IP0,$PRI_IP0,$PRI_IP0 </code></p>
+<p>生成IP：172.19.56.72,infra0 的etcd启动命令如下:</p>
+<pre tabindex="0"><code>  etcd --name infra0 --initial-advertise-peer-urls https://172.19.56.72:2380 \
+  --listen-peer-urls https://172.19.56.72:2380 \
+  --listen-client-urls https://172.19.56.72:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls https://172.19.56.72:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster infra0=https://172.19.56.72:2380,infra1=https://172.19.56.72:2380,infra2=https://172.19.56.72:2380 \
+  --initial-cluster-state new \
+  --client-cert-auth --trusted-ca-file=/etc/etcd/certs/ca-client.crt \
+  --cert-file=/etc/etcd/certs/infra0-client.crt --key-file=/etc/etcd/certs/infra0-client.key \
+  --peer-client-cert-auth --peer-trusted-ca-file=/etc/etcd/certs/peer-ca.crt \
+  --peer-cert-file=/etc/etcd/certs/peer-infra0.crt --peer-key-file=/etc/etcd/certs/peer-infra0.key
+</code></pre><p>在三个节点上执行生成的启动命令，观察日志，是否有启动报错，如果没有报错，则执行etcdctl验证</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 用私有IP访问验证</span>
+</span></span><span style="display:flex;"><span>etcdctl <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cacert<span style="color:#555">=</span>/etc/etcd/certs/ca-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cert<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--key<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.key <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--endpoints<span style="color:#555">=</span>https://<span style="color:#033">$PRI_IP0</span>:2379 <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>put Name Jack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#用127.0.0.1验证</span>
+</span></span><span style="display:flex;"><span>etcdctl <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cacert<span style="color:#555">=</span>/etc/etcd/certs/ca-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cert<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--key<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.key <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--endpoints<span style="color:#555">=</span>https://127.0.0.1:2379 <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>put Name Jack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 验证etcd集群成员</span>
+</span></span><span style="display:flex;"><span>etcdctl <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cacert<span style="color:#555">=</span>/etc/etcd/certs/ca-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--cert<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--key<span style="color:#555">=</span>/etc/etcd/certs/infra0-client.key <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>--endpoints<span style="color:#555">=</span>https://<span style="color:#033">$PRI_IP0</span>:2379 <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span>member list
+</span></span></code></pre></div><h2 id="生成etcd配置文件">生成etcd配置文件</h2>
+<p>以上验证通过后，最好将etcd启动参数放到yaml配置文件里。etcd通过指定yaml配置文件启动
+生成配置文件脚本是 <code>etcd_cfg_gen.py</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#生成配置文件</span>
+</span></span><span style="display:flex;"><span>python3 etcd_cfg_gen.py -l <span style="color:#033">$PRI_IP0</span>,<span style="color:#033">$PRI_IP1</span>,<span style="color:#033">$PRI_IP2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">#在当前目录下生成 etcd-$IP.yaml配置文件</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 推送文件到etcd服务器上</span>
+</span></span><span style="display:flex;"><span>scp -i ~/certs/etcd-temp.pem  etcd-<span style="color:#033">$PRI_IP0</span>.yaml  root@<span style="color:#033">$PUB_IP0</span>:/etc/etcd/etcd.yaml
+</span></span><span style="display:flex;"><span>scp -i ~/certs/etcd-temp.pem  etcd-<span style="color:#033">$PRI_IP1</span>.yaml  root@<span style="color:#033">$PUB_IP1</span>:/etc/etcd/etcd.yaml
+</span></span><span style="display:flex;"><span>scp -i ~/certs/etcd-temp.pem  etcd-<span style="color:#033">$PRI_IP2</span>.yaml  root@<span style="color:#033">$PUB_IP2</span>:/etc/etcd/etcd.yaml
+</span></span></code></pre></div><p>在三台etcd机器上,使用配置文件启动验证</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>etcd --config-file  /etc/etcd/etcd.yaml
+</span></span></code></pre></div><h2 id="附加-etcd配置说明">附加 etcd配置说明</h2>
+<p>完整的参数列表可以参考etcd文档<a href="https://etcd.io/docs/v3.5/op-guide/configuration/">链接</a></p>
+<pre tabindex="0"><code>--name：方便理解的节点名称，默认为 default，在集群中应该保持唯一
+--data-dir：服务运行数据保存的路径，默认为 ${name}.etcd
+--snapshot-count：指定有多少事务（transaction）被提交时，触发截取快照保存到磁盘
+--heartbeat-interval：leader 多久发送一次心跳到 followers。默认值是 100ms
+--eletion-timeout：重新投票的超时时间，如果follower在该时间间隔没有收到心跳包，会触发重新投票，默认为 1000 ms
+--listen-peer-urls：和同伴通信的地址，比如 http://ip:2380，如果有多个，使用逗号分隔。需要所有节点都能够访问，所以不要使用 localhost
+--advertise-client-urls：对外公告的该节点客户端监听地址，这个值会告诉集群中其他节点
+--listen-client-urls：对外提供服务的地址：比如 http://ip:2379,http://127.0.0.1:2379，客户端会连接到这里和etcd交互
+--initial-advertise-peer-urls：该节点同伴监听地址，这个值会告诉集群中其他节点
+--initial-cluster：集群中所有节点的信息，格式为 node1=http://ip1:2380,node2=http://ip2:2380,…。需要注意的是，这里的 node1 是节点的--name指定的名字；后面的ip1:2380 是--initial-advertise-peer-urls 指定的值
+--initial-cluster-state：新建集群的时候，这个值为 new；假如已经存在的集群，这个值为existing
+--initial-cluster-token：创建集群的token，这个值每个集群保持唯一。这样的话，如果你要重新创建集群，即使配置和之前一样，也会再次生成新的集群和节点 uuid；否则会导致多个集群之间的冲突，造成未知的错误
+
+　　所有以--init开头的配置都是在第一次启动etcd集群的时候才会用到，后续节点的重启会被忽略，如--initial-cluseter参数。所以当成功初始化了一个etcd集群以后，就不再需要这个参数或环境变量了。
+如果服务已经运行过就要把修改 --initial-cluster-state 为existing
+
+
+--client-cert-auth  client端请求是否启用认证  
+--trusted-ca-file=/etc/etcd/certs/ca-client.crt  client CA证书
+--cert-file=/etc/etcd/certs/infra0-client.crt   client证书
+--key-file=/etc/etcd/certs/infra0-client.key  client 证书密钥
+--peer-client-cert-auth  etcd集群成员peer通信是否启用认证
+--peer-trusted-ca-file=/etc/etcd/certs/peer-ca.crt   peer CA证书
+--peer-cert-file=/etc/etcd/certs/peer-infra0.crt    peer节点证书
+--peer-key-file=/etc/etcd/certs/peer-infra0.key   peer节点证书密钥
+　　
+</code></pre>
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/etcd/" rel="tag">etcd</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/tls/" rel="tag">TLS</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
+</main>
+
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">Recent Posts</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-1/">etcd设置TLS证书</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-4/">consul实战系列-之四 基于Consul和Envoy搭建服务网格</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-3/">consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-2/">consul实战系列-之二 Consul服务注册和发现功能</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-1/">consul实战系列-之一 consul介绍和初体验</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/my-first-post/">我的第一篇博客文章</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/about/">关于</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">Categories</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">Tags</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">Social</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2023 Aaron Wang的博客.
+			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

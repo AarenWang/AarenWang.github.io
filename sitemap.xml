@@ -3,10 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://example.org/</loc>
-    <lastmod>2023-01-19T15:26:16+08:00</lastmod>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/</loc>
-    <lastmod>2023-01-19T15:26:16+08:00</lastmod>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/go/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/categories/go/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/posts/go-log-zap/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/loggin/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/posts/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/</loc>
+    <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/etcd/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
@@ -15,12 +33,6 @@
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
     <loc>http://example.org/posts/etcd-action-part-2/</loc>
-    <lastmod>2023-01-19T15:26:16+08:00</lastmod>
-  </url><url>
-    <loc>http://example.org/posts/</loc>
-    <lastmod>2023-01-19T15:26:16+08:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/tls/</loc>

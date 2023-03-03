@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nginx on Aaron Wang的博客</title>
+    <link>http://example.org/tags/nginx/</link>
+    <description>Recent content in nginx on Aaron Wang的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 03 Mar 2023 11:03:12 +0800</lastBuildDate><atom:link href="http://example.org/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用Rsyslog和Logstash采集分析Nginx日志</title>
+      <link>http://example.org/posts/nginx-log-logstash-es/</link>
+      <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
+      
+      <guid>http://example.org/posts/nginx-log-logstash-es/</guid>
+      <description>本文介绍用Rsyslog协议采集nginx日志，用Logstash预处理日志 写入ES</description>
+    </item>
+    
+  </channel>
+</rss>

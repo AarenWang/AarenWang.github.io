@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 30 Jan 2023 20:16:55 +0800</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Mar 2023 11:03:12 +0800</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用Rsyslog和Logstash采集分析Nginx日志</title>
+      <link>http://example.org/posts/nginx-log-logstash-es/</link>
+      <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
+      
+      <guid>http://example.org/posts/nginx-log-logstash-es/</guid>
+      <description>本文介绍用Rsyslog协议采集nginx日志，用Logstash预处理日志 写入ES</description>
+    </item>
+    
     <item>
       <title>Go语言高性能日志库-zap介绍</title>
       <link>http://example.org/posts/go-log-zap/</link>

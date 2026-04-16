@@ -6,7 +6,34 @@
     <description>Recent content in Tags on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 03 Mar 2023 11:03:12 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent</title>
+      <link>http://example.org/tags/agent/</link>
+      <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
+      
+      <guid>http://example.org/tags/agent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deer-Flow</title>
+      <link>http://example.org/tags/deer-flow/</link>
+      <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
+      
+      <guid>http://example.org/tags/deer-flow/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Prompt</title>
+      <link>http://example.org/tags/prompt/</link>
+      <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
+      
+      <guid>http://example.org/tags/prompt/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Logstash</title>
       <link>http://example.org/tags/logstash/</link>

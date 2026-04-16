@@ -73,6 +73,23 @@ if (!doNotTrack) {
 	
 	<header class="list__header">
 		<h2 class="list__title post__title">
+			<a href="/posts/agent/deer-flow/how-to-prompt/" rel="bookmark">
+			拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务
+			</a>
+		</h2>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-04-16T11:53:12&#43;08:00">April 16, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		从 Deer-Flow 主 Agent 的 system prompt 入手，分析它如何通过记忆、澄清、工具与输出规范来约束智能体执行复杂任务。
+	</div>
+</article><article class="list__item post">
+	
+	<header class="list__header">
+		<h2 class="list__title post__title">
 			<a href="/posts/nginx-log-logstash-es/" rel="bookmark">
 			用Rsyslog和Logstash采集分析Nginx日志
 			</a>
@@ -222,26 +239,13 @@ if (!doNotTrack) {
 	<div class="content list__excerpt post__content clearfix">
 		讲讲为什么写博客，记录下博客搭建过程
 	</div>
-</article><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/posts/about/" rel="bookmark">
-			关于
-			</a>
-		</h2>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-09-02T21:27:58&#43;08:00">September 02, 2022</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/%E5%85%B3%E4%BA%8E/" rel="category">关于</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		我是谁，我来自哪里
-	</div>
 </article>
 </main>
 
+<div class="pagination">
+	<span class="pagination__item pagination__item--current">1/2</span>
+	<a class="pagination__item pagination__item--next btn" href="/page/2/">»</a>
+</div>
 
 			</div>
 			<aside class="sidebar">
@@ -249,6 +253,7 @@ if (!doNotTrack) {
 	<h4 class="widget__title">Recent Posts</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
@@ -258,7 +263,6 @@ if (!doNotTrack) {
 			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-2/">consul实战系列-之二 Consul服务注册和发现功能</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/service-mesh-consul-part-1/">consul实战系列-之一 consul介绍和初体验</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/my-first-post/">我的第一篇博客文章</a></li>
-			<li class="widget__item"><a class="widget__link" href="/posts/about/">关于</a></li>
 		</ul>
 	</div>
 </div>
@@ -266,6 +270,8 @@ if (!doNotTrack) {
 	<h4 class="widget__title">Categories</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
 			<li class="widget__item">
@@ -284,7 +290,9 @@ if (!doNotTrack) {
 <div class="widget-taglist widget">
 	<h4 class="widget__title">Tags</h4>
 	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
@@ -292,6 +300,7 @@ if (!doNotTrack) {
 		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="nginx">nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="rsyslog">rsyslog</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
@@ -325,7 +334,7 @@ if (!doNotTrack) {
 	<div class="container footer__container flex">
 		
 		<div class="footer__copyright">
-			&copy; 2023 Aaron Wang的博客.
+			&copy; 2026 Aaron Wang的博客.
 			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
 		</div>
 	</div>

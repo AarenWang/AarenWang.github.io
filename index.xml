@@ -6,7 +6,16 @@
     <description>Recent content on Aaron Wang的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 03 Mar 2023 11:03:12 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</title>
+      <link>http://example.org/posts/agent/deer-flow/how-to-prompt/</link>
+      <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
+      
+      <guid>http://example.org/posts/agent/deer-flow/how-to-prompt/</guid>
+      <description>从 Deer-Flow 主 Agent 的 system prompt 入手，分析它如何通过记忆、澄清、工具与输出规范来约束智能体执行复杂任务。</description>
+    </item>
+    
     <item>
       <title>用Rsyslog和Logstash采集分析Nginx日志</title>
       <link>http://example.org/posts/nginx-log-logstash-es/</link>

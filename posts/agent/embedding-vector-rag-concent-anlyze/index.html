@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Embedding、向量数据库与 RAG：概念梳理 - Aaron Wang的博客</title>
+	<title>Embedding、向量数据库与 RAG 概念解析 - Aaron Wang的博客</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,15 +72,81 @@
 <main class="main" role="main">
 	<article class="post">
 		<header class="post__header">
-			<h1 class="post__title">Embedding、向量数据库与 RAG：概念梳理</h1>
+			<h1 class="post__title">Embedding、向量数据库与 RAG 概念解析</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-05-10T21:32:42&#43;08:00">May 10, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
 	</span>
 </div></div>
 		</header>
-		<div class="content post__content clearfix">
-			
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#rag-是什么">RAG 是什么？</a></li>
+        <li><a href="#embedding-是什么">Embedding 是什么？</a></li>
+        <li><a href="#vector-db-是什么">Vector DB 是什么？</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<p>这三者可以按清晰的层级关系来理解：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>RAG 是一种应用架构或系统方案
+</span></span><span style="display:flex;"><span>Embedding 是把文本转化为向量的编码技术
+</span></span><span style="display:flex;"><span>Vector DB 是专门存储并检索这些向量的数据库
+</span></span></code></pre></div><p>概括成一句话：</p>
+<blockquote>
+<p><strong>Embedding 负责“把文字变成可计算的语义坐标”；Vector DB 负责“按语义坐标找相似内容”；RAG 负责“把找出的内容交给大模型，让模型基于资料回答”。</strong></p>
+</blockquote>
+<hr>
+<h1 id="一生活类比资料室的智能化改造">一、生活类比：资料室的智能化改造</h1>
+<p>假设您有一个大型资料室。</p>
+<p><strong>Embedding Model 就像“语义定位仪”</strong>，它能将每段文字转化为一个代表语义的坐标。例如，“苹果手机怎么退款？”和“iPhone 购买后如何申请退货？”这两句话虽然字面不同，但 embedding model 会将其映射为非常接近的向量。它解决的核心问题是：把文字语义变成可计算的数学向量。</p>
+<p><strong>Vector DB 则像“语义地图检索系统”</strong>。当所有资料都变成向量坐标后，需要一个地方统一存储，并能在收到查询时快速找出“和该问题最相似的5段资料”。它的工作包括存储向量、建立索引、进行快速相似度检索，并支持基于元数据的过滤。</p>
+<p><strong>RAG 则像一个“带资料检索能力的大模型问答系统”</strong>。大模型本身像一个聪明的通才，但未必知晓您的私有资料。RAG 的做法是，先从这个“语义地图”里找到相关内容，再将内容作为上下文填入 prompt（提示词），最后让大模型基于这些给出的资料进行回答。其完整流程是：将用户问题转化为 embedding，去 Vector DB 检索相关文档片段，取回 topK 结果，拼进 prompt，最终由 LLM 生成答案。RAG 解决的核心问题是，让 LLM 能够基于外部知识而非仅凭模型记忆来回答。</p>
+<hr>
+<h1 id="二三者的关系与工程流程">二、三者的关系与工程流程</h1>
+<p>从宏观架构看，Embedding Model 和 Vector DB 都是 RAG 的组件，而 RAG 则是将它们与 LLM 组织起来的系统模式。</p>
+<p>更工程化的流程如下：
+文档首先被切分为小块（chunk），经由 Embedding Model 编码后，将生成的向量连同原文和元数据存入 Vector DB。当用户提问时，问题同样被编码为向量，Vector DB 执行相似度检索并返回相关的原文 chunk，这些片段最终被拼入 prompt，交由 LLM 生成答案。</p>
+<hr>
+<h1 id="三各概念深度解析">三、各概念深度解析</h1>
+<h3 id="rag-是什么">RAG 是什么？</h3>
+<p>RAG，全称 Retrieval-Augmented Generation（检索增强生成），是一种系统架构模式，其核心思想是：<strong>大模型在回答问题前，先检索权威资料。</strong> 它将普通 LLM 的“用户问题 -&gt; LLM -&gt; 答案”模式，转变为“用户问题 -&gt; 检索相关资料 -&gt; LLM 基于资料回答 -&gt; 答案”。</p>
+<p>之所以需要 RAG，是因为它能解决 LLM 的几大短板：无法访问私有数据、知识可能过时、容易产生幻觉、无法记住海量文档、回答难以溯源以及不适合频繁重训模型。RAG 的策略是，从 10 万页企业文档中，只检索出最相关的 5 段交给 LLM，极大提升了知识应用的效率和准确性。</p>
+<h3 id="embedding-是什么">Embedding 是什么？</h3>
+<p>Embedding 是一种将文本、图片等对象转化成数值向量的模型技术，这个向量就是该对象在“语义空间”里的坐标。语义越接近，向量的距离就越近。例如，“猫喜欢吃鱼”和“猫爱吃鱼”的向量距离就很近。</p>
+<p>需要特别注意的是，<strong>Embedding Model 不等于 LLM。</strong> Embedding Model 负责回答“这句话在语义空间里什么位置”，而 LLM 负责“根据上下文生成答案”。在 RAG 中，embedding 的核心用途就是将用户问题和文档片段放入同一个向量空间，计算它们之间的相关性。</p>
+<h3 id="vector-db-是什么">Vector DB 是什么？</h3>
+<p>Vector DB（向量数据库）是专门用于存储向量并执行高效相似度搜索的数据库。它存储的不仅仅是向量，通常还包括原文、文档ID、标题、权限信息等元数据。</p>
+<p>普通数据库擅长精确匹配（如 <code>WHERE title = '退款政策'</code>），但它不擅长模糊的语义搜索，例如找出“和‘怎么把钱退回来’语义最接近的文档”。这正是 Vector DB 的专长，它通过语义搜索、最近邻搜索等技术实现这一点。常见的生产级产品包括 pgvector、Qdrant、Milvus、Pinecone 等。</p>
+<hr>
+<h1 id="四核心关系与常见误区">四、核心关系与常见误区</h1>
+<p>这三者并非同一层面的东西：RAG 是应用架构，Embedding 是编码技术，Vector DB 是检索基础设施。一个更精确的表述是：RAG 使用 Embedding Model 将文本向量化，使用 Vector DB 存储和检索这些向量，最终使用 LLM 生成答案。</p>
+<p>在此，有必要澄清几个常见误区：</p>
+<ul>
+<li><strong>“我搭了个向量数据库，就有了 RAG。”</strong> 这是不准确的。Vector DB 只完成了语义检索部分，完整的 RAG 还包括文档解析、chunking、检索、reranking（重排序）、prompt 组装、生成、引用和评估等环节。Vector DB 是 RAG 的一部分，而非全部。</li>
+<li><strong>“有了 RAG 就不会产生幻觉。”</strong> 错误。RAG 能够大幅降低但无法完全消灭幻觉。检索错误、文档片段不完整或 LLM 未遵循给定资料，都可能导致幻觉。因此，需要加入无法回答时拒答、引用溯源等机制。</li>
+<li><strong>“向量越相似，答案就越正确。”</strong> 不一定。相似度只是相关性的粗略度量，生产系统通常会引入 reranker（重排序模型）对召回结果进行精排，以确保真正能回答问题的片段被采用。</li>
+<li><strong>“Vector DB 能替代业务数据库。”</strong> 不能。它更像一个语义索引库，而业务事实、订单、交易等关键数据，仍然应该保存在 PostgreSQL、MySQL 等传统数据库中。</li>
+</ul>
+<hr>
+<h1 id="五一个完整案例公司内部制度问答机器人">五、一个完整案例：公司内部制度问答机器人</h1>
+<p>要构建这样一个机器人，分两大步：</p>
+<p><strong>第一步：离线入库。</strong> 解析请假制度、报销制度等PDF文档获取纯文本；将文本切分成小的 chunk（例如：“病假申请规则”）；用 Embedding Model 将每个 chunk 编码为向量；最后，将向量连同原文和元数据（所属部门、权限组等）一并存入 Vector DB。</p>
+<p><strong>第二步：在线问答。</strong> 用户提问“我生病请假需要提交什么材料？”，该问题首先被编码为查询向量。系统携带权限过滤条件（如 <code>permission_group = all_staff</code>）去 Vector DB 中检索 topK 相似的 chunk，得到“病假申请需提供医院证明”等资料。这些资料和用户问题被拼成一个完整的 prompt 交给 LLM，LLM 最终生成条理清晰的回答，并可能附上资料来源。</p>
+<hr>
+<h1 id="六最清晰的一句话总结">六、最清晰的一句话总结</h1>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Embedding 是“语义编码”，Vector DB 是“语义索引”，RAG 是“先检索、再生成”的应用架构。
+</span></span></code></pre></div><p>更形象地说：
+<strong>Embedding 把知识变成坐标；Vector DB 在坐标系里找附近的知识；RAG 把找到的知识交给大模型，让它据此回答。</strong></p>
+
 		</div>
 		<footer class="post__footer">
 			
@@ -130,7 +196,7 @@
 	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
-			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG：概念梳理</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>

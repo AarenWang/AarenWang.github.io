@@ -17,17 +17,20 @@
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
-}
-</script>
-
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -47,7 +50,7 @@ if (!doNotTrack) {
 		
 <nav class="menu">
 	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
-		<span class="menu__btn-title" tabindex="-1">Menu</span>
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
 	</button>
 	<ul class="menu__list">
 		<li class="menu__item menu__item--active">
@@ -98,6 +101,10 @@ Github <a href="https://github.com/AarenWang">链接</a></p>
 
 
 
+	
+
+
+
 			</div>
 			
 		</div>
@@ -106,7 +113,7 @@ Github <a href="https://github.com/AarenWang">链接</a></p>
 		
 		<div class="footer__copyright">
 			&copy; 2026 Aaron Wang的博客.
-			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
 		</div>
 	</div>
 </footer>

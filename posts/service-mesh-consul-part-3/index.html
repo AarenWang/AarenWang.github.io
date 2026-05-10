@@ -17,17 +17,20 @@
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
-}
-</script>
-
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -47,7 +50,7 @@ if (!doNotTrack) {
 		
 <nav class="menu">
 	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
-		<span class="menu__btn-title" tabindex="-1">Menu</span>
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
 	</button>
 	<ul class="menu__list">
 		<li class="menu__item">
@@ -78,7 +81,7 @@ if (!doNotTrack) {
 		</header>
 		
 <div class="post__toc toc">
-	<div class="toc__title">Page content</div>
+	<div class="toc__title">目录</div>
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
@@ -113,16 +116,16 @@ if (!doNotTrack) {
 <li>consul端口等配置</li>
 </ul>
 <p>第一步，导入环境变量</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">DATACENTER</span><span style="color:#555">=</span><span style="color:#c30">&#34;dc1&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">DOMAIN</span><span style="color:#555">=</span><span style="color:#c30">&#34;consul&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_DATA_DIR</span><span style="color:#555">=</span><span style="color:#c30">&#34;/etc/consul/data&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#555">=</span><span style="color:#c30">&#34;/etc/consul/config&#34;</span> <span style="color:#c30;font-weight:bold">\
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">DATACENTER</span><span style="color:#555">=</span><span style="color:#c30">&#34;dc1&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">DOMAIN</span><span style="color:#555">=</span><span style="color:#c30">&#34;consul&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_DATA_DIR</span><span style="color:#555">=</span><span style="color:#c30">&#34;/etc/consul/data&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#555">=</span><span style="color:#c30">&#34;/etc/consul/config&#34;</span> <span style="color:#c30;font-weight:bold">\
 </span></span></span></code></pre></div><p>执行脚本，生成配置
 <a href="https://github.com/AarenWang/blog-tutorial/blob/master/consul/learn-consul-get-started-vms/scripts/generate_consul_server_config.sh">本教程对应脚本</a><br>
 根据官方教程脚本修改 <a href="https://github.com/hashicorp-education/learn-consul-get-started-vms/blob/main/scripts/generate_consul_server_config.sh">consul官方教程脚本</a> 以适应新版本consul配置</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> ./generate_consul_server_config.sh
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> ./generate_consul_server_config.sh
 </span></span></code></pre></div><p>生成文件列表</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>/etc/consul/config
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>/etc/consul/config
 </span></span><span style="display:flex;"><span>├── agent-gossip-encryption.hcl  【gossip协议 加密通信密钥】
 </span></span><span style="display:flex;"><span>├── agent-server-acl.hcl   【访问控制】
 </span></span><span style="display:flex;"><span>├── agent-server-secure.hcl  【server agent安全配置，启用访问控制，默认拒绝】
@@ -134,7 +137,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>└── dc1-server-consul-0.pem  【server证书】
 </span></span></code></pre></div><p>校验配置 <code>consul validate ${CONSUL_CONFIG_DIR}</code></p>
 <h2 id="启动服务器">启动服务器</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul agent -node<span style="color:#555">=</span>consul -config-dir<span style="color:#555">=</span><span style="color:#a00">${</span><span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#a00">}</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul agent -node<span style="color:#555">=</span>consul -config-dir<span style="color:#555">=</span><span style="color:#a00">${</span><span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#a00">}</span>
 </span></span></code></pre></div><p>启动控制台输出
 <img src="image/consul_start" alt="consul agent start"></p>
 <h2 id="通过命令行与consul交互">通过命令行与consul交互</h2>
@@ -143,16 +146,16 @@ if (!doNotTrack) {
 <p>consul可以设置节点是否为引导节点和可以导出bookstreap token次数,我们的脚本里生成配置文件<code>agent-server-specific.hcl </code> <code>bootstrap_expect = 1 </code>
 通过引导token生成访问consul server,再生成后续访问的token</p>
 <p>设置一些环境变量</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_ADDRESS</span><span style="color:#555">=</span><span style="color:#c30">&#34;127.0.0.1&#34;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_ADDRESS</span><span style="color:#555">=</span><span style="color:#c30">&#34;127.0.0.1&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_HTTP_ADDR</span><span style="color:#555">=</span><span style="color:#c30">&#34;https://CONSUL_ADDRESS:8443&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_HTTP_SSL</span><span style="color:#555">=</span><span style="color:#366">true</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_CACERT</span><span style="color:#555">=</span><span style="color:#c30">&#34;</span><span style="color:#a00">${</span><span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#a00">}</span><span style="color:#c30">/consul-agent-ca.pem&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_TLS_SERVER_NAME</span><span style="color:#555">=</span><span style="color:#c30">&#34;server.</span><span style="color:#a00">${</span><span style="color:#033">DATACENTER</span><span style="color:#a00">}</span><span style="color:#c30">.</span><span style="color:#a00">${</span><span style="color:#033">DOMAIN</span><span style="color:#a00">}</span><span style="color:#c30">&#34;</span> <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span><span style="color:#366">export</span> <span style="color:#033">CONSUL_FQDN_ADDR</span><span style="color:#555">=</span><span style="color:#c30">&#34;consul&#34;</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_HTTP_SSL</span><span style="color:#555">=</span><span style="color:#366">true</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_CACERT</span><span style="color:#555">=</span><span style="color:#c30">&#34;</span><span style="color:#a00">${</span><span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#a00">}</span><span style="color:#c30">/consul-agent-ca.pem&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_TLS_SERVER_NAME</span><span style="color:#555">=</span><span style="color:#c30">&#34;server.</span><span style="color:#a00">${</span><span style="color:#033">DATACENTER</span><span style="color:#a00">}</span><span style="color:#c30">.</span><span style="color:#a00">${</span><span style="color:#033">DOMAIN</span><span style="color:#a00">}</span><span style="color:#c30">&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_FQDN_ADDR</span><span style="color:#555">=</span><span style="color:#c30">&#34;consul&#34;</span>
 </span></span></code></pre></div><p>将引导token导出到acl-token-bootstrap.json</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl bootstrap --format json &gt; ./acl-token-bootstrap.json
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl bootstrap --format json &gt; ./acl-token-bootstrap.json
 </span></span></code></pre></div><p>导入到环境变量<strong>CONSUL_HTTP_TOKEN</strong></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_HTTP_TOKEN</span><span style="color:#555">=</span><span style="color:#c30">`</span>cat ./acl-token-bootstrap.json | jq -r <span style="color:#c30">&#34;.SecretID&#34;</span><span style="color:#c30">`</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">CONSUL_HTTP_TOKEN</span><span style="color:#555">=</span><span style="color:#c30">`</span>cat ./acl-token-bootstrap.json | jq -r <span style="color:#c30">&#34;.SecretID&#34;</span><span style="color:#c30">`</span>
 </span></span></code></pre></div><p>这时候执行命令 <code>consul  members</code> 输出</p>
 <pre tabindex="0"><code>Node    Address             Status  Type    Build   Protocol  DC   Partition  Segment
 consul  192.168.31.17:8301  alive   server  1.14.2  2         dc1  default    &lt;all&gt;
@@ -183,11 +186,11 @@ node_prefix &#34;consul&#34; {
 </code></pre><ol>
 <li>根据DNS策略定义文件创建DNS策略</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl policy create -name <span style="color:#c30">&#39;acl-policy-dns&#39;</span> -description <span style="color:#c30">&#39;Policy for DNS endpoints&#39;</span> -rules @./acl-policy-dns.hcl
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl policy create -name <span style="color:#c30">&#39;acl-policy-dns&#39;</span> -description <span style="color:#c30">&#39;Policy for DNS endpoints&#39;</span> -rules @./acl-policy-dns.hcl
 </span></span></code></pre></div><ol start="2">
 <li>根据server节点访问策略定义文件创建策略</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl policy create -name <span style="color:#c30">&#39;acl-policy-server-node&#39;</span> -description <span style="color:#c30">&#39;Policy for Server nodes&#39;</span> -rules @./acl-policy-server-node.hcl
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl policy create -name <span style="color:#c30">&#39;acl-policy-server-node&#39;</span> -description <span style="color:#c30">&#39;Policy for Server nodes&#39;</span> -rules @./acl-policy-server-node.hcl
 </span></span></code></pre></div><ol start="3">
 <li>
 <p>DNS Token导出到acl-token-dns.json
@@ -201,17 +204,17 @@ node_prefix &#34;consul&#34; {
 <p>导入环境变量</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">DNS_TOKEN</span><span style="color:#555">=</span><span style="color:#c30">`</span>cat ./acl-token-dns.json | jq -r <span style="color:#c30">&#34;.SecretID&#34;</span><span style="color:#c30">`</span>  
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">DNS_TOKEN</span><span style="color:#555">=</span><span style="color:#c30">`</span>cat ./acl-token-dns.json | jq -r <span style="color:#c30">&#34;.SecretID&#34;</span><span style="color:#c30">`</span>  
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">SERVER_TOKEN</span><span style="color:#555">=</span><span style="color:#c30">`</span>cat ./server-acl-token.json | jq -r <span style="color:#c30">&#34;.SecretID&#34;</span><span style="color:#c30">`</span>
 </span></span></code></pre></div><ol start="6">
 <li>设置agent Token</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl set-agent-token default <span style="color:#a00">${</span><span style="color:#033">DNS_TOKEN</span><span style="color:#a00">}</span> 
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul acl set-agent-token default <span style="color:#a00">${</span><span style="color:#033">DNS_TOKEN</span><span style="color:#a00">}</span> 
 </span></span><span style="display:flex;"><span>consul acl set-agent-token agent <span style="color:#a00">${</span><span style="color:#033">SERVER_TOKEN</span><span style="color:#a00">}</span>
 </span></span></code></pre></div><h2 id="验证">验证</h2>
 <p>执行<code>consul members</code>   <code>consul info</code>等命令验证结果</p>
 <p>与DNS服务器交互</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> dig @127.0.0.1 -p <span style="color:#f60">8600</span> consul.service.consul
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> dig @127.0.0.1 -p <span style="color:#f60">8600</span> consul.service.consul
 </span></span></code></pre></div><p>输出</p>
 <pre tabindex="0"><code>; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; @127.0.0.1 -p 8600 consul.service.consul
 ; (1 server found)
@@ -270,10 +273,14 @@ consul.service.consul.	0	IN	A	192.168.31.17
 
 
 
+	
+
+
+
 			</div>
 			<aside class="sidebar">
 <div class="widget-recent widget">
-	<h4 class="widget__title">Recent Posts</h4>
+	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
@@ -290,15 +297,15 @@ consul.service.consul.	0	IN	A	192.168.31.17
 	</div>
 </div>
 <div class="widget-categories widget">
-	<h4 class="widget__title">Categories</h4>
+	<h4 class="widget__title">分类</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/agent/">Agent</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/go/">go</a></li>
+				<a class="widget__link" href="/categories/go/">Go</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
 			<li class="widget__item">
@@ -311,20 +318,20 @@ consul.service.consul.	0	IN	A	192.168.31.17
 	</div>
 </div>
 <div class="widget-taglist widget">
-	<h4 class="widget__title">Tags</h4>
+	<h4 class="widget__title">标签</h4>
 	<div class="widget__content">
 		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="loggin">loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="nginx">nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="rsyslog">rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
@@ -333,7 +340,7 @@ consul.service.consul.	0	IN	A	192.168.31.17
 	</div>
 </div>
 <div class="widget-social widget">
-	<h4 class="widget-social__title widget__title">Social</h4>
+	<h4 class="widget-social__title widget__title">社交</h4>
 	<div class="widget-social__content widget__content">
 		<div class="widget-social__item widget__item">
 			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
@@ -358,7 +365,7 @@ consul.service.consul.	0	IN	A	192.168.31.17
 		
 		<div class="footer__copyright">
 			&copy; 2026 Aaron Wang的博客.
-			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
 		</div>
 	</div>
 </footer>

@@ -17,17 +17,20 @@
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
-}
-</script>
-
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -47,7 +50,7 @@ if (!doNotTrack) {
 		
 <nav class="menu">
 	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
-		<span class="menu__btn-title" tabindex="-1">Menu</span>
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
 	</button>
 	<ul class="menu__list">
 		<li class="menu__item">
@@ -72,13 +75,13 @@ if (!doNotTrack) {
 			<h1 class="post__title">etcd设置TLS证书</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-04T19:32:35&#43;08:00">January 04, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/etcd/" rel="category">etcd</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-04T19:32:35&#43;08:00">January 04, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/etcd/" rel="category">Etcd</a>
 	</span>
 </div></div>
 		</header>
 		
 <div class="post__toc toc">
-	<div class="toc__title">Page content</div>
+	<div class="toc__title">目录</div>
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
@@ -110,7 +113,7 @@ etcd启动之后会监听两个端口</p>
 <li>2380 端口  etcd作为一个分布式集群软件,2380端口监听集群内其它节点通信</li>
 </ul>
 <p>KV 基本操作</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># PUT操作: etcdctl put   key  value</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># PUT操作: etcdctl put   key  value</span>
 </span></span><span style="display:flex;"><span>etcdctl put  db_host 127.0.0.1<span style="color:#c30">```</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># GET操作: etcdctl get  key  </span>
@@ -130,8 +133,8 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 而etcd client端访问时etcd server，则是client端请求时携带证书，由etcd server校验client证书的合法性</p>
 <h3 id="证书生成">证书生成</h3>
 <p>话不多说，敲的命令比较多，我们直接用bash脚本来生成</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#099">#!/bin/bash -x
-</span></span></span><span style="display:flex;"><span><span style="color:#099"></span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#099">#!/bin/bash -x
+</span></span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># etcd集群由多个节点注册，这里假设3个节点，</span>
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">NAME1</span><span style="color:#555">=</span>etcd01
 </span></span><span style="display:flex;"><span><span style="color:#366">export</span> <span style="color:#033">ADDRESS1</span><span style="color:#555">=</span>192.168.31.17
@@ -190,116 +193,116 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 ├── peer.key
 └── pki.sh  #生成证书脚本
 </code></pre><h3 id="etcd启动证书">etcd启动证书</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>etcd01<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">data-dir</span>:<span style="color:#bbb"> </span>data/etcd/default.etcd<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">listen-peer-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2380<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">listen-client-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2379,https://127.0.0.1:2379<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-advertise-peer-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2380<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">advertise-client-url</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2379<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-cluster</span>:<span style="color:#bbb"> </span>etcd01=https://192.168.31.17:2380<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-cluster-token</span>:<span style="color:#bbb"> </span>etcd-cluster<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-cluster-state</span>:<span style="color:#bbb"> </span>new<span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic"># client节点通信 证书配置</span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">client-transport-security</span>:<span style="color:#bbb"> 
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span>etcd01<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">data-dir</span>:<span style="color:#bbb"> </span>data/etcd/default.etcd<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">listen-peer-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2380<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">listen-client-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2379,https://127.0.0.1:2379<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">initial-advertise-peer-urls</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2380<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">advertise-client-url</span>:<span style="color:#bbb"> </span>https://192.168.31.17:2379<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">initial-cluster</span>:<span style="color:#bbb"> </span>etcd01=https://192.168.31.17:2380<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">initial-cluster-token</span>:<span style="color:#bbb"> </span>etcd-cluster<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">initial-cluster-state</span>:<span style="color:#bbb"> </span>new<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># client节点通信 证书配置</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">client-transport-security</span>:<span style="color:#bbb"> 
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">cert-file</span>:<span style="color:#bbb">  </span>certs/client.crt<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">key-file</span>:<span style="color:#bbb">   </span>certs/client.key<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">client-cert-auth</span>:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">true</span><span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">trusted-ca-file</span>:<span style="color:#bbb"> </span>certs/ca.crt<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#09f;font-style:italic"># 集群peer节点间通信  证书配置</span><span style="color:#bbb">
-</span></span></span><span style="display:flex;"><span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">peer-transport-security</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 集群peer节点间通信  证书配置</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#309;font-weight:bold">peer-transport-security</span>:<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">cert-file</span>:<span style="color:#bbb"> </span>certs/peer.crt<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">key-file</span>:<span style="color:#bbb">  </span>certs/peer.key<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">client-cert-auth</span>:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span><span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">trusted-ca-file</span>:<span style="color:#bbb"> </span>certs/ca.crt<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#309;font-weight:bold">auto-tls</span>:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span><span style="color:#bbb">
 </span></span></span></code></pre></div><p>etcd指定配置文件 启动</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>etcd --config-file etc/etcd/etcd.yaml
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>etcd --config-file etc/etcd/etcd.yaml
 </span></span></code></pre></div><h3 id="etcdctl端访问etcd">etcdctl端访问etcd</h3>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>etcdctl <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span> --cacert<span style="color:#555">=</span>certs/ca.crt <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span> --cert<span style="color:#555">=</span>certs/client.crt <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span> --key<span style="color:#555">=</span>certs/client.key <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span> --endpoints<span style="color:#555">=</span>https://192.168.31.17:2379 <span style="color:#c30;font-weight:bold">\
-</span></span></span><span style="display:flex;"><span><span style="color:#c30;font-weight:bold"></span> put Name Jack
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>etcdctl <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span> --cacert<span style="color:#555">=</span>certs/ca.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span> --cert<span style="color:#555">=</span>certs/client.crt <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span> --key<span style="color:#555">=</span>certs/client.key <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span> --endpoints<span style="color:#555">=</span>https://192.168.31.17:2379 <span style="color:#c30;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span> put Name Jack
 </span></span></code></pre></div><h3 id="用go代码访问etcd">用Go代码访问etcd</h3>
 <p>go.mod 添加依赖</p>
 <pre tabindex="0"><code>  require go.etcd.io/etcd/client/v3 v3.5.0
 </code></pre><p>导入package</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">import</span> (
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;context&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;crypto/tls&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;crypto/x509&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;go.etcd.io/etcd/clientv3&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;io/ioutil&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;log&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;os&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;testing&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#c30">&#34;time&#34;</span>
-</span></span><span style="display:flex;"><span>)
-</span></span></code></pre></div><p>定义变量</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">const</span> (
-</span></span><span style="display:flex;"><span>	dialTimeout    = <span style="color:#f60">5</span> <span style="color:#555">*</span> time.Second
-</span></span><span style="display:flex;"><span>	requestTimeout = <span style="color:#f60">4</span> <span style="color:#555">*</span> time.Second
-</span></span><span style="display:flex;"><span>	endpoints      = []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;192.168.31.17:2379&#34;</span>}
-</span></span><span style="display:flex;"><span>)
-</span></span></code></pre></div><p>初始化client</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#069;font-weight:bold">var</span> homedir = os.<span style="color:#c0f">Getenv</span>(<span style="color:#c30">&#34;HOME&#34;</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> etcdCert = homedir <span style="color:#555">+</span> <span style="color:#c30">&#34;/certs/client.crt&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> etcdCertKey = homedir <span style="color:#555">+</span> <span style="color:#c30">&#34;/certs/client.key&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">var</span> etcdCa = homedir <span style="color:#555">+</span> <span style="color:#c30">&#34;/certs/ca.crt&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  <span style="color:#09f;font-style:italic">// 加载客户端证书
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>	cert, err <span style="color:#555">:=</span> tls.<span style="color:#c0f">LoadX509KeyPair</span>(etcdCert, etcdCertKey)
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span>
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#09f;font-style:italic">// 加载 CA 证书
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>	caData, err <span style="color:#555">:=</span> ioutil.<span style="color:#c0f">ReadFile</span>(etcdCa)
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">return</span>
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	pool <span style="color:#555">:=</span> x509.<span style="color:#c0f">NewCertPool</span>()
-</span></span><span style="display:flex;"><span>	pool.<span style="color:#c0f">AppendCertsFromPEM</span>(caData)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	_tlsConfig <span style="color:#555">:=</span> <span style="color:#555">&amp;</span>tls.Config{
-</span></span><span style="display:flex;"><span>		Certificates: []tls.Certificate{cert},
-</span></span><span style="display:flex;"><span>		RootCAs:      pool,
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	cfg <span style="color:#555">:=</span> clientv3.Config{
-</span></span><span style="display:flex;"><span>		Endpoints: endpoints,
-</span></span><span style="display:flex;"><span>		TLS:       _tlsConfig, <span style="color:#09f;font-style:italic">// Client.Config设置 TLS
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	cli, err <span style="color:#555">:=</span> clientv3.<span style="color:#c0f">New</span>(cfg)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#c0f">Fatal</span>(err)
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div><p>与etcd交互</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	key1, value1 <span style="color:#555">:=</span> <span style="color:#c30">&#34;testkey1&#34;</span>, <span style="color:#c30">&#34;testvalue&#34;</span>
-</span></span><span style="display:flex;"><span>	ctx, cancel <span style="color:#555">:=</span> context.<span style="color:#c0f">WithTimeout</span>(context.<span style="color:#c0f">Background</span>(), requestTimeout)
-</span></span><span style="display:flex;"><span>	_, err = cli.<span style="color:#c0f">Put</span>(ctx, key1, value1)
-</span></span><span style="display:flex;"><span>	<span style="color:#c0f">cancel</span>()
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Put failed. &#34;</span>, err)
-</span></span><span style="display:flex;"><span>	} <span style="color:#069;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Put {%s:%s} succeed\n&#34;</span>, key1, value1)
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	rsp, err <span style="color:#555">:=</span> cli.<span style="color:#c0f">Get</span>(context.<span style="color:#c0f">Background</span>(), key1)
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Get failed. &#34;</span>, err)
-</span></span><span style="display:flex;"><span>	} <span style="color:#069;font-weight:bold">else</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">for</span> i, kv <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> rsp.Kvs {
-</span></span><span style="display:flex;"><span>			log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Get index %d , key=%s, value= %s\n&#34;</span>, i, kv.Key, kv.Value)
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	}
-</span></span></code></pre></div><p>我们用go client与etcd交互代码也完成,完成代码可参考<a href="https://github.com/AarenWang/haifa-go/blob/master/etcd/client_test.go">client_test.go</a></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">import</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;context&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;crypto/tls&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;crypto/x509&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;go.etcd.io/etcd/clientv3&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;io/ioutil&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;log&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;os&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;testing&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c30">&#34;time&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>)<span style="color:#bbb">
+</span></span></span></code></pre></div><p>定义变量</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">const</span><span style="color:#bbb"> </span>(<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>dialTimeout<span style="color:#bbb">    </span>=<span style="color:#bbb"> </span><span style="color:#f60">5</span><span style="color:#bbb"> </span><span style="color:#555">*</span><span style="color:#bbb"> </span>time.Second<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>requestTimeout<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span><span style="color:#f60">4</span><span style="color:#bbb"> </span><span style="color:#555">*</span><span style="color:#bbb"> </span>time.Second<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>endpoints<span style="color:#bbb">      </span>=<span style="color:#bbb"> </span>[]<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;192.168.31.17:2379&#34;</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>)<span style="color:#bbb">
+</span></span></span></code></pre></div><p>初始化client</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">var</span><span style="color:#bbb"> </span>homedir<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>os.<span style="color:#c0f">Getenv</span>(<span style="color:#c30">&#34;HOME&#34;</span>)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">var</span><span style="color:#bbb"> </span>etcdCert<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>homedir<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;/certs/client.crt&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">var</span><span style="color:#bbb"> </span>etcdCertKey<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>homedir<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;/certs/client.key&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">var</span><span style="color:#bbb"> </span>etcdCa<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>homedir<span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;/certs/ca.crt&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// 加载客户端证书</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>cert,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>tls.<span style="color:#c0f">LoadX509KeyPair</span>(etcdCert,<span style="color:#bbb"> </span>etcdCertKey)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#09f;font-style:italic">// 加载 CA 证书</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>caData,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>ioutil.<span style="color:#c0f">ReadFile</span>(etcdCa)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>pool<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>x509.<span style="color:#c0f">NewCertPool</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>pool.<span style="color:#c0f">AppendCertsFromPEM</span>(caData)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>_tlsConfig<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span><span style="color:#555">&amp;</span>tls.Config{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Certificates:<span style="color:#bbb"> </span>[]tls.Certificate{cert},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>RootCAs:<span style="color:#bbb">      </span>pool,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>cfg<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>clientv3.Config{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Endpoints:<span style="color:#bbb"> </span>endpoints,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>TLS:<span style="color:#bbb">       </span>_tlsConfig,<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// Client.Config设置 TLS</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>cli,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>clientv3.<span style="color:#c0f">New</span>(cfg)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>log.<span style="color:#c0f">Fatal</span>(err)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>与etcd交互</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>key1,<span style="color:#bbb"> </span>value1<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;testkey1&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;testvalue&#34;</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>ctx,<span style="color:#bbb"> </span>cancel<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>context.<span style="color:#c0f">WithTimeout</span>(context.<span style="color:#c0f">Background</span>(),<span style="color:#bbb"> </span>requestTimeout)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>_,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>cli.<span style="color:#c0f">Put</span>(ctx,<span style="color:#bbb"> </span>key1,<span style="color:#bbb"> </span>value1)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c0f">cancel</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>log.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Put failed. &#34;</span>,<span style="color:#bbb"> </span>err)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">else</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Put {%s:%s} succeed\n&#34;</span>,<span style="color:#bbb"> </span>key1,<span style="color:#bbb"> </span>value1)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>rsp,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>cli.<span style="color:#c0f">Get</span>(context.<span style="color:#c0f">Background</span>(),<span style="color:#bbb"> </span>key1)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>log.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Get failed. &#34;</span>,<span style="color:#bbb"> </span>err)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">else</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span><span style="color:#069;font-weight:bold">for</span><span style="color:#bbb"> </span>i,<span style="color:#bbb"> </span>kv<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">range</span><span style="color:#bbb"> </span>rsp.Kvs<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">			</span>log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Get index %d , key=%s, value= %s\n&#34;</span>,<span style="color:#bbb"> </span>i,<span style="color:#bbb"> </span>kv.Key,<span style="color:#bbb"> </span>kv.Value)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>我们用go client与etcd交互代码也完成,完成代码可参考<a href="https://github.com/AarenWang/haifa-go/blob/master/etcd/client_test.go">client_test.go</a></p>
 
 		</div>
 		<footer class="post__footer">
@@ -334,10 +337,14 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 
 
 
+	
+
+
+
 			</div>
 			<aside class="sidebar">
 <div class="widget-recent widget">
-	<h4 class="widget__title">Recent Posts</h4>
+	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
@@ -354,15 +361,15 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 	</div>
 </div>
 <div class="widget-categories widget">
-	<h4 class="widget__title">Categories</h4>
+	<h4 class="widget__title">分类</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/agent/">Agent</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/go/">go</a></li>
+				<a class="widget__link" href="/categories/go/">Go</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
 			<li class="widget__item">
@@ -375,20 +382,20 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 	</div>
 </div>
 <div class="widget-taglist widget">
-	<h4 class="widget__title">Tags</h4>
+	<h4 class="widget__title">标签</h4>
 	<div class="widget__content">
 		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="loggin">loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="nginx">nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="rsyslog">rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
@@ -397,7 +404,7 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 	</div>
 </div>
 <div class="widget-social widget">
-	<h4 class="widget-social__title widget__title">Social</h4>
+	<h4 class="widget-social__title widget__title">社交</h4>
 	<div class="widget-social__content widget__content">
 		<div class="widget-social__item widget__item">
 			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
@@ -422,7 +429,7 @@ etcd的client证书和我们浏览网站时https证书有一点不一样，浏�
 		
 		<div class="footer__copyright">
 			&copy; 2026 Aaron Wang的博客.
-			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
 		</div>
 	</div>
 </footer>

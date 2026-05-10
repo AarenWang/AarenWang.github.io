@@ -17,17 +17,20 @@
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
-}
-</script>
-
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -47,7 +50,7 @@ if (!doNotTrack) {
 		
 <nav class="menu">
 	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
-		<span class="menu__btn-title" tabindex="-1">Menu</span>
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
 	</button>
 	<ul class="menu__list">
 		<li class="menu__item">
@@ -78,7 +81,7 @@ if (!doNotTrack) {
 		</header>
 		
 <div class="post__toc toc">
-	<div class="toc__title">Page content</div>
+	<div class="toc__title">目录</div>
 	<div class="toc__menu">
 		<nav id="TableOfContents">
   <ul>
@@ -134,7 +137,7 @@ if (!doNotTrack) {
   }
 }
 </code></pre><p>Dashboard应用注册配置 dashboard.hcl</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">service {</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">service {</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#309">name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;dashboard&#34;
 </span></span></span><span style="display:flex;"><span><span style="color:#c30">  id = &#34;dashboard-1&#34;
 </span></span></span><span style="display:flex;"><span><span style="color:#c30">  port = 9002</span>
@@ -161,7 +164,7 @@ if (!doNotTrack) {
 </span></span></span><span style="display:flex;"><span><span style="color:#c30">  }</span>
 </span></span><span style="display:flex;"><span><span style="color:#309">}</span>
 </span></span></code></pre></div><p>根据服务定义文件，将服务注册到consul</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>consul services register counting.hcl
 </span></span><span style="display:flex;"><span>consul services register dashboard.hcl
 </span></span></code></pre></div><p>校验已注册的服务<code>consul catalog services </code></p>
@@ -172,7 +175,7 @@ dashboard
 dashboard-sidecar-proxy
 </code></pre><p>可以看到额外注册了 <strong>-sidecar-proxy</strong> 结尾的sidecar代理服务</p>
 <p>通过consul的<strong>intention</strong> 配置，设置服务访问权限,counting服务允许来自dashboard服务访问 intention-allow-config.hcl</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">Kind</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;service-intentions&#34;</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#309">Kind</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;service-intentions&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#309">Name</span> <span style="color:#555">=</span> <span style="color:#c30">&#34;counting&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#309">Sources</span> <span style="color:#555">=</span> <span style="color:#c30">[
 </span></span></span><span style="display:flex;"><span><span style="color:#c30">  {
@@ -181,9 +184,9 @@ dashboard-sidecar-proxy
 </span></span></span><span style="display:flex;"><span><span style="color:#c30">  }</span>
 </span></span><span style="display:flex;"><span><span style="color:#309">]</span>
 </span></span></code></pre></div><p>更新服务访问规则</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul config write intention-allow-config.hcl
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul config write intention-allow-config.hcl
 </span></span></code></pre></div><p>启动<strong>dashboard-service</strong> 和<strong>counting-service</strong> (demo-consul-101从开头准备的github仓库拉取)</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 将**PORT**和**COUNTING_SERVICE_URL**作为环境变量传递给dashboard-service</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 将**PORT**和**COUNTING_SERVICE_URL**作为环境变量传递给dashboard-service</span>
 </span></span><span style="display:flex;"><span><span style="color:#366">cd</span> demo-consul-101/dashboard-service
 </span></span><span style="display:flex;"><span><span style="color:#033">PORT</span><span style="color:#555">=</span><span style="color:#f60">9002</span> <span style="color:#033">COUNTING_SERVICE_URL</span><span style="color:#555">=</span><span style="color:#c30">&#34;http://127.0.0.1:5000&#34;</span>  go run ./main.go &amp;
 </span></span><span style="display:flex;"><span>
@@ -191,7 +194,7 @@ dashboard-sidecar-proxy
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 将**PORT** 作为环境变量传递给counting-service</span>
 </span></span><span style="display:flex;"><span><span style="color:#033">PORT</span><span style="color:#555">=</span><span style="color:#f60">9003</span>  go run ./main.go 
 </span></span></code></pre></div><p>启动envoy代理转发</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"># 启动窗口1</span>
 </span></span><span style="display:flex;"><span>consul connect envoy -sidecar-for counting-1 -admin-bind localhost:19001 
 </span></span><span style="display:flex;"><span>
@@ -237,10 +240,14 @@ dashboard-sidecar-proxy
 
 
 
+	
+
+
+
 			</div>
 			<aside class="sidebar">
 <div class="widget-recent widget">
-	<h4 class="widget__title">Recent Posts</h4>
+	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
@@ -257,15 +264,15 @@ dashboard-sidecar-proxy
 	</div>
 </div>
 <div class="widget-categories widget">
-	<h4 class="widget__title">Categories</h4>
+	<h4 class="widget__title">分类</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/agent/">Agent</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/go/">go</a></li>
+				<a class="widget__link" href="/categories/go/">Go</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
 			<li class="widget__item">
@@ -278,20 +285,20 @@ dashboard-sidecar-proxy
 	</div>
 </div>
 <div class="widget-taglist widget">
-	<h4 class="widget__title">Tags</h4>
+	<h4 class="widget__title">标签</h4>
 	<div class="widget__content">
 		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="loggin">loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="nginx">nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="rsyslog">rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
@@ -300,7 +307,7 @@ dashboard-sidecar-proxy
 	</div>
 </div>
 <div class="widget-social widget">
-	<h4 class="widget-social__title widget__title">Social</h4>
+	<h4 class="widget-social__title widget__title">社交</h4>
 	<div class="widget-social__content widget__content">
 		<div class="widget-social__item widget__item">
 			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
@@ -325,7 +332,7 @@ dashboard-sidecar-proxy
 		
 		<div class="footer__copyright">
 			&copy; 2026 Aaron Wang的博客.
-			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
 		</div>
 	</div>
 </footer>

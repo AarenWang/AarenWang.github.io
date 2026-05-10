@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>go on Aaron Wang的博客</title>
-    <link>http://example.org/categories/go/</link>
-    <description>Recent content in go on Aaron Wang的博客</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <title>Go on Aaron Wang的博客</title>
+    <link>https://aarenwang.github.io/categories/go/</link>
+    <description>Recent content in Go on Aaron Wang的博客</description>
+    <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 30 Jan 2023 20:16:55 +0800</lastBuildDate><atom:link href="http://example.org/categories/go/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 30 Jan 2023 20:16:55 +0800</lastBuildDate>
+    <atom:link href="https://aarenwang.github.io/categories/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go语言高性能日志库-zap介绍</title>
-      <link>http://example.org/posts/go-log-zap/</link>
+      <link>https://aarenwang.github.io/posts/go-log-zap/</link>
       <pubDate>Mon, 30 Jan 2023 20:16:55 +0800</pubDate>
-      
-      <guid>http://example.org/posts/go-log-zap/</guid>
+      <guid>https://aarenwang.github.io/posts/go-log-zap/</guid>
       <description>zap库uber出品，go语言里性能最好的日志库介绍和使用</description>
     </item>
-    
   </channel>
 </rss>

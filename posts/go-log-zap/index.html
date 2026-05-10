@@ -17,17 +17,20 @@
 
 	<link rel="shortcut icon" href="/favicon.ico">
 		
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-90PNLQGFCE', { 'anonymize_ip': false });
-}
-</script>
-
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
 </head>
 <body class="body">
 	<div class="container container--outer">
@@ -47,7 +50,7 @@ if (!doNotTrack) {
 		
 <nav class="menu">
 	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
-		<span class="menu__btn-title" tabindex="-1">Menu</span>
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
 	</button>
 	<ul class="menu__list">
 		<li class="menu__item">
@@ -72,7 +75,7 @@ if (!doNotTrack) {
 			<h1 class="post__title">Go语言高性能日志库-zap介绍</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-30T20:16:55&#43;08:00">January 30, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/go/" rel="category">go</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-30T20:16:55&#43;08:00">January 30, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/go/" rel="category">Go</a>
 	</span>
 </div></div>
 		</header>
@@ -101,50 +104,50 @@ log包无法作为生产环境日志输出来使用。对于一个需要长期�
 </code></pre><p>二 使用logger打印日志
 zap提供原生的Logger和快捷使用SugaredLogger,原生Logger性能更好，但是使用体验上SugaredLogger更方面，除非是一些性能非常关键的场景，不然官方建议大部分情况使用SugaredLogger
 大部分场景 我们都应该使用SugaredLogger</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger, _ <span style="color:#555">:=</span> zap.<span style="color:#c0f">NewProduction</span>()
-</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span> logger.<span style="color:#c0f">Sync</span>() <span style="color:#09f;font-style:italic">// flushes buffer, if any
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>sugar <span style="color:#555">:=</span> logger.<span style="color:#c0f">Sugar</span>()
-</span></span><span style="display:flex;"><span>sugar.<span style="color:#c0f">Infow</span>(<span style="color:#c30">&#34;failed to fetch URL&#34;</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#09f;font-style:italic">// Structured context as loosely typed key-value pairs.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  <span style="color:#c30">&#34;url&#34;</span>, url,
-</span></span><span style="display:flex;"><span>  <span style="color:#c30">&#34;attempt&#34;</span>, <span style="color:#f60">3</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#c30">&#34;backoff&#34;</span>, time.Second,
-</span></span><span style="display:flex;"><span>)
-</span></span><span style="display:flex;"><span>sugar.<span style="color:#c0f">Infof</span>(<span style="color:#c30">&#34;Failed to fetch URL: %s&#34;</span>, url)
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (s <span style="color:#555">*</span>SugaredLogger) <span style="color:#c0f">Infow</span>(msg <span style="color:#078;font-weight:bold">string</span>, keysAndValues <span style="color:#555">...</span><span style="color:#069;font-weight:bold">interface</span>{})
-</span></span></code></pre></div><p>Infow等以w结尾的打印日志函数，打印日志msg和，后续可选的键值对 以json字符串打印到日志里</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> (s <span style="color:#555">*</span>SugaredLogger) <span style="color:#c0f">Infof</span>(template <span style="color:#078;font-weight:bold">string</span>, args <span style="color:#555">...</span><span style="color:#069;font-weight:bold">interface</span>{}) 
-</span></span></code></pre></div><p>以Infof等以f结尾打印日志函数，类似printf格式化参数打印日志</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger,<span style="color:#bbb"> </span>_<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zap.<span style="color:#c0f">NewProduction</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sync</span>()<span style="color:#bbb"> </span><span style="color:#09f;font-style:italic">// flushes buffer, if any</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>sugar<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sugar</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>sugar.<span style="color:#c0f">Infow</span>(<span style="color:#c30">&#34;failed to fetch URL&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// Structured context as loosely typed key-value pairs.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#c30">&#34;url&#34;</span>,<span style="color:#bbb"> </span>url,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#c30">&#34;attempt&#34;</span>,<span style="color:#bbb"> </span><span style="color:#f60">3</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#c30">&#34;backoff&#34;</span>,<span style="color:#bbb"> </span>time.Second,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>sugar.<span style="color:#c0f">Infof</span>(<span style="color:#c30">&#34;Failed to fetch URL: %s&#34;</span>,<span style="color:#bbb"> </span>url)<span style="color:#bbb">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span>(s<span style="color:#bbb"> </span><span style="color:#555">*</span>SugaredLogger)<span style="color:#bbb"> </span><span style="color:#c0f">Infow</span>(msg<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">string</span>,<span style="color:#bbb"> </span>keysAndValues<span style="color:#bbb"> </span><span style="color:#555">...</span><span style="color:#069;font-weight:bold">interface</span>{})<span style="color:#bbb">
+</span></span></span></code></pre></div><p>Infow等以w结尾的打印日志函数，打印日志msg和，后续可选的键值对 以json字符串打印到日志里</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span>(s<span style="color:#bbb"> </span><span style="color:#555">*</span>SugaredLogger)<span style="color:#bbb"> </span><span style="color:#c0f">Infof</span>(template<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">string</span>,<span style="color:#bbb"> </span>args<span style="color:#bbb"> </span><span style="color:#555">...</span><span style="color:#069;font-weight:bold">interface</span>{})<span style="color:#bbb"> 
+</span></span></span></code></pre></div><p>以Infof等以f结尾打印日志函数，类似printf格式化参数打印日志</p>
 <p>三 原生Logger和SugardLogger
 一些非常注重性能的场景 使用原生Logger，它比SugaredLogger更快，更少的内存对象分配，但是使用时必须限定日志记录键值对value类型，比如String,Int等各种类型，支持的类型定义在<a href="https://github.com/uber-go/zap/blob/master/field.go">zap/field.go</a>里,下面是使用例子</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger, _ <span style="color:#555">:=</span> zap.<span style="color:#c0f">NewProduction</span>()
-</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span> logger.<span style="color:#c0f">Sync</span>()
-</span></span><span style="display:flex;"><span>logger.<span style="color:#c0f">Info</span>(<span style="color:#c30">&#34;failed to fetch URL&#34;</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#09f;font-style:italic">// Structured context as strongly typed Field values.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  zap.<span style="color:#c0f">String</span>(<span style="color:#c30">&#34;url&#34;</span>, url),
-</span></span><span style="display:flex;"><span>  zap.<span style="color:#c0f">Int</span>(<span style="color:#c30">&#34;attempt&#34;</span>, <span style="color:#f60">3</span>),
-</span></span><span style="display:flex;"><span>  zap.<span style="color:#c0f">Duration</span>(<span style="color:#c30">&#34;backoff&#34;</span>, time.Second),
-</span></span><span style="display:flex;"><span>)
-</span></span></code></pre></div><p>四  日志Logger Buffered缓冲
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger,<span style="color:#bbb"> </span>_<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zap.<span style="color:#c0f">NewProduction</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sync</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>logger.<span style="color:#c0f">Info</span>(<span style="color:#c30">&#34;failed to fetch URL&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// Structured context as strongly typed Field values.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>zap.<span style="color:#c0f">String</span>(<span style="color:#c30">&#34;url&#34;</span>,<span style="color:#bbb"> </span>url),<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>zap.<span style="color:#c0f">Int</span>(<span style="color:#c30">&#34;attempt&#34;</span>,<span style="color:#bbb"> </span><span style="color:#f60">3</span>),<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>zap.<span style="color:#c0f">Duration</span>(<span style="color:#c30">&#34;backoff&#34;</span>,<span style="color:#bbb"> </span>time.Second),<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>)<span style="color:#bbb">
+</span></span></span></code></pre></div><p>四  日志Logger Buffered缓冲
 zap默认记录日志不使用缓冲区，zap也提供底层API，设置启用缓冲区，启用应用退出前记得调用Sync()方法</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span> logger.<span style="color:#c0f">Sync</span>()
-</span></span></code></pre></div><p>五 SugardLogger和Logger可以根据自己的场景相互转换</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger <span style="color:#555">:=</span> zap.<span style="color:#c0f">NewExample</span>()
-</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span> logger.<span style="color:#c0f">Sync</span>()
-</span></span><span style="display:flex;"><span>sugar <span style="color:#555">:=</span> logger.<span style="color:#c0f">Sugar</span>()
-</span></span><span style="display:flex;"><span>plain <span style="color:#555">:=</span> sugar.<span style="color:#c0f">Desugar</span>()
-</span></span></code></pre></div><p>六 zap日志使用配置
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sync</span>()<span style="color:#bbb">
+</span></span></span></code></pre></div><p>五 SugardLogger和Logger可以根据自己的场景相互转换</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zap.<span style="color:#c0f">NewExample</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">defer</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sync</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>sugar<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sugar</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>plain<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>sugar.<span style="color:#c0f">Desugar</span>()<span style="color:#bbb">
+</span></span></span></code></pre></div><p>六 zap日志使用配置
 zap提供一个开箱即用的生产环境配置和开发环境配置</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger, err <span style="color:#555">:=</span> zap.<span style="color:#c0f">NewProduction</span>()  <span style="color:#09f;font-style:italic">//生产环境配置
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// logger, err := zap.NewDevelopmentConfig()  开发配置
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// logger, err := zap.NewExample()  
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
-</span></span><span style="display:flex;"><span>		log.<span style="color:#c0f">Fatalf</span>(<span style="color:#c30">&#34;can&#39;t initialize zap logger: %v&#34;</span>, err)
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">defer</span> logger.<span style="color:#c0f">Sync</span>()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	logger.<span style="color:#c0f">Info</span>(<span style="color:#c30">&#34;This is a production config log example&#34;</span>, zap.<span style="color:#c0f">String</span>(<span style="color:#c30">&#34;username&#34;</span>, <span style="color:#c30">&#34;JackMa&#34;</span>))
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>// Production
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>logger,<span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zap.<span style="color:#c0f">NewProduction</span>()<span style="color:#bbb">  </span><span style="color:#099">//生产环境配置</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// logger, err := zap.NewDevelopmentConfig()  开发配置</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// logger, err := zap.NewExample()  </span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>err<span style="color:#bbb"> </span><span style="color:#555">!=</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">nil</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>log.<span style="color:#c0f">Fatalf</span>(<span style="color:#c30">&#34;can&#39;t initialize zap logger: %v&#34;</span>,<span style="color:#bbb"> </span>err)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">defer</span><span style="color:#bbb"> </span>logger.<span style="color:#c0f">Sync</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>logger.<span style="color:#c0f">Info</span>(<span style="color:#c30">&#34;This is a production config log example&#34;</span>,<span style="color:#bbb"> </span>zap.<span style="color:#c0f">String</span>(<span style="color:#c30">&#34;username&#34;</span>,<span style="color:#bbb"> </span><span style="color:#c30">&#34;JackMa&#34;</span>))<span style="color:#bbb">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>// Production
 </span></span><span style="display:flex;"><span>	// {&#34;level&#34;:&#34;info&#34;,&#34;ts&#34;:1674984972.10138,&#34;caller&#34;:&#34;zaplog/zap_test.go:36&#34;,&#34;msg&#34;:&#34;This is a production config log example&#34;,&#34;username&#34;:&#34;JackMa&#34;}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	// Development
@@ -156,96 +159,96 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 </ul>
 <p>七  zap配置详解
 上面展示了zap自带的Production和Development开箱即用配置，直接上代码加注释</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 调用NewProductionConfig()生成详细配置
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewProduction</span>(options <span style="color:#555">...</span>Option) (<span style="color:#555">*</span>Logger, <span style="color:#078;font-weight:bold">error</span>) {
-</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> <span style="color:#c0f">NewProductionConfig</span>().<span style="color:#c0f">Build</span>(options<span style="color:#555">...</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewProductionConfig</span>() Config {
-</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> Config{
-</span></span><span style="display:flex;"><span>   	Level:       <span style="color:#c0f">NewAtomicLevelAt</span>(InfoLevel),<span style="color:#09f;font-style:italic">//打印Info级别以上日志
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	Development: <span style="color:#069;font-weight:bold">false</span>,  
-</span></span><span style="display:flex;"><span>   	Sampling: <span style="color:#555">&amp;</span>SamplingConfig{  <span style="color:#09f;font-style:italic">//百分之百采样
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   		Initial:    <span style="color:#f60">100</span>,
-</span></span><span style="display:flex;"><span>   		Thereafter: <span style="color:#f60">100</span>,
-</span></span><span style="display:flex;"><span>   	},
-</span></span><span style="display:flex;"><span>   	Encoding:         <span style="color:#c30">&#34;json&#34;</span>, <span style="color:#09f;font-style:italic">//日志条目以json格式输出
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	EncoderConfig:    <span style="color:#c0f">NewProductionEncoderConfig</span>(),<span style="color:#09f;font-style:italic">//配置输出字段
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	OutputPaths:      []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},
-</span></span><span style="display:flex;"><span>   	ErrorOutputPaths: []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},
-</span></span><span style="display:flex;"><span>   }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//我们也看下DevelopmentConfig
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewDevelopmentConfig</span>() Config {
-</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> Config{
-</span></span><span style="display:flex;"><span>   	Level:            <span style="color:#c0f">NewAtomicLevelAt</span>(DebugLevel),<span style="color:#09f;font-style:italic">//打印Debug级别以上日志
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	Development:      <span style="color:#069;font-weight:bold">true</span>,
-</span></span><span style="display:flex;"><span>   	Encoding:         <span style="color:#c30">&#34;console&#34;</span>, <span style="color:#09f;font-style:italic">//日志条目以扁片的文本行格式输出
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	EncoderConfig:    <span style="color:#c0f">NewDevelopmentEncoderConfig</span>(), <span style="color:#09f;font-style:italic">//配置输出字段
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   	OutputPaths:      []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},
-</span></span><span style="display:flex;"><span>   	ErrorOutputPaths: []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},
-</span></span><span style="display:flex;"><span>   }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic">//再看看NewExample
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewExample</span>(options <span style="color:#555">...</span>Option) <span style="color:#555">*</span>Logger {
-</span></span><span style="display:flex;"><span>   encoderCfg <span style="color:#555">:=</span> zapcore.EncoderConfig{
-</span></span><span style="display:flex;"><span>   	MessageKey:     <span style="color:#c30">&#34;msg&#34;</span>,
-</span></span><span style="display:flex;"><span>   	LevelKey:       <span style="color:#c30">&#34;level&#34;</span>,
-</span></span><span style="display:flex;"><span>   	NameKey:        <span style="color:#c30">&#34;logger&#34;</span>,
-</span></span><span style="display:flex;"><span>   	EncodeLevel:    zapcore.LowercaseLevelEncoder,
-</span></span><span style="display:flex;"><span>   	EncodeTime:     zapcore.ISO8601TimeEncoder,
-</span></span><span style="display:flex;"><span>   	EncodeDuration: zapcore.StringDurationEncoder,
-</span></span><span style="display:flex;"><span>   }
-</span></span><span style="display:flex;"><span>   core <span style="color:#555">:=</span> zapcore.<span style="color:#c0f">NewCore</span>(zapcore.<span style="color:#c0f">NewJSONEncoder</span>(encoderCfg), os.Stdout, DebugLevel)
-</span></span><span style="display:flex;"><span>   <span style="color:#069;font-weight:bold">return</span> <span style="color:#c0f">New</span>(core).<span style="color:#c0f">WithOptions</span>(options<span style="color:#555">...</span>)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Config结构体</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span> Config <span style="color:#069;font-weight:bold">struct</span> {
-</span></span><span style="display:flex;"><span>  Level AtomicLevel   <span style="color:#09f;font-style:italic">//日志级别
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  Development <span style="color:#078;font-weight:bold">bool</span>    <span style="color:#09f;font-style:italic">//是否开发模式
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  DisableCaller <span style="color:#078;font-weight:bold">bool</span>  <span style="color:#09f;font-style:italic">//是否不记录调用者
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  DisableStacktrace <span style="color:#078;font-weight:bold">bool</span>  <span style="color:#09f;font-style:italic">// completely disables automatic stacktrace capturing     
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  Sampling <span style="color:#555">*</span>SamplingConfig  <span style="color:#09f;font-style:italic">//采样配置，日志可以按比例丢弃
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  Encoding <span style="color:#078;font-weight:bold">string</span>   <span style="color:#09f;font-style:italic">//打印日志的格式，我们上面输出的日志是json格式，也可以传统Java日志库打印的扁平文本格式
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  EncoderConfig zapcore.EncoderConfig <span style="color:#09f;font-style:italic">//配置输出JSON格式日志 字段名称 
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  OutputPaths []<span style="color:#078;font-weight:bold">string</span>   <span style="color:#09f;font-style:italic">//输出日志文件路径
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  ErrorOutputPaths []<span style="color:#078;font-weight:bold">string</span>  <span style="color:#09f;font-style:italic">//zap内部的错误输出路径，默认是标准输出sysout
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>  InitialFields <span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">string</span>]<span style="color:#069;font-weight:bold">interface</span>{}  <span style="color:#09f;font-style:italic">//root logger字段
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>}
-</span></span></code></pre></div><p>再看看EncoderConfig结构体,大部分字段根据名字能猜到用途，我就不加详细注释了</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span> EncoderConfig <span style="color:#069;font-weight:bold">struct</span> {
-</span></span><span style="display:flex;"><span>   <span style="color:#09f;font-style:italic">// Set the keys used for each log entry. If any key is empty, that portion
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// of the entry is omitted.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   MessageKey     <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;messageKey&#34; yaml:&#34;messageKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   LevelKey       <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;levelKey&#34; yaml:&#34;levelKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   TimeKey        <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;timeKey&#34; yaml:&#34;timeKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   NameKey        <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;nameKey&#34; yaml:&#34;nameKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   CallerKey      <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;callerKey&#34; yaml:&#34;callerKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   FunctionKey    <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;functionKey&#34; yaml:&#34;functionKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   StacktraceKey  <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;stacktraceKey&#34; yaml:&#34;stacktraceKey&#34;`</span>
-</span></span><span style="display:flex;"><span>   SkipLineEnding <span style="color:#078;font-weight:bold">bool</span>   <span style="color:#c30">`json:&#34;skipLineEnding&#34; yaml:&#34;skipLineEnding&#34;`</span>
-</span></span><span style="display:flex;"><span>   LineEnding     <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;lineEnding&#34; yaml:&#34;lineEnding&#34;`</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#09f;font-style:italic">// Configure the primitive representations of common complex types. For
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// example, some users may want all time.Times serialized as floating-point
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// seconds since epoch, while others may prefer ISO8601 strings.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   EncodeLevel    LevelEncoder    <span style="color:#c30">`json:&#34;levelEncoder&#34; yaml:&#34;levelEncoder&#34;`</span>
-</span></span><span style="display:flex;"><span>   EncodeTime     TimeEncoder     <span style="color:#c30">`json:&#34;timeEncoder&#34; yaml:&#34;timeEncoder&#34;`</span>
-</span></span><span style="display:flex;"><span>   EncodeDuration DurationEncoder <span style="color:#c30">`json:&#34;durationEncoder&#34; yaml:&#34;durationEncoder&#34;`</span>
-</span></span><span style="display:flex;"><span>   EncodeCaller   CallerEncoder   <span style="color:#c30">`json:&#34;callerEncoder&#34; yaml:&#34;callerEncoder&#34;`</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#09f;font-style:italic">// Unlike the other primitive type encoders, EncodeName is optional. The
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// zero value falls back to FullNameEncoder.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   EncodeName NameEncoder <span style="color:#c30">`json:&#34;nameEncoder&#34; yaml:&#34;nameEncoder&#34;`</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#09f;font-style:italic">// Configure the encoder for interface{} type objects.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// If not provided, objects are encoded using json.Encoder
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   NewReflectedEncoder <span style="color:#069;font-weight:bold">func</span>(io.Writer) ReflectedEncoder <span style="color:#c30">`json:&#34;-&#34; yaml:&#34;-&#34;`</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#09f;font-style:italic">// Configures the field separator used by the console encoder. Defaults
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// to tab.
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>   ConsoleSeparator <span style="color:#078;font-weight:bold">string</span> <span style="color:#c30">`json:&#34;consoleSeparator&#34; yaml:&#34;consoleSeparator&#34;`</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>八  zap日志的核心配置
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 调用NewProductionConfig()生成详细配置</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">NewProduction</span>(options<span style="color:#bbb"> </span><span style="color:#555">...</span>Option)<span style="color:#bbb"> </span>(<span style="color:#555">*</span>Logger,<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">error</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#c0f">NewProductionConfig</span>().<span style="color:#c0f">Build</span>(options<span style="color:#555">...</span>)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">NewProductionConfig</span>()<span style="color:#bbb"> </span>Config<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>Config{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Level:<span style="color:#bbb">       </span><span style="color:#c0f">NewAtomicLevelAt</span>(InfoLevel),<span style="color:#099">//打印Info级别以上日志</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Development:<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">  
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Sampling:<span style="color:#bbb"> </span><span style="color:#555">&amp;</span>SamplingConfig{<span style="color:#bbb">  </span><span style="color:#099">//百分之百采样</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   		</span>Initial:<span style="color:#bbb">    </span><span style="color:#f60">100</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   		</span>Thereafter:<span style="color:#bbb"> </span><span style="color:#f60">100</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Encoding:<span style="color:#bbb">         </span><span style="color:#c30">&#34;json&#34;</span>,<span style="color:#bbb"> </span><span style="color:#099">//日志条目以json格式输出</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>EncoderConfig:<span style="color:#bbb">    </span><span style="color:#c0f">NewProductionEncoderConfig</span>(),<span style="color:#099">//配置输出字段</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>OutputPaths:<span style="color:#bbb">      </span>[]<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>ErrorOutputPaths:<span style="color:#bbb"> </span>[]<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#099">//我们也看下DevelopmentConfig</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">NewDevelopmentConfig</span>()<span style="color:#bbb"> </span>Config<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>Config{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Level:<span style="color:#bbb">            </span><span style="color:#c0f">NewAtomicLevelAt</span>(DebugLevel),<span style="color:#099">//打印Debug级别以上日志</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Development:<span style="color:#bbb">      </span><span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>Encoding:<span style="color:#bbb">         </span><span style="color:#c30">&#34;console&#34;</span>,<span style="color:#bbb"> </span><span style="color:#099">//日志条目以扁片的文本行格式输出</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>EncoderConfig:<span style="color:#bbb">    </span><span style="color:#c0f">NewDevelopmentEncoderConfig</span>(),<span style="color:#bbb"> </span><span style="color:#099">//配置输出字段</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>OutputPaths:<span style="color:#bbb">      </span>[]<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>ErrorOutputPaths:<span style="color:#bbb"> </span>[]<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;stderr&#34;</span>},<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#099">//再看看NewExample</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">NewExample</span>(options<span style="color:#bbb"> </span><span style="color:#555">...</span>Option)<span style="color:#bbb"> </span><span style="color:#555">*</span>Logger<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>encoderCfg<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zapcore.EncoderConfig{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>MessageKey:<span style="color:#bbb">     </span><span style="color:#c30">&#34;msg&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>LevelKey:<span style="color:#bbb">       </span><span style="color:#c30">&#34;level&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>NameKey:<span style="color:#bbb">        </span><span style="color:#c30">&#34;logger&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>EncodeLevel:<span style="color:#bbb">    </span>zapcore.LowercaseLevelEncoder,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>EncodeTime:<span style="color:#bbb">     </span>zapcore.ISO8601TimeEncoder,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   	</span>EncodeDuration:<span style="color:#bbb"> </span>zapcore.StringDurationEncoder,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>core<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zapcore.<span style="color:#c0f">NewCore</span>(zapcore.<span style="color:#c0f">NewJSONEncoder</span>(encoderCfg),<span style="color:#bbb"> </span>os.Stdout,<span style="color:#bbb"> </span>DebugLevel)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span><span style="color:#c0f">New</span>(core).<span style="color:#c0f">WithOptions</span>(options<span style="color:#555">...</span>)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>Config结构体</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span><span style="color:#bbb"> </span>Config<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Level<span style="color:#bbb"> </span>AtomicLevel<span style="color:#bbb">   </span><span style="color:#099">//日志级别</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Development<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">bool</span><span style="color:#bbb">    </span><span style="color:#099">//是否开发模式</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>DisableCaller<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">bool</span><span style="color:#bbb">  </span><span style="color:#099">//是否不记录调用者</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>DisableStacktrace<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">bool</span><span style="color:#bbb">  </span><span style="color:#09f;font-style:italic">// completely disables automatic stacktrace capturing     </span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Sampling<span style="color:#bbb"> </span><span style="color:#555">*</span>SamplingConfig<span style="color:#bbb">  </span><span style="color:#099">//采样配置，日志可以按比例丢弃</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>Encoding<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb">   </span><span style="color:#099">//打印日志的格式，我们上面输出的日志是json格式，也可以传统Java日志库打印的扁平文本格式</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>EncoderConfig<span style="color:#bbb"> </span>zapcore.EncoderConfig<span style="color:#bbb"> </span><span style="color:#099">//配置输出JSON格式日志 字段名称 </span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>OutputPaths<span style="color:#bbb"> </span>[]<span style="color:#078;font-weight:bold">string</span><span style="color:#bbb">   </span><span style="color:#099">//输出日志文件路径</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>ErrorOutputPaths<span style="color:#bbb"> </span>[]<span style="color:#078;font-weight:bold">string</span><span style="color:#bbb">  </span><span style="color:#099">//zap内部的错误输出路径，默认是标准输出sysout</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">  </span>InitialFields<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">string</span>]<span style="color:#069;font-weight:bold">interface</span>{}<span style="color:#bbb">  </span><span style="color:#099">//root logger字段</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>再看看EncoderConfig结构体,大部分字段根据名字能猜到用途，我就不加详细注释了</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span><span style="color:#bbb"> </span>EncoderConfig<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">struct</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// Set the keys used for each log entry. If any key is empty, that portion</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// of the entry is omitted.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>MessageKey<span style="color:#bbb">     </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;messageKey&#34; yaml:&#34;messageKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>LevelKey<span style="color:#bbb">       </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;levelKey&#34; yaml:&#34;levelKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>TimeKey<span style="color:#bbb">        </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;timeKey&#34; yaml:&#34;timeKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>NameKey<span style="color:#bbb">        </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;nameKey&#34; yaml:&#34;nameKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>CallerKey<span style="color:#bbb">      </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;callerKey&#34; yaml:&#34;callerKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>FunctionKey<span style="color:#bbb">    </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;functionKey&#34; yaml:&#34;functionKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>StacktraceKey<span style="color:#bbb">  </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;stacktraceKey&#34; yaml:&#34;stacktraceKey&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>SkipLineEnding<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">bool</span><span style="color:#bbb">   </span><span style="color:#c30">`json:&#34;skipLineEnding&#34; yaml:&#34;skipLineEnding&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>LineEnding<span style="color:#bbb">     </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;lineEnding&#34; yaml:&#34;lineEnding&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// Configure the primitive representations of common complex types. For</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// example, some users may want all time.Times serialized as floating-point</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// seconds since epoch, while others may prefer ISO8601 strings.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>EncodeLevel<span style="color:#bbb">    </span>LevelEncoder<span style="color:#bbb">    </span><span style="color:#c30">`json:&#34;levelEncoder&#34; yaml:&#34;levelEncoder&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>EncodeTime<span style="color:#bbb">     </span>TimeEncoder<span style="color:#bbb">     </span><span style="color:#c30">`json:&#34;timeEncoder&#34; yaml:&#34;timeEncoder&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>EncodeDuration<span style="color:#bbb"> </span>DurationEncoder<span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;durationEncoder&#34; yaml:&#34;durationEncoder&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>EncodeCaller<span style="color:#bbb">   </span>CallerEncoder<span style="color:#bbb">   </span><span style="color:#c30">`json:&#34;callerEncoder&#34; yaml:&#34;callerEncoder&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// Unlike the other primitive type encoders, EncodeName is optional. The</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// zero value falls back to FullNameEncoder.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>EncodeName<span style="color:#bbb"> </span>NameEncoder<span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;nameEncoder&#34; yaml:&#34;nameEncoder&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// Configure the encoder for interface{} type objects.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// If not provided, objects are encoded using json.Encoder</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>NewReflectedEncoder<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">func</span>(io.Writer)<span style="color:#bbb"> </span>ReflectedEncoder<span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;-&#34; yaml:&#34;-&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// Configures the field separator used by the console encoder. Defaults</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span><span style="color:#09f;font-style:italic">// to tab.</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">   </span>ConsoleSeparator<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">string</span><span style="color:#bbb"> </span><span style="color:#c30">`json:&#34;consoleSeparator&#34; yaml:&#34;consoleSeparator&#34;`</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>八  zap日志的核心配置
 从Example例子可以看到zapcore.NewCore()三个参数分别为</p>
 <ul>
 <li><code>Encoder</code>  编码</li>
@@ -254,57 +257,57 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 </ul>
 <p>九  日志输出到文件配置</p>
 <p>从“八 zap的日志核心配置”，第二个参数可以看到，日志输出配置为NewCore的第二个参数，参数类型定义如下:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span> WriteSyncer <span style="color:#069;font-weight:bold">interface</span> {
-</span></span><span style="display:flex;"><span>	io.Writer
-</span></span><span style="display:flex;"><span>	<span style="color:#c0f">Sync</span>() <span style="color:#078;font-weight:bold">error</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>同时提供一个AddSync函数，提供从io.Writer到WriterSyncer转换</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">AddSync</span>(w io.Writer) WriteSyncer{
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">switch</span> w <span style="color:#555">:=</span> w.(<span style="color:#069;font-weight:bold">type</span>) {
-</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">case</span> WriteSyncer:
-</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> w
-</span></span><span style="display:flex;"><span>		<span style="color:#069;font-weight:bold">default</span>:
-</span></span><span style="display:flex;"><span>			<span style="color:#069;font-weight:bold">return</span> writerWrapper{w}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>我们可以通过以下两行代码创建一个写日志到文件的WriterSyncer</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>file, _ <span style="color:#555">:=</span> os.<span style="color:#c0f">Create</span>(<span style="color:#c30">&#34;./test.log&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">return</span> zapcore.<span style="color:#c0f">AddSync</span>(file)
-</span></span></code></pre></div><p>十 zap日志文件切分
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">type</span><span style="color:#bbb"> </span>WriteSyncer<span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">interface</span><span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>io.Writer<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#c0f">Sync</span>()<span style="color:#bbb"> </span><span style="color:#078;font-weight:bold">error</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>同时提供一个AddSync函数，提供从io.Writer到WriterSyncer转换</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">AddSync</span>(w<span style="color:#bbb"> </span>io.Writer)<span style="color:#bbb"> </span>WriteSyncer{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">switch</span><span style="color:#bbb"> </span>w<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>w.(<span style="color:#069;font-weight:bold">type</span>)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span><span style="color:#069;font-weight:bold">case</span><span style="color:#bbb"> </span>WriteSyncer:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">			</span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>w<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span><span style="color:#069;font-weight:bold">default</span>:<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">			</span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>writerWrapper{w}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>我们可以通过以下两行代码创建一个写日志到文件的WriterSyncer</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>file,<span style="color:#bbb"> </span>_<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>os.<span style="color:#c0f">Create</span>(<span style="color:#c30">&#34;./test.log&#34;</span>)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>zapcore.<span style="color:#c0f">AddSync</span>(file)<span style="color:#bbb">
+</span></span></span></code></pre></div><p>十 zap日志文件切分
 作为多年的Java开发经验，第一次看到zap库尽然没自带日志文件切分功能，这个基础功能竟然没提供，还是大吃一惊(😱😱)，需要再整合其她第三方包，按照zap的FAQ文档推荐的用lumberjack库做日志切分，好家伙，那我们就选用lumberjack</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>go get -u  github.com/natefinch/lumberjack v0.0.0-20230119042236-215739b3bcdc
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>go get -u  github.com/natefinch/lumberjack v0.0.0-20230119042236-215739b3bcdc
 </span></span></code></pre></div><p>比如go语言<strong>标准库自带log</strong>设置输出日志到文件，并切分，配置如下</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>hook <span style="color:#555">:=</span> lumberjack.Logger{
-</span></span><span style="display:flex;"><span>		Filename:   <span style="color:#c30">&#34;./logs/applog&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;.log&#34;</span>,
-</span></span><span style="display:flex;"><span>		MaxSize:    <span style="color:#f60">1</span>,    <span style="color:#09f;font-style:italic">//日志最大的大小（M）
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		MaxBackups: <span style="color:#f60">10</span>,   <span style="color:#09f;font-style:italic">//备份个数
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		MaxAge:     <span style="color:#f60">7</span>,    <span style="color:#09f;font-style:italic">//最大保存天数（day）
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		Compress:   <span style="color:#069;font-weight:bold">true</span>, <span style="color:#09f;font-style:italic">//是否压缩
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		LocalTime:  <span style="color:#069;font-weight:bold">false</span>,
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	log.<span style="color:#c0f">SetOutput</span>(<span style="color:#555">&amp;</span>hook)
-</span></span></code></pre></div><p>创建zapcore的WriteSyncer对象，支持日志文件拆分</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 使用lumberjack实现日志切割
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">getRorateWritter</span>() zapcore.WriteSyncer {
-</span></span><span style="display:flex;"><span>	hook <span style="color:#555">:=</span> lumberjack.Logger{
-</span></span><span style="display:flex;"><span>		Filename:   <span style="color:#c30">&#34;./logs/app_rotate_log&#34;</span> <span style="color:#555">+</span> <span style="color:#c30">&#34;.log&#34;</span>,
-</span></span><span style="display:flex;"><span>		MaxSize:    <span style="color:#f60">1</span>,    <span style="color:#09f;font-style:italic">//日志最大的大小（M）
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		MaxBackups: <span style="color:#f60">10</span>,   <span style="color:#09f;font-style:italic">//备份个数
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		MaxAge:     <span style="color:#f60">7</span>,    <span style="color:#09f;font-style:italic">//最大保存天数（day）
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		Compress:   <span style="color:#069;font-weight:bold">true</span>, <span style="color:#09f;font-style:italic">//是否压缩
-</span></span></span><span style="display:flex;"><span><span style="color:#09f;font-style:italic"></span>		LocalTime:  <span style="color:#069;font-weight:bold">false</span>,
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#069;font-weight:bold">return</span> zapcore.<span style="color:#c0f">AddSync</span>(<span style="color:#555">&amp;</span>hook)
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>创建带日志切分功能的zap logger</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	rorateWritter <span style="color:#555">:=</span> <span style="color:#c0f">getRorateWritter</span>()
-</span></span><span style="display:flex;"><span>	encoder <span style="color:#555">:=</span> <span style="color:#c0f">getEncoder</span>()
-</span></span><span style="display:flex;"><span>	core <span style="color:#555">:=</span> zapcore.<span style="color:#c0f">NewCore</span>(encoder, rorateWritter, zapcore.DebugLevel)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	logger = zap.<span style="color:#c0f">New</span>(core, zap.<span style="color:#c0f">AddCaller</span>())
-</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>hook<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>lumberjack.Logger{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Filename:<span style="color:#bbb">   </span><span style="color:#c30">&#34;./logs/applog&#34;</span><span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;.log&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxSize:<span style="color:#bbb">    </span><span style="color:#f60">1</span>,<span style="color:#bbb">    </span><span style="color:#099">//日志最大的大小（M）</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxBackups:<span style="color:#bbb"> </span><span style="color:#f60">10</span>,<span style="color:#bbb">   </span><span style="color:#099">//备份个数</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxAge:<span style="color:#bbb">     </span><span style="color:#f60">7</span>,<span style="color:#bbb">    </span><span style="color:#099">//最大保存天数（day）</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Compress:<span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span><span style="color:#099">//是否压缩</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>LocalTime:<span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>log.<span style="color:#c0f">SetOutput</span>(<span style="color:#555">&amp;</span>hook)<span style="color:#bbb">
+</span></span></span></code></pre></div><p>创建zapcore的WriteSyncer对象，支持日志文件拆分</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#09f;font-style:italic">// 使用lumberjack实现日志切割</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">func</span><span style="color:#bbb"> </span><span style="color:#c0f">getRorateWritter</span>()<span style="color:#bbb"> </span>zapcore.WriteSyncer<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>hook<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>lumberjack.Logger{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Filename:<span style="color:#bbb">   </span><span style="color:#c30">&#34;./logs/app_rotate_log&#34;</span><span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span><span style="color:#c30">&#34;.log&#34;</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxSize:<span style="color:#bbb">    </span><span style="color:#f60">1</span>,<span style="color:#bbb">    </span><span style="color:#099">//日志最大的大小（M）</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxBackups:<span style="color:#bbb"> </span><span style="color:#f60">10</span>,<span style="color:#bbb">   </span><span style="color:#099">//备份个数</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>MaxAge:<span style="color:#bbb">     </span><span style="color:#f60">7</span>,<span style="color:#bbb">    </span><span style="color:#099">//最大保存天数（day）</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>Compress:<span style="color:#bbb">   </span><span style="color:#069;font-weight:bold">true</span>,<span style="color:#bbb"> </span><span style="color:#099">//是否压缩</span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">		</span>LocalTime:<span style="color:#bbb">  </span><span style="color:#069;font-weight:bold">false</span>,<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>zapcore.<span style="color:#c0f">AddSync</span>(<span style="color:#555">&amp;</span>hook)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>创建带日志切分功能的zap logger</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#bbb">	</span>rorateWritter<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span><span style="color:#c0f">getRorateWritter</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>encoder<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span><span style="color:#c0f">getEncoder</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>core<span style="color:#bbb"> </span><span style="color:#555">:=</span><span style="color:#bbb"> </span>zapcore.<span style="color:#c0f">NewCore</span>(encoder,<span style="color:#bbb"> </span>rorateWritter,<span style="color:#bbb"> </span>zapcore.DebugLevel)<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">	</span>logger<span style="color:#bbb"> </span>=<span style="color:#bbb"> </span>zap.<span style="color:#c0f">New</span>(core,<span style="color:#bbb"> </span>zap.<span style="color:#c0f">AddCaller</span>())<span style="color:#bbb">
+</span></span></span></code></pre></div>
 		</div>
 		<footer class="post__footer">
 			
@@ -338,10 +341,14 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 
 
 
+	
+
+
+
 			</div>
 			<aside class="sidebar">
 <div class="widget-recent widget">
-	<h4 class="widget__title">Recent Posts</h4>
+	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
@@ -358,15 +365,15 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 	</div>
 </div>
 <div class="widget-categories widget">
-	<h4 class="widget__title">Categories</h4>
+	<h4 class="widget__title">分类</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/agent/">Agent</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/etcd/">etcd</a></li>
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/go/">go</a></li>
+				<a class="widget__link" href="/categories/go/">Go</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
 			<li class="widget__item">
@@ -379,20 +386,20 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 	</div>
 </div>
 <div class="widget-taglist widget">
-	<h4 class="widget__title">Tags</h4>
+	<h4 class="widget__title">标签</h4>
 	<div class="widget__content">
 		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="etcd">etcd</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="loggin">loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="nginx">nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="rsyslog">rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
@@ -401,7 +408,7 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 	</div>
 </div>
 <div class="widget-social widget">
-	<h4 class="widget-social__title widget__title">Social</h4>
+	<h4 class="widget-social__title widget__title">社交</h4>
 	<div class="widget-social__content widget__content">
 		<div class="widget-social__item widget__item">
 			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
@@ -426,7 +433,7 @@ zap提供一个开箱即用的生产环境配置和开发环境配置</p>
 		
 		<div class="footer__copyright">
 			&copy; 2026 Aaron Wang的博客.
-			<span class="footer__copyright-credits">Generated with <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> and <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> theme.</span>
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
 		</div>
 	</div>
 </footer>

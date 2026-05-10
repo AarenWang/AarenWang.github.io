@@ -2,109 +2,88 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Aaron Wang的博客</title>
-    <link>http://example.org/</link>
+    <link>https://aarenwang.github.io/</link>
     <description>Recent content on Aaron Wang的博客</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate>
+    <atom:link href="https://aarenwang.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</title>
-      <link>http://example.org/posts/agent/deer-flow/how-to-prompt/</link>
+      <link>https://aarenwang.github.io/posts/agent/deer-flow/how-to-prompt/</link>
       <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
-      
-      <guid>http://example.org/posts/agent/deer-flow/how-to-prompt/</guid>
+      <guid>https://aarenwang.github.io/posts/agent/deer-flow/how-to-prompt/</guid>
       <description>从 Deer-Flow 主 Agent 的 system prompt 入手，分析它如何通过记忆、澄清、工具与输出规范来约束智能体执行复杂任务。</description>
     </item>
-    
     <item>
       <title>用Rsyslog和Logstash采集分析Nginx日志</title>
-      <link>http://example.org/posts/nginx-log-logstash-es/</link>
+      <link>https://aarenwang.github.io/posts/nginx-log-logstash-es/</link>
       <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
-      
-      <guid>http://example.org/posts/nginx-log-logstash-es/</guid>
+      <guid>https://aarenwang.github.io/posts/nginx-log-logstash-es/</guid>
       <description>本文介绍用Rsyslog协议采集nginx日志，用Logstash预处理日志 写入ES</description>
     </item>
-    
     <item>
       <title>Go语言高性能日志库-zap介绍</title>
-      <link>http://example.org/posts/go-log-zap/</link>
+      <link>https://aarenwang.github.io/posts/go-log-zap/</link>
       <pubDate>Mon, 30 Jan 2023 20:16:55 +0800</pubDate>
-      
-      <guid>http://example.org/posts/go-log-zap/</guid>
+      <guid>https://aarenwang.github.io/posts/go-log-zap/</guid>
       <description>zap库uber出品，go语言里性能最好的日志库介绍和使用</description>
     </item>
-    
     <item>
       <title>etcd集群自动化部署</title>
-      <link>http://example.org/posts/etcd-action-part-2/</link>
+      <link>https://aarenwang.github.io/posts/etcd-action-part-2/</link>
       <pubDate>Thu, 19 Jan 2023 15:26:16 +0800</pubDate>
-      
-      <guid>http://example.org/posts/etcd-action-part-2/</guid>
+      <guid>https://aarenwang.github.io/posts/etcd-action-part-2/</guid>
       <description>本文介绍etcd集群自签名证书生成 证书推送 命令行启动参数生成 配置生成</description>
     </item>
-    
     <item>
       <title>etcd设置TLS证书</title>
-      <link>http://example.org/posts/etcd-action-part-1/</link>
+      <link>https://aarenwang.github.io/posts/etcd-action-part-1/</link>
       <pubDate>Wed, 04 Jan 2023 19:32:35 +0800</pubDate>
-      
-      <guid>http://example.org/posts/etcd-action-part-1/</guid>
+      <guid>https://aarenwang.github.io/posts/etcd-action-part-1/</guid>
       <description>本文介绍单机etcd client TLS证书生成，配置，和go语言etcd client tls请求代码</description>
     </item>
-    
     <item>
       <title>consul实战系列-之四 基于Consul和Envoy搭建服务网格</title>
-      <link>http://example.org/posts/service-mesh-consul-part-4/</link>
+      <link>https://aarenwang.github.io/posts/service-mesh-consul-part-4/</link>
       <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
-      
-      <guid>http://example.org/posts/service-mesh-consul-part-4/</guid>
+      <guid>https://aarenwang.github.io/posts/service-mesh-consul-part-4/</guid>
       <description>本文作为consul实战系列第四篇，介绍用consul和envoy实现服务网格(Service Mesh)</description>
     </item>
-    
     <item>
       <title>consul实战系列-之三 Consul服务器搭建，实现加密通信和认证访问</title>
-      <link>http://example.org/posts/service-mesh-consul-part-3/</link>
+      <link>https://aarenwang.github.io/posts/service-mesh-consul-part-3/</link>
       <pubDate>Wed, 21 Dec 2022 14:48:49 +0800</pubDate>
-      
-      <guid>http://example.org/posts/service-mesh-consul-part-3/</guid>
+      <guid>https://aarenwang.github.io/posts/service-mesh-consul-part-3/</guid>
       <description>本文作为consul实战系列第三篇，介绍consul服务器搭建过程，实现加密通信和认证访问</description>
     </item>
-    
     <item>
       <title>consul实战系列-之二 Consul服务注册和发现功能</title>
-      <link>http://example.org/posts/service-mesh-consul-part-2/</link>
+      <link>https://aarenwang.github.io/posts/service-mesh-consul-part-2/</link>
       <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
-      
-      <guid>http://example.org/posts/service-mesh-consul-part-2/</guid>
+      <guid>https://aarenwang.github.io/posts/service-mesh-consul-part-2/</guid>
       <description>本文作为consul实战系列第二篇，介绍下consul的服务注册和发现功能</description>
     </item>
-    
     <item>
       <title>consul实战系列-之一 consul介绍和初体验</title>
-      <link>http://example.org/posts/service-mesh-consul-part-1/</link>
+      <link>https://aarenwang.github.io/posts/service-mesh-consul-part-1/</link>
       <pubDate>Sat, 17 Dec 2022 16:14:12 +0800</pubDate>
-      
-      <guid>http://example.org/posts/service-mesh-consul-part-1/</guid>
+      <guid>https://aarenwang.github.io/posts/service-mesh-consul-part-1/</guid>
       <description>本文作为consul实战系列第一篇，介绍下consul功能和初步</description>
     </item>
-    
     <item>
       <title>我的第一篇博客文章</title>
-      <link>http://example.org/posts/my-first-post/</link>
+      <link>https://aarenwang.github.io/posts/my-first-post/</link>
       <pubDate>Fri, 23 Sep 2022 03:30:30 +0800</pubDate>
-      
-      <guid>http://example.org/posts/my-first-post/</guid>
+      <guid>https://aarenwang.github.io/posts/my-first-post/</guid>
       <description>讲讲为什么写博客，记录下博客搭建过程</description>
     </item>
-    
     <item>
       <title>关于</title>
-      <link>http://example.org/posts/about/</link>
+      <link>https://aarenwang.github.io/posts/about/</link>
       <pubDate>Fri, 02 Sep 2022 21:27:58 +0800</pubDate>
-      
-      <guid>http://example.org/posts/about/</guid>
+      <guid>https://aarenwang.github.io/posts/about/</guid>
       <description>我是谁，我来自哪里</description>
     </item>
-    
   </channel>
 </rss>

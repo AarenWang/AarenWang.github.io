@@ -2,121 +2,121 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://example.org/</loc>
+    <loc>https://aarenwang.github.io/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/agent/</loc>
+    <loc>https://aarenwang.github.io/categories/agent/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/agent/</loc>
+    <loc>https://aarenwang.github.io/tags/agent/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/</loc>
+    <loc>https://aarenwang.github.io/categories/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/deer-flow/</loc>
+    <loc>https://aarenwang.github.io/tags/deer-flow/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/</loc>
+    <loc>https://aarenwang.github.io/posts/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/prompt/</loc>
+    <loc>https://aarenwang.github.io/tags/prompt/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/</loc>
+    <loc>https://aarenwang.github.io/tags/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/agent/deer-flow/how-to-prompt/</loc>
+    <loc>https://aarenwang.github.io/posts/agent/deer-flow/how-to-prompt/</loc>
     <lastmod>2026-04-16T11:53:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/logstash/</loc>
+    <loc>https://aarenwang.github.io/tags/logstash/</loc>
     <lastmod>2023-03-03T11:03:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/nginx/</loc>
+    <loc>https://aarenwang.github.io/tags/nginx/</loc>
     <lastmod>2023-03-03T11:03:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/rsyslog/</loc>
+    <loc>https://aarenwang.github.io/tags/rsyslog/</loc>
     <lastmod>2023-03-03T11:03:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/%E6%97%A5%E5%BF%97/</loc>
+    <loc>https://aarenwang.github.io/categories/%E6%97%A5%E5%BF%97/</loc>
     <lastmod>2023-03-03T11:03:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/nginx-log-logstash-es/</loc>
+    <loc>https://aarenwang.github.io/posts/nginx-log-logstash-es/</loc>
     <lastmod>2023-03-03T11:03:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/go/</loc>
+    <loc>https://aarenwang.github.io/categories/go/</loc>
     <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/go/</loc>
+    <loc>https://aarenwang.github.io/tags/go/</loc>
     <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/go-log-zap/</loc>
+    <loc>https://aarenwang.github.io/posts/go-log-zap/</loc>
     <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/loggin/</loc>
+    <loc>https://aarenwang.github.io/tags/loggin/</loc>
     <lastmod>2023-01-30T20:16:55+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/etcd/</loc>
+    <loc>https://aarenwang.github.io/categories/etcd/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/etcd/</loc>
+    <loc>https://aarenwang.github.io/tags/etcd/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/etcd-action-part-2/</loc>
+    <loc>https://aarenwang.github.io/posts/etcd-action-part-2/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/tls/</loc>
+    <loc>https://aarenwang.github.io/tags/tls/</loc>
     <lastmod>2023-01-19T15:26:16+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/etcd-action-part-1/</loc>
+    <loc>https://aarenwang.github.io/posts/etcd-action-part-1/</loc>
     <lastmod>2023-01-04T19:32:35+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/consul/</loc>
+    <loc>https://aarenwang.github.io/tags/consul/</loc>
     <lastmod>2022-12-23T17:13:41+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/service-mesh-consul-part-4/</loc>
+    <loc>https://aarenwang.github.io/posts/service-mesh-consul-part-4/</loc>
     <lastmod>2022-12-23T17:13:41+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/microservice/</loc>
+    <loc>https://aarenwang.github.io/tags/microservice/</loc>
     <lastmod>2022-12-23T17:13:41+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/servicemesh/</loc>
+    <loc>https://aarenwang.github.io/tags/servicemesh/</loc>
     <lastmod>2022-12-23T17:13:41+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/</loc>
+    <loc>https://aarenwang.github.io/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/</loc>
     <lastmod>2022-12-23T17:13:41+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/service-mesh-consul-part-3/</loc>
+    <loc>https://aarenwang.github.io/posts/service-mesh-consul-part-3/</loc>
     <lastmod>2022-12-21T14:48:49+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/service-mesh-consul-part-2/</loc>
+    <loc>https://aarenwang.github.io/posts/service-mesh-consul-part-2/</loc>
     <lastmod>2022-12-18T09:43:53+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/springcloud/</loc>
+    <loc>https://aarenwang.github.io/tags/springcloud/</loc>
     <lastmod>2022-12-18T09:43:53+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/service-mesh-consul-part-1/</loc>
+    <loc>https://aarenwang.github.io/posts/service-mesh-consul-part-1/</loc>
     <lastmod>2022-12-17T16:14:12+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/hugo/</loc>
+    <loc>https://aarenwang.github.io/tags/hugo/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/%E5%86%99%E4%BD%9C/</loc>
+    <loc>https://aarenwang.github.io/categories/%E5%86%99%E4%BD%9C/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</loc>
+    <loc>https://aarenwang.github.io/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/my-first-post/</loc>
+    <loc>https://aarenwang.github.io/posts/my-first-post/</loc>
     <lastmod>2022-09-23T03:30:30+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/tags/%E5%85%B3%E4%BA%8E/</loc>
+    <loc>https://aarenwang.github.io/categories/%E5%85%B3%E4%BA%8E/</loc>
     <lastmod>2022-09-02T21:27:58+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/categories/%E5%85%B3%E4%BA%8E/</loc>
+    <loc>https://aarenwang.github.io/posts/about/</loc>
     <lastmod>2022-09-02T21:27:58+08:00</lastmod>
   </url><url>
-    <loc>http://example.org/posts/about/</loc>
+    <loc>https://aarenwang.github.io/tags/%E5%85%B3%E4%BA%8E/</loc>
     <lastmod>2022-09-02T21:27:58+08:00</lastmod>
   </url>
 </urlset>

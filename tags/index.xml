@@ -2,163 +2,130 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Aaron Wang的博客</title>
-    <link>http://example.org/tags/</link>
+    <link>https://aarenwang.github.io/tags/</link>
     <description>Recent content in Tags on Aaron Wang的博客</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Apr 2026 11:53:12 +0800</lastBuildDate>
+    <atom:link href="https://aarenwang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Agent</title>
-      <link>http://example.org/tags/agent/</link>
+      <link>https://aarenwang.github.io/tags/agent/</link>
       <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/agent/</guid>
+      <guid>https://aarenwang.github.io/tags/agent/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Deer-Flow</title>
-      <link>http://example.org/tags/deer-flow/</link>
+      <link>https://aarenwang.github.io/tags/deer-flow/</link>
       <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/deer-flow/</guid>
+      <guid>https://aarenwang.github.io/tags/deer-flow/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Prompt</title>
-      <link>http://example.org/tags/prompt/</link>
+      <link>https://aarenwang.github.io/tags/prompt/</link>
       <pubDate>Thu, 16 Apr 2026 11:53:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/prompt/</guid>
+      <guid>https://aarenwang.github.io/tags/prompt/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Logstash</title>
-      <link>http://example.org/tags/logstash/</link>
+      <link>https://aarenwang.github.io/tags/logstash/</link>
       <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/logstash/</guid>
+      <guid>https://aarenwang.github.io/tags/logstash/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>nginx</title>
-      <link>http://example.org/tags/nginx/</link>
+      <title>Nginx</title>
+      <link>https://aarenwang.github.io/tags/nginx/</link>
       <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/nginx/</guid>
+      <guid>https://aarenwang.github.io/tags/nginx/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>rsyslog</title>
-      <link>http://example.org/tags/rsyslog/</link>
+      <title>Rsyslog</title>
+      <link>https://aarenwang.github.io/tags/rsyslog/</link>
       <pubDate>Fri, 03 Mar 2023 11:03:12 +0800</pubDate>
-      
-      <guid>http://example.org/tags/rsyslog/</guid>
+      <guid>https://aarenwang.github.io/tags/rsyslog/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>go</title>
-      <link>http://example.org/tags/go/</link>
+      <title>Go</title>
+      <link>https://aarenwang.github.io/tags/go/</link>
       <pubDate>Mon, 30 Jan 2023 20:16:55 +0800</pubDate>
-      
-      <guid>http://example.org/tags/go/</guid>
+      <guid>https://aarenwang.github.io/tags/go/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>loggin</title>
-      <link>http://example.org/tags/loggin/</link>
+      <title>Loggin</title>
+      <link>https://aarenwang.github.io/tags/loggin/</link>
       <pubDate>Mon, 30 Jan 2023 20:16:55 +0800</pubDate>
-      
-      <guid>http://example.org/tags/loggin/</guid>
+      <guid>https://aarenwang.github.io/tags/loggin/</guid>
       <description></description>
     </item>
-    
     <item>
-      <title>etcd</title>
-      <link>http://example.org/tags/etcd/</link>
+      <title>Etcd</title>
+      <link>https://aarenwang.github.io/tags/etcd/</link>
       <pubDate>Thu, 19 Jan 2023 15:26:16 +0800</pubDate>
-      
-      <guid>http://example.org/tags/etcd/</guid>
+      <guid>https://aarenwang.github.io/tags/etcd/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>TLS</title>
-      <link>http://example.org/tags/tls/</link>
+      <link>https://aarenwang.github.io/tags/tls/</link>
       <pubDate>Thu, 19 Jan 2023 15:26:16 +0800</pubDate>
-      
-      <guid>http://example.org/tags/tls/</guid>
+      <guid>https://aarenwang.github.io/tags/tls/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Consul</title>
-      <link>http://example.org/tags/consul/</link>
+      <link>https://aarenwang.github.io/tags/consul/</link>
       <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
-      
-      <guid>http://example.org/tags/consul/</guid>
+      <guid>https://aarenwang.github.io/tags/consul/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>MicroService</title>
-      <link>http://example.org/tags/microservice/</link>
+      <link>https://aarenwang.github.io/tags/microservice/</link>
       <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
-      
-      <guid>http://example.org/tags/microservice/</guid>
+      <guid>https://aarenwang.github.io/tags/microservice/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>ServiceMesh</title>
-      <link>http://example.org/tags/servicemesh/</link>
+      <link>https://aarenwang.github.io/tags/servicemesh/</link>
       <pubDate>Fri, 23 Dec 2022 17:13:41 +0800</pubDate>
-      
-      <guid>http://example.org/tags/servicemesh/</guid>
+      <guid>https://aarenwang.github.io/tags/servicemesh/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>SpringCloud</title>
-      <link>http://example.org/tags/springcloud/</link>
+      <link>https://aarenwang.github.io/tags/springcloud/</link>
       <pubDate>Sun, 18 Dec 2022 09:43:53 +0800</pubDate>
-      
-      <guid>http://example.org/tags/springcloud/</guid>
+      <guid>https://aarenwang.github.io/tags/springcloud/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>Hugo</title>
-      <link>http://example.org/tags/hugo/</link>
+      <link>https://aarenwang.github.io/tags/hugo/</link>
       <pubDate>Fri, 23 Sep 2022 03:30:30 +0800</pubDate>
-      
-      <guid>http://example.org/tags/hugo/</guid>
+      <guid>https://aarenwang.github.io/tags/hugo/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>写作平台</title>
-      <link>http://example.org/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</link>
+      <link>https://aarenwang.github.io/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</link>
       <pubDate>Fri, 23 Sep 2022 03:30:30 +0800</pubDate>
-      
-      <guid>http://example.org/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</guid>
+      <guid>https://aarenwang.github.io/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>关于</title>
-      <link>http://example.org/tags/%E5%85%B3%E4%BA%8E/</link>
+      <link>https://aarenwang.github.io/tags/%E5%85%B3%E4%BA%8E/</link>
       <pubDate>Fri, 02 Sep 2022 21:27:58 +0800</pubDate>
-      
-      <guid>http://example.org/tags/%E5%85%B3%E4%BA%8E/</guid>
+      <guid>https://aarenwang.github.io/tags/%E5%85%B3%E4%BA%8E/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

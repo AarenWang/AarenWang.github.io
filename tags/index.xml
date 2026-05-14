@@ -6,13 +6,41 @@
     <description>Recent content in Tags on Aaron Wang的博客</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 10 May 2026 21:32:42 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 14 May 2026 11:00:00 +0800</lastBuildDate>
     <atom:link href="https://aarenwang.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Agent</title>
       <link>https://aarenwang.github.io/tags/agent/</link>
-      <pubDate>Sun, 10 May 2026 21:32:42 +0800</pubDate>
+      <pubDate>Thu, 14 May 2026 11:00:00 +0800</pubDate>
       <guid>https://aarenwang.github.io/tags/agent/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Data Agent</title>
+      <link>https://aarenwang.github.io/tags/data-agent/</link>
+      <pubDate>Thu, 14 May 2026 11:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/tags/data-agent/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Enterprise AI</title>
+      <link>https://aarenwang.github.io/tags/enterprise-ai/</link>
+      <pubDate>Thu, 14 May 2026 11:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/tags/enterprise-ai/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RAG</title>
+      <link>https://aarenwang.github.io/tags/rag/</link>
+      <pubDate>Thu, 14 May 2026 11:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/tags/rag/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Workflow Agent</title>
+      <link>https://aarenwang.github.io/tags/workflow-agent/</link>
+      <pubDate>Thu, 14 May 2026 11:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/tags/workflow-agent/</guid>
       <description></description>
     </item>
     <item>
@@ -20,13 +48,6 @@
       <link>https://aarenwang.github.io/tags/embedding/</link>
       <pubDate>Sun, 10 May 2026 21:32:42 +0800</pubDate>
       <guid>https://aarenwang.github.io/tags/embedding/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>RAG</title>
-      <link>https://aarenwang.github.io/tags/rag/</link>
-      <pubDate>Sun, 10 May 2026 21:32:42 +0800</pubDate>
-      <guid>https://aarenwang.github.io/tags/rag/</guid>
       <description></description>
     </item>
     <item>

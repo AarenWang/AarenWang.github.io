@@ -6,8 +6,29 @@
     <description>Recent content in Agent on Aaron Wang的博客</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 14 May 2026 11:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2026 09:40:00 +0800</lastBuildDate>
     <atom:link href="https://aarenwang.github.io/categories/agent/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</title>
+      <link>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</link>
+      <pubDate>Fri, 22 May 2026 09:40:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</guid>
+      <description>围绕 RAG 检索和问答阶段，说明向量检索、关键词召回、RRF 排序、rerank、上下文构建、来源引用和 Chat log 如何提升回答可信度。</description>
+    </item>
+    <item>
+      <title>RAG 文档处理流水线：从上传文件到可检索 chunk</title>
+      <link>https://aarenwang.github.io/posts/agent/rag/rag-document-processing-pipeline/</link>
+      <pubDate>Wed, 20 May 2026 08:11:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/rag/rag-document-processing-pipeline/</guid>
+      <description>拆解 RAG 文档从上传到 READY 的处理链路，说明解析、切块、费用预估、embedding、状态流转和失败处理如何影响最终问答质量。</description>
+    </item>
+    <item>
+      <title>从零搭一个中文电子书 RAG：为什么先做最小闭环</title>
+      <link>https://aarenwang.github.io/posts/agent/rag/rag-system-architecture-design/</link>
+      <pubDate>Tue, 19 May 2026 12:34:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/rag/rag-system-architecture-design/</guid>
+      <description>从中文电子书 RAG 的 MVP 入手，梳理上传、解析、切块、向量化、检索、问答和来源引用的最小闭环，以及第一版系统应该保留和暂缓的工程能力。</description>
+    </item>
     <item>
       <title>企业级 AI Agent 落地架构：从知识问答到流程执行</title>
       <link>https://aarenwang.github.io/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/</link>

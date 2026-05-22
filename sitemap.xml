@@ -3,16 +3,55 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://aarenwang.github.io/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/categories/agent/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/tags/agent/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/categories/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/pgvector/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/posts/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/rag/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/rrf/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</loc>
+    <lastmod>2026-05-22T09:40:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/chunk/</loc>
+    <lastmod>2026-05-20T08:11:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/embedding/</loc>
+    <lastmod>2026-05-20T08:11:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/posts/agent/rag/rag-document-processing-pipeline/</loc>
+    <lastmod>2026-05-20T08:11:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/mvp/</loc>
+    <lastmod>2026-05-19T12:34:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/posts/agent/rag/rag-system-architecture-design/</loc>
+    <lastmod>2026-05-19T12:34:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/tags/data-agent/</loc>
     <lastmod>2026-05-14T11:00:00+08:00</lastmod>
@@ -20,23 +59,11 @@
     <loc>https://aarenwang.github.io/tags/enterprise-ai/</loc>
     <lastmod>2026-05-14T11:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://aarenwang.github.io/posts/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://aarenwang.github.io/tags/rag/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://aarenwang.github.io/tags/</loc>
-    <lastmod>2026-05-14T11:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://aarenwang.github.io/tags/workflow-agent/</loc>
     <lastmod>2026-05-14T11:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/</loc>
     <lastmod>2026-05-14T11:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://aarenwang.github.io/tags/embedding/</loc>
-    <lastmod>2026-05-10T21:32:42+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/posts/agent/embedding-vector-rag-concent-anlyze/</loc>
     <lastmod>2026-05-10T21:32:42+08:00</lastmod>

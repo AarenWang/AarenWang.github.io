@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RRF on Aaron Wang的博客</title>
+    <link>https://aarenwang.github.io/tags/rrf/</link>
+    <description>Recent content in RRF on Aaron Wang的博客</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 22 May 2026 09:40:00 +0800</lastBuildDate>
+    <atom:link href="https://aarenwang.github.io/tags/rrf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</title>
+      <link>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</link>
+      <pubDate>Fri, 22 May 2026 09:40:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</guid>
+      <description>围绕 RAG 检索和问答阶段，说明向量检索、关键词召回、RRF 排序、rerank、上下文构建、来源引用和 Chat log 如何提升回答可信度。</description>
+    </item>
+  </channel>
+</rss>

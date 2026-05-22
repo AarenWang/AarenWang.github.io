@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>从零搭一个中文电子书 RAG：为什么先做最小闭环 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">从零搭一个中文电子书 RAG：为什么先做最小闭环</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-05-19T12:34:00&#43;08:00">May 19, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#先把预期说清楚">先把预期说清楚</a></li>
+    <li><a href="#一rag-mvp-的边界">一、RAG MVP 的边界</a>
+      <ul>
+        <li><a href="#11-先解决一个具体场景">1.1 先解决一个具体场景</a></li>
+        <li><a href="#12-第一版只保留必要能力">1.2 第一版只保留必要能力</a></li>
+        <li><a href="#13-一个容易踩的坑过早企业级">1.3 一个容易踩的坑：过早企业级</a></li>
+      </ul>
+    </li>
+    <li><a href="#二整体链路长什么样">二、整体链路长什么样</a></li>
+    <li><a href="#三技术选型够用比漂亮更重要">三、技术选型：够用比漂亮更重要</a>
+      <ul>
+        <li><a href="#31-后端spring-boot--maven-多模块">3.1 后端：Spring Boot + Maven 多模块</a></li>
+        <li><a href="#32-数据库postgresql--pgvector">3.2 数据库：PostgreSQL + pgvector</a></li>
+        <li><a href="#33-前端react--ant-design">3.3 前端：React + Ant Design</a></li>
+        <li><a href="#34-模型embedding-和-chat-分开配置">3.4 模型：embedding 和 chat 分开配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#四最重要的设计不是架构图而是状态流转">四、最重要的设计不是架构图，而是状态流转</a></li>
+    <li><a href="#五为什么要让用户确认-embedding-成本">五、为什么要让用户确认 embedding 成本</a></li>
+    <li><a href="#六第一版架构的取舍">六、第一版架构的取舍</a>
+      <ul>
+        <li><a href="#61-暂时不做消息队列">6.1 暂时不做消息队列</a></li>
+        <li><a href="#62-暂时不做对象存储">6.2 暂时不做对象存储</a></li>
+        <li><a href="#63-暂时不做完整权限系统">6.3 暂时不做完整权限系统</a></li>
+        <li><a href="#64-检索先可解释再追求复杂">6.4 检索先可解释，再追求复杂</a></li>
+      </ul>
+    </li>
+    <li><a href="#七这一版真正想验证什么">七、这一版真正想验证什么</a></li>
+    <li><a href="#结语先让闭环跑起来">结语：先让闭环跑起来</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<h1 id="从零搭一个中文电子书-rag为什么先做最小闭环">从零搭一个中文电子书 RAG：为什么先做最小闭环</h1>
+<blockquote>
+<p>系列定位：这是一个从 MVP 开始打磨 RAG 系统的实战记录，不是“企业级最终方案”的包装稿。<br>
+阅读时间：8 分钟<br>
+适合读者：想自己搭 RAG、正在做知识库问答、希望理解工程取舍的开发者<br>
+关键词：RAG、中文电子书、MVP、Spring Boot、PostgreSQL、pgvector</p>
+</blockquote>
+<h2 id="先把预期说清楚">先把预期说清楚</h2>
+<p>我最开始也很容易把 RAG 系统想大：多租户、权限体系、异步队列、监控告警、缓存、对象存储、模型网关、自动评测，最好再配一个漂亮的后台。</p>
+<p>但真正动手之后会发现，如果第一版就奔着“企业级完整架构”去，很快会被细节淹没。RAG 的核心价值其实很朴素：</p>
+<ol>
+<li>用户能上传资料。</li>
+<li>系统能把资料解析成可检索的文本块。</li>
+<li>文本块能被向量化并持久化。</li>
+<li>用户提问时，系统能召回相关片段。</li>
+<li>大模型回答时，能带上来源，避免凭空编造。</li>
+</ol>
+<p>所以 <code>my-rag</code> 的第一阶段没有追求大而全，而是先做一个中文电子书 RAG 的最小闭环：<strong>上传、解析、切块、向量化、检索、问答、引用来源</strong>。</p>
+<p>这篇文章讲的不是“我设计了一个完美架构”，而是“我为什么先把系统压到这个范围，以及这个范围里的关键取舍是什么”。</p>
+<h2 id="一rag-mvp-的边界">一、RAG MVP 的边界</h2>
+<h3 id="11-先解决一个具体场景">1.1 先解决一个具体场景</h3>
+<p>泛泛地说“企业知识库”太宽了。不同企业的文档来源、权限模型、更新频率、合规要求都不一样，第一版很难一次吃下。</p>
+<p>我选择的起点是中文电子书和文档资料：</p>
+<ul>
+<li>文档通常比较长，能真实暴露分块和上下文构建问题。</li>
+<li>中文内容多，对检索和 token 估算更敏感。</li>
+<li>用户问题往往需要引用出处，适合验证 RAG 的可信度。</li>
+<li>文件上传、解析、索引、问答可以形成完整闭环。</li>
+</ul>
+<p>这个场景足够小，可以落地；也足够复杂，不至于只做一个玩具 demo。</p>
+<h3 id="12-第一版只保留必要能力">1.2 第一版只保留必要能力</h3>
+<p>当前 <code>my-rag</code> 的能力可以概括为七件事：</p>
+<ul>
+<li>上传文档并持久化元数据。</li>
+<li>文档先解析并切块，进入 <code>CHUNKED</code> 状态。</li>
+<li>用户确认 embedding 费用后，再生成向量，进入 <code>READY</code> 状态。</li>
+<li>使用 PostgreSQL + pgvector 做相似度检索。</li>
+<li>可选启用关键词索引，和向量召回做混合排序。</li>
+<li>Chat 问答只基于召回片段回答，并返回来源引用。</li>
+<li>记录 Chat log，方便复盘“召回错了还是回答错了”。</li>
+</ul>
+<p>这里故意没有把权限、多租户、对象存储、消息队列、Redis 缓存放进第一版。它们都重要，但不是证明 RAG 闭环成立的前置条件。</p>
+<h3 id="13-一个容易踩的坑过早企业级">1.3 一个容易踩的坑：过早企业级</h3>
+<p>“企业级”这个词很诱人，但它也很容易让系统在还没验证核心价值之前就变复杂。</p>
+<p>比如消息队列当然可以提升文档处理的可靠性；但如果还不知道 chunk 的质量是否够用，先引入队列只会让问题更难定位。Redis 缓存也很有用；但如果召回策略本身不稳定，缓存只是在加速错误结果。</p>
+<p>所以第一版的原则是：<strong>先让问题暴露在简单链路里，再决定哪里值得加复杂度</strong>。</p>
+<h2 id="二整体链路长什么样">二、整体链路长什么样</h2>
+<p><code>my-rag</code> 的主流程可以拆成两段。</p>
+<p>第一段是文档进入知识库：</p>
+<div class="mermaid">
+flowchart LR
+    A[上传文档] --> B[保存文档元数据]
+    B --> C[解析文本]
+    C --> D[按章节和段落切块]
+    D --> E[估算 token 与 embedding 成本]
+    E --> F[用户确认]
+    F --> G[生成向量]
+    G --> H[文档进入 READY]
+</div>
+<p>第二段是用户提问：</p>
+<div class="mermaid">
+flowchart LR
+    A[用户提问] --> B[问题向量化]
+    B --> C[召回相关 chunk]
+    C --> D[构建上下文]
+    D --> E[调用大模型]
+    E --> F[返回答案和来源]
+    F --> G[写入 Chat log]
+</div>
+<p>这两个流程共同回答一个问题：系统是否真的能把“我的资料”变成“可追溯的回答”。</p>
+<h2 id="三技术选型够用比漂亮更重要">三、技术选型：够用比漂亮更重要</h2>
+<h3 id="31-后端spring-boot--maven-多模块">3.1 后端：Spring Boot + Maven 多模块</h3>
+<p>后端选择 Java 17 和 Spring Boot 3。原因很简单：这套技术栈成熟、调试方便，适合把业务状态流转写清楚。</p>
+<p>项目拆成几个模块：</p>
+<ul>
+<li><code>rag-api</code>：请求和响应 DTO。</li>
+<li><code>rag-common</code>：公共响应、错误码等基础能力。</li>
+<li><code>rag-service</code>：核心业务逻辑，包括文档、切块、embedding、检索和 chat。</li>
+</ul>
+<p>这不是为了显得架构复杂，而是为了让 API 契约和业务实现分开，后面前后端联调时会舒服很多。</p>
+<h3 id="32-数据库postgresql--pgvector">3.2 数据库：PostgreSQL + pgvector</h3>
+<p>第一版没有引入专门的向量数据库，而是使用 PostgreSQL 加 <code>pgvector</code>。</p>
+<p>这个选择背后的考虑是：</p>
+<ul>
+<li>文档、chunk、chat log 本来就需要关系型数据。</li>
+<li>MVP 阶段的数据规模可控，PostgreSQL 足够承载。</li>
+<li><code>pgvector</code> 可以直接在数据库里完成向量相似度排序。</li>
+<li>迁移和本地开发都比较简单。</li>
+</ul>
+<p>数据库里最核心的三类表是：</p>
+<ul>
+<li><code>rag_document</code>：文档元数据和状态。</li>
+<li><code>rag_document_chunk</code>：解析后的文本块。</li>
+<li><code>rag_chunk_embedding</code>：chunk 对应的向量。</li>
+</ul>
+<p>这个结构比“把所有东西塞进一个 JSON”麻烦一点，但它让状态追踪、错误排查和后续统计都更清楚。</p>
+<h3 id="33-前端react--ant-design">3.3 前端：React + Ant Design</h3>
+<p>前端没有做复杂的视觉设计，重点是把关键操作做完整：</p>
+<ul>
+<li>Dashboard 看整体状态。</li>
+<li>Documents 上传和管理文档。</li>
+<li>Document Detail 查看文档、chunk、索引进度。</li>
+<li>Chat 进行问答。</li>
+<li>Chat Logs 回看历史回答和来源。</li>
+<li>Settings 配置模型参数。</li>
+</ul>
+<p>RAG 产品里，前端不是只有一个聊天框。文档处理状态、费用确认、来源引用、失败提示，都会直接影响用户是否信任系统。</p>
+<h3 id="34-模型embedding-和-chat-分开配置">3.4 模型：embedding 和 chat 分开配置</h3>
+<p>系统把 embedding 和 chat 拆成两类模型配置。</p>
+<p>embedding 用于把文档 chunk 和用户问题转成向量；chat 用于根据召回上下文生成回答。这样做的好处是，后续可以单独替换其中一个模型，而不影响另一条链路。</p>
+<p>本地开发默认可以走 mock provider，避免每次启动都依赖真实 API Key。接真实服务时，再通过本地 secret YAML 或环境变量配置。</p>
+<h2 id="四最重要的设计不是架构图而是状态流转">四、最重要的设计不是架构图，而是状态流转</h2>
+<p>RAG 系统最容易混乱的地方，是文档状态。</p>
+<p>如果一个文档刚上传，还没解析，能不能被检索？如果解析成功但还没 embedding，能不能进入 Chat？如果 embedding 失败，用户应该看到什么？</p>
+<p>我把文档流程拆成几个明确状态：</p>
+<ul>
+<li><code>UPLOADED</code>：文件已上传。</li>
+<li><code>PARSING</code>：正在解析。</li>
+<li><code>PARSED</code>：解析完成。</li>
+<li><code>CHUNKED</code>：已经生成 chunk，可以估算 embedding 成本。</li>
+<li><code>EMBEDDING</code>：正在生成向量。</li>
+<li><code>READY</code>：可以参与检索和问答。</li>
+<li><code>FAILED</code>：处理失败，需要展示错误原因。</li>
+</ul>
+<p>这个状态机不花哨，但非常关键。它让前端可以明确提示用户下一步该做什么，也让后端避免把半成品文档混进检索结果。</p>
+<h2 id="五为什么要让用户确认-embedding-成本">五、为什么要让用户确认 embedding 成本</h2>
+<p>RAG 的费用常常不是来自聊天，而是来自批量 embedding。</p>
+<p>如果用户上传一本很长的电子书，系统直接开始向量化，既不透明，也容易让调试成本失控。因此 <code>my-rag</code> 选择把索引拆成两步：</p>
+<ol>
+<li>先 parse + chunk，得到 chunk 数和本地 token 估算。</li>
+<li>前端展示预估费用，用户确认后再调用 embedding API。</li>
+</ol>
+<p>这个交互看起来多一步，但它让系统从一开始就有成本意识。</p>
+<p>当然，本地 token 估算不会和模型服务账单完全一致，所以界面也应该明确提示：预估只用于决策，最终费用以服务商账单为准。</p>
+<h2 id="六第一版架构的取舍">六、第一版架构的取舍</h2>
+<h3 id="61-暂时不做消息队列">6.1 暂时不做消息队列</h3>
+<p>文档处理适合异步化，但第一阶段先用简单链路跑通状态流转和错误处理。等文档处理量上来后，再把 parse、chunk、embedding 拆到队列里会更稳。</p>
+<h3 id="62-暂时不做对象存储">6.2 暂时不做对象存储</h3>
+<p>本地文件系统已经足够支撑 MVP。等到需要多实例部署、备份、跨机器访问时，再接 MinIO 或云对象存储。</p>
+<h3 id="63-暂时不做完整权限系统">6.3 暂时不做完整权限系统</h3>
+<p>当前重点是验证知识库问答闭环。权限、多租户、审计日志都应该做，但它们应该建立在核心流程稳定之后。</p>
+<h3 id="64-检索先可解释再追求复杂">6.4 检索先可解释，再追求复杂</h3>
+<p>向量检索、关键词检索、RRF、rerank 都可以逐步加入。但每加一个环节，都要能回答：它解决了哪个召回问题？它让结果更好，还是只是让链路更复杂？</p>
+<h2 id="七这一版真正想验证什么">七、这一版真正想验证什么</h2>
+<p>第一版 <code>my-rag</code> 不是为了证明“我能搭一个完整企业知识库平台”，而是验证三个更基础的问题：</p>
+<ol>
+<li><strong>文档处理是否稳定</strong>：长文档能不能解析、切块、索引，并在失败时给出清晰状态？</li>
+<li><strong>检索是否可调试</strong>：回答不好时，能不能看到到底召回了哪些 chunk？</li>
+<li><strong>答案是否可信</strong>：大模型是否只根据资料回答，并带上来源引用？</li>
+</ol>
+<p>这三个问题如果没解决，后面加再多企业级能力也只是外壳。</p>
+<h2 id="结语先让闭环跑起来">结语：先让闭环跑起来</h2>
+<p>RAG 系统最怕一开始就被“大架构”带偏。真正值得先做的，是一条能被用户亲手验证的闭环：上传自己的资料，提出自己的问题，看到回答和来源，然后判断这个系统是否值得继续打磨。</p>
+<p><code>my-rag</code> 的第一阶段就是围绕这个目标展开。下一篇我会继续拆文档处理流水线：一个文件从上传到 <code>READY</code>，中间到底经过了哪些步骤，哪些地方最容易翻车。</p>
+<hr>
+<p><strong>下一篇</strong>：《RAG 文档处理流水线：从上传文件到可检索 chunk》</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agent/" rel="tag">Agent</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/rag/" rel="tag">RAG</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/mvp/" rel="tag">MVP</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/pgvector/" rel="tag">pgvector</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
+</main>
+
+
+
+
+	
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">近期文章</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-document-processing-pipeline/">RAG 文档处理流水线：从上传文件到可检索 chunk</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-system-architecture-design/">从零搭一个中文电子书 RAG：为什么先做最小闭环</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/">企业级 AI Agent 落地架构：从知识问答到流程执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-1/">etcd设置TLS证书</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">分类</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/go/">Go</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">标签</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-agent/" title="Data Agent">Data Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enterprise-ai/" title="Enterprise AI">Enterprise AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mvp/" title="MVP">MVP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgvector/" title="Pgvector">Pgvector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rag/" title="RAG">RAG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rrf/" title="RRF">RRF</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector-database/" title="Vector Database">Vector Database</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">社交</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 Aaron Wang的博客.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

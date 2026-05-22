@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>RAG 文档处理流水线：从上传文件到可检索 chunk - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">RAG 文档处理流水线：从上传文件到可检索 chunk</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-05-20T08:11:00&#43;08:00">May 20, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#为什么文档处理比聊天框更重要">为什么文档处理比聊天框更重要</a></li>
+    <li><a href="#一文档状态是整条链路的骨架">一、文档状态是整条链路的骨架</a></li>
+    <li><a href="#二上传阶段元数据比文件本身更先被管理">二、上传阶段：元数据比文件本身更先被管理</a></li>
+    <li><a href="#三解析阶段先把格式差异收敛掉">三、解析阶段：先把“格式差异”收敛掉</a></li>
+    <li><a href="#四切块阶段不是按字数切开那么简单">四、切块阶段：不是按字数切开那么简单</a>
+      <ul>
+        <li><a href="#41-overlap-的价值">4.1 overlap 的价值</a></li>
+        <li><a href="#42-chunk-大小没有万能值">4.2 chunk 大小没有万能值</a></li>
+      </ul>
+    </li>
+    <li><a href="#五关键词索引给精确问题留一条路">五、关键词索引：给精确问题留一条路</a></li>
+    <li><a href="#六费用预估把-embedding-从自动动作改成用户确认">六、费用预估：把 embedding 从“自动动作”改成“用户确认”</a></li>
+    <li><a href="#七embedding-阶段先保证正确再考虑吞吐">七、embedding 阶段：先保证正确，再考虑吞吐</a></li>
+    <li><a href="#八ready-不是结束而是可检索的起点">八、READY 不是结束，而是可检索的起点</a></li>
+    <li><a href="#九这条流水线目前还没解决什么">九、这条流水线目前还没解决什么</a>
+      <ul>
+        <li><a href="#91-长任务调度还可以更稳">9.1 长任务调度还可以更稳</a></li>
+        <li><a href="#92-token-估算还比较粗">9.2 token 估算还比较粗</a></li>
+        <li><a href="#93-文件格式支持可以继续扩展">9.3 文件格式支持可以继续扩展</a></li>
+        <li><a href="#94-chunk-质量需要靠问答日志反推">9.4 chunk 质量需要靠问答日志反推</a></li>
+      </ul>
+    </li>
+    <li><a href="#十我从这条流水线里得到的经验">十、我从这条流水线里得到的经验</a></li>
+    <li><a href="#结语rag-的质量从文件进入系统那一刻就开始了">结语：RAG 的质量从文件进入系统那一刻就开始了</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<h1 id="rag-文档处理流水线从上传文件到可检索-chunk">RAG 文档处理流水线：从上传文件到可检索 chunk</h1>
+<blockquote>
+<p>系列定位：这是 <code>my-rag</code> 的 MVP 实战记录，重点是把真实链路讲清楚，而不是提前包装成完整企业平台。<br>
+阅读时间：10 分钟<br>
+适合读者：正在做文档解析、chunk 切分、embedding 成本控制的开发者<br>
+关键词：文档解析、chunk、embedding、费用预估、状态流转</p>
+</blockquote>
+<h2 id="为什么文档处理比聊天框更重要">为什么文档处理比聊天框更重要</h2>
+<p>很多人做 RAG，第一眼会盯着 Chat UI：用户输入问题，模型生成回答，看起来很智能。</p>
+<p>但真正决定回答质量的，往往不是聊天框，而是聊天框背后的文档处理流水线。只要前面一步做错，后面就会连锁出问题：</p>
+<ul>
+<li>解析阶段丢掉标题，回答就少了上下文。</li>
+<li>chunk 切得太碎，召回片段就不完整。</li>
+<li>chunk 切得太大，embedding 成本和上下文长度都会上升。</li>
+<li>半成品文档进入检索，回答就可能引用错误资料。</li>
+<li>向量化失败但状态没更新，用户会误以为系统不可用。</li>
+</ul>
+<p>所以在 <code>my-rag</code> 里，我把文档处理拆成一条明确的流水线：<strong>上传 -&gt; 解析 -&gt; 切块 -&gt; 费用预估 -&gt; embedding -&gt; READY</strong>。</p>
+<p>这篇文章就讲这条流水线为什么这样设计。</p>
+<h2 id="一文档状态是整条链路的骨架">一、文档状态是整条链路的骨架</h2>
+<p>文档处理不是一个瞬间完成的动作，而是一组阶段性任务。每个阶段都应该有明确状态。</p>
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> UPLOADED
+    UPLOADED --> PARSING
+    PARSING --> PARSED
+    PARSED --> CHUNKED
+    CHUNKED --> EMBEDDING
+    EMBEDDING --> READY
+    PARSING --> FAILED
+    EMBEDDING --> FAILED
+</div>
+<p>这些状态解决了三个问题。</p>
+<p>第一，前端知道该显示什么。比如 <code>CHUNKED</code> 表示可以展示 embedding 费用确认按钮，<code>READY</code> 才能进入 Chat 检索。</p>
+<p>第二，后端知道哪些文档能参与检索。<code>DocumentScopeResolver</code> 在解析检索范围时，只返回 <code>READY</code> 状态的文档，避免把未完成索引的资料混进回答。</p>
+<p>第三，排查问题有依据。文档卡在 <code>PARSING</code>、<code>CHUNKED</code> 还是 <code>EMBEDDING</code>，代表完全不同的故障方向。</p>
+<h2 id="二上传阶段元数据比文件本身更先被管理">二、上传阶段：元数据比文件本身更先被管理</h2>
+<p>上传文件时，系统不仅保存文件，还会记录文档元数据：</p>
+<ul>
+<li>标题。</li>
+<li>文件名。</li>
+<li>文件类型。</li>
+<li>文件大小。</li>
+<li>文件 hash。</li>
+<li>本地存储路径。</li>
+<li>当前状态。</li>
+<li>错误信息。</li>
+</ul>
+<p>其中 <code>file_hash</code> 很重要。它可以帮助系统识别重复文件，避免用户反复上传同一份资料造成重复索引。</p>
+<p>第一版没有直接接对象存储，而是先使用本地文件系统。这个选择不复杂，但对 MVP 来说够用。真正需要多实例部署、统一备份和跨机器访问时，再把存储层替换成 MinIO 或云对象存储也不迟。</p>
+<h2 id="三解析阶段先把格式差异收敛掉">三、解析阶段：先把“格式差异”收敛掉</h2>
+<p>文档格式会带来很多差异：TXT 是纯文本，Markdown 有标题结构，PDF、EPUB、DOCX 可能需要专门解析库。</p>
+<p><code>my-rag</code> 的解析层使用 <code>DocumentParser</code> 抽象，把不同格式收敛成统一的 <code>ParsedDocument</code>。上层不用关心具体文件怎么读，只关心最终得到的结构化文本。</p>
+<p>核心思路是：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">private</span><span style="color:#bbb"> </span>DocumentParser<span style="color:#bbb"> </span><span style="color:#c0f">selectParser</span>(RagDocument<span style="color:#bbb"> </span>document)<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>String<span style="color:#bbb"> </span>fileType<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>document.<span style="color:#309">getFileType</span>();<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">if</span><span style="color:#bbb"> </span>(<span style="color:#555">!</span>StringUtils.<span style="color:#309">hasText</span>(fileType))<span style="color:#bbb"> </span>{<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">        </span><span style="color:#069;font-weight:bold">throw</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">new</span><span style="color:#bbb"> </span>IllegalStateException(<span style="color:#c30">&#34;Document file type is empty: &#34;</span><span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span>document.<span style="color:#309">getId</span>());<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>}<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span><span style="color:#069;font-weight:bold">return</span><span style="color:#bbb"> </span>parsers.<span style="color:#309">stream</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">            </span>.<span style="color:#309">filter</span>(parser<span style="color:#bbb"> </span><span style="color:#555">-&gt;</span><span style="color:#bbb"> </span>parser.<span style="color:#309">supports</span>(fileType))<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">            </span>.<span style="color:#309">findFirst</span>()<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span><span style="color:#bbb">            </span>.<span style="color:#309">orElseThrow</span>(()<span style="color:#bbb"> </span><span style="color:#555">-&gt;</span><span style="color:#bbb"> </span><span style="color:#069;font-weight:bold">new</span><span style="color:#bbb"> </span>IllegalStateException(<span style="color:#c30">&#34;Unsupported parser file type: &#34;</span><span style="color:#bbb"> </span><span style="color:#555">+</span><span style="color:#bbb"> </span>fileType));<span style="color:#bbb">
+</span></span></span><span style="display:flex;"><span>}<span style="color:#bbb">
+</span></span></span></code></pre></div><p>这段代码不复杂，但它带来一个好处：新增格式时，不需要改文档处理主流程，只要新增一个 parser 实现。</p>
+<p>更重要的是，解析失败必须落到状态机里。如果解析结果为空，系统不能继续切块，而应该把文档标记为 <code>FAILED</code>，并记录错误原因。</p>
+<h2 id="四切块阶段不是按字数切开那么简单">四、切块阶段：不是按字数切开那么简单</h2>
+<p>RAG 里的 chunk 不是普通分页。它既要适合 embedding，又要保留足够语义。</p>
+<p><code>my-rag</code> 的 chunk 逻辑围绕几个原则：</p>
+<ul>
+<li>优先按章节和段落组织内容。</li>
+<li>每个 chunk 有最小和最大字符数限制。</li>
+<li>对超长段落做强制切分。</li>
+<li>相邻 chunk 保留一定 overlap。</li>
+<li>每个 chunk 记录章节标题、段落范围和内容 hash。</li>
+</ul>
+<p>这些信息后面都会用上。</p>
+<p>章节标题能帮助模型理解片段所在位置；段落范围能帮助调试；内容 hash 可以避免重复 chunk；token 估算可以用于成本预估。</p>
+<h3 id="41-overlap-的价值">4.1 overlap 的价值</h3>
+<p>很多长文档的问题都发生在边界上。</p>
+<p>比如一个定义在上一段，解释在下一段。如果 chunk 正好从中间切开，召回到任何一边都会缺少上下文。</p>
+<p>overlap 的作用就是让边界附近的信息重复一点点。它会增加少量存储和 embedding 成本，但能减少“召回片段看起来相关，却回答不完整”的情况。</p>
+<h3 id="42-chunk-大小没有万能值">4.2 chunk 大小没有万能值</h3>
+<p>chunk 太小，检索更精细，但上下文容易碎。chunk 太大，语义更完整，但召回排序变粗，embedding 成本也更高。</p>
+<p>所以第一版没有把 chunk 策略做成复杂算法，而是先做可配置的字符范围和 overlap。等有足够真实问答日志后，再基于失败案例调参。</p>
+<p>这是 RAG 很重要的一条经验：<strong>不要在没有评测样本时过度优化 chunk 算法</strong>。</p>
+<h2 id="五关键词索引给精确问题留一条路">五、关键词索引：给精确问题留一条路</h2>
+<p>向量检索擅长语义相似，但对精确符号、配置项、章节名不一定稳定。</p>
+<p>比如用户问：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>RAG_EMBEDDING_BATCH_SIZE 怎么配置？
+</span></span></code></pre></div><p>这种问题里，环境变量名就是强信号。向量检索可能能理解“配置 embedding 批大小”，但关键词检索更直接。</p>
+<p>因此 <code>my-rag</code> 在 chunk 写入时，可以同步维护一份关键词检索索引：</p>
+<ul>
+<li><code>search_text</code> 保存章节标题和正文。</li>
+<li><code>search_vector</code> 保存 PostgreSQL 全文搜索向量。</li>
+<li>是否启用由配置控制。</li>
+</ul>
+<p>第一版并不把关键词检索包装成万能能力。它只是给精确匹配问题补一条召回通道。</p>
+<h2 id="六费用预估把-embedding-从自动动作改成用户确认">六、费用预估：把 embedding 从“自动动作”改成“用户确认”</h2>
+<p>embedding 是 RAG 系统里最容易被忽略的成本点。</p>
+<p>如果用户上传一本很长的电子书，系统自动把几百个 chunk 全部送去 embedding API，用户既不知道会花多少钱，也无法在索引前做判断。</p>
+<p>所以 <code>my-rag</code> 把文档索引拆成两步：</p>
+<ol>
+<li>先解析并切块，得到 chunk 数和本地 token 估算。</li>
+<li>用户确认预估成本后，再生成 embedding。</li>
+</ol>
+<p>预估公式很直接：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>estimatedCost = estimatedTokens / 1000 * pricePer1kTokens
+</span></span></code></pre></div><p>这里的 <code>estimatedTokens</code> 来自本地估算，不可能和服务商账单完全一致。但它足够用于交互决策：这次索引大概是一点点成本，还是一次明显的大批量调用。</p>
+<h2 id="七embedding-阶段先保证正确再考虑吞吐">七、embedding 阶段：先保证正确，再考虑吞吐</h2>
+<p>生成 embedding 时，系统会读取文档下的全部 chunk，然后逐个调用 embedding client，把向量写入 <code>rag_chunk_embedding</code>。</p>
+<p>第一版实现偏保守：它没有为了吞吐一上来就做复杂并发，而是先保证几个关键点：</p>
+<ul>
+<li>embedding 模型名不能为空。</li>
+<li>返回向量数量必须和输入数量一致。</li>
+<li>向量维度必须符合配置。</li>
+<li>向量里不能出现 <code>null</code> 或非有限数值。</li>
+<li>每次 API 调用都写入日志，方便排查失败。</li>
+</ul>
+<p>这些校验看起来啰嗦，但非常值得。因为向量一旦写错，后面检索表现会变得很难解释。</p>
+<p>比如维度不一致是显性错误；但如果服务返回了空向量、错位向量，系统没有检查就写库，后面只会表现为“怎么搜都不准”。</p>
+<h2 id="八ready-不是结束而是可检索的起点">八、READY 不是结束，而是可检索的起点</h2>
+<p>文档进入 <code>READY</code> 后，才真正可以参与问答。</p>
+<p>这时系统至少拥有三类数据：</p>
+<ul>
+<li>文档元数据。</li>
+<li>chunk 内容和段落范围。</li>
+<li>chunk 对应的 embedding。</li>
+</ul>
+<p>如果开启了关键词索引，还会多一份全文搜索索引。</p>
+<p>这些数据共同支撑后续检索。用户提问时，系统不会直接把整本文档塞给大模型，而是先根据问题召回相关 chunk，再构建上下文。</p>
+<h2 id="九这条流水线目前还没解决什么">九、这条流水线目前还没解决什么</h2>
+<p>为了避免把 MVP 写成“全能系统”，这里也明确说几个当前还需要继续演进的点。</p>
+<h3 id="91-长任务调度还可以更稳">9.1 长任务调度还可以更稳</h3>
+<p>文档处理天然适合队列化。后续如果文档变大、用户变多，可以把 parse、chunk、embedding 拆成后台任务，并加入重试、暂停、恢复和进度推送。</p>
+<h3 id="92-token-估算还比较粗">9.2 token 估算还比较粗</h3>
+<p>当前 token 估算主要用于成本预估，不等于模型服务的真实计费 token。后续可以按具体模型接入 tokenizer，提升估算准确性。</p>
+<h3 id="93-文件格式支持可以继续扩展">9.3 文件格式支持可以继续扩展</h3>
+<p>第一版重点不是“支持所有格式”，而是把 parser 抽象做好。后续支持 PDF、DOCX、HTML、更多 EPUB 结构时，主流程不应该大改。</p>
+<h3 id="94-chunk-质量需要靠问答日志反推">9.4 chunk 质量需要靠问答日志反推</h3>
+<p>chunk 策略不是一次设计完成的。真正有效的优化方式，是拿 Chat log 里的失败样本反推：是 chunk 太碎、召回不准、上下文太短，还是模型没按资料回答。</p>
+<h2 id="十我从这条流水线里得到的经验">十、我从这条流水线里得到的经验</h2>
+<p>做 RAG 文档处理时，我觉得有几条经验很值得提前放进设计里：</p>
+<ol>
+<li><strong>状态要清楚</strong>：不要让半成品文档参与检索。</li>
+<li><strong>成本要透明</strong>：embedding 之前给用户一个确认机会。</li>
+<li><strong>chunk 要可追踪</strong>：记录章节、段落范围和 hash，方便调试。</li>
+<li><strong>失败要可解释</strong>：解析失败、空文档、向量维度错误都要有明确错误。</li>
+<li><strong>先简单再扩展</strong>：队列、缓存、对象存储都可以后加，但主流程先要跑稳。</li>
+</ol>
+<h2 id="结语rag-的质量从文件进入系统那一刻就开始了">结语：RAG 的质量从文件进入系统那一刻就开始了</h2>
+<p>一个 RAG 系统回答得好不好，不是从用户按下“发送”才开始决定的。更早的时候，答案质量就已经被文档解析、chunk 切分、embedding 校验和状态管理影响了。</p>
+<p><code>my-rag</code> 的文档流水线还不复杂，但它已经把最关键的闭环打通：文件上传后，系统知道它处在哪个阶段，知道它能不能被检索，也知道它的向量化成本大概是多少。</p>
+<p>下一篇我会继续讲检索和问答：当文档已经 <code>READY</code>，系统如何把向量检索、关键词召回、RRF 排序和来源引用串起来，让回答更可信。</p>
+<hr>
+<p><strong>下一篇</strong>：《混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答》</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agent/" rel="tag">Agent</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/rag/" rel="tag">RAG</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/chunk/" rel="tag">Chunk</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/embedding/" rel="tag">Embedding</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+           <script
+  type="application/javascript"
+  src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"
+></script>
+<script>
+  var config = {
+    startOnLoad: true,
+    theme:'dark',
+    align:'center',
+  };
+  mermaid.initialize(config);
+</script>
+	</article>
+</main>
+
+
+
+
+	
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">近期文章</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-document-processing-pipeline/">RAG 文档处理流水线：从上传文件到可检索 chunk</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-system-architecture-design/">从零搭一个中文电子书 RAG：为什么先做最小闭环</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/">企业级 AI Agent 落地架构：从知识问答到流程执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-1/">etcd设置TLS证书</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">分类</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/go/">Go</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">标签</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-agent/" title="Data Agent">Data Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enterprise-ai/" title="Enterprise AI">Enterprise AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mvp/" title="MVP">MVP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgvector/" title="Pgvector">Pgvector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rag/" title="RAG">RAG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rrf/" title="RRF">RRF</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector-database/" title="Vector Database">Vector Database</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">社交</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 Aaron Wang的博客.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

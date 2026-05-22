@@ -6,12 +6,12 @@
     <description>Recent content in MVP on Aaron Wang的博客</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 19 May 2026 12:34:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 22 May 2026 09:00:00 +0800</lastBuildDate>
     <atom:link href="https://aarenwang.github.io/tags/mvp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>从零搭一个中文电子书 RAG：为什么先做最小闭环</title>
       <link>https://aarenwang.github.io/posts/agent/rag/rag-system-architecture-design/</link>
-      <pubDate>Tue, 19 May 2026 12:34:00 +0800</pubDate>
+      <pubDate>Fri, 22 May 2026 09:00:00 +0800</pubDate>
       <guid>https://aarenwang.github.io/posts/agent/rag/rag-system-architecture-design/</guid>
       <description>从中文电子书 RAG 的 MVP 入手，梳理上传、解析、切块、向量化、检索、问答和来源引用的最小闭环，以及第一版系统应该保留和暂缓的工程能力。</description>
     </item>

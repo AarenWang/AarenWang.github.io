@@ -75,7 +75,7 @@
 			<h1 class="post__title">从零搭一个中文电子书 RAG：为什么先做最小闭环</h1>
 			<div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-05-19T12:34:00&#43;08:00">May 19, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-05-22T09:00:00&#43;08:00">May 22, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
 	</span>
 </div></div>
 		</header>
@@ -104,14 +104,7 @@
     </li>
     <li><a href="#四最重要的设计不是架构图而是状态流转">四、最重要的设计不是架构图，而是状态流转</a></li>
     <li><a href="#五为什么要让用户确认-embedding-成本">五、为什么要让用户确认 embedding 成本</a></li>
-    <li><a href="#六第一版架构的取舍">六、第一版架构的取舍</a>
-      <ul>
-        <li><a href="#61-暂时不做消息队列">6.1 暂时不做消息队列</a></li>
-        <li><a href="#62-暂时不做对象存储">6.2 暂时不做对象存储</a></li>
-        <li><a href="#63-暂时不做完整权限系统">6.3 暂时不做完整权限系统</a></li>
-        <li><a href="#64-检索先可解释再追求复杂">6.4 检索先可解释，再追求复杂</a></li>
-      </ul>
-    </li>
+    <li><a href="#六第一版架构的取舍">六、第一版架构的取舍</a></li>
     <li><a href="#七这一版真正想验证什么">七、这一版真正想验证什么</a></li>
     <li><a href="#结语先让闭环跑起来">结语：先让闭环跑起来</a></li>
   </ul>
@@ -253,14 +246,7 @@ flowchart LR
 <p>这个交互看起来多一步，但它让系统从一开始就有成本意识。</p>
 <p>当然，本地 token 估算不会和模型服务账单完全一致，所以界面也应该明确提示：预估只用于决策，最终费用以服务商账单为准。</p>
 <h2 id="六第一版架构的取舍">六、第一版架构的取舍</h2>
-<h3 id="61-暂时不做消息队列">6.1 暂时不做消息队列</h3>
-<p>文档处理适合异步化，但第一阶段先用简单链路跑通状态流转和错误处理。等文档处理量上来后，再把 parse、chunk、embedding 拆到队列里会更稳。</p>
-<h3 id="62-暂时不做对象存储">6.2 暂时不做对象存储</h3>
-<p>本地文件系统已经足够支撑 MVP。等到需要多实例部署、备份、跨机器访问时，再接 MinIO 或云对象存储。</p>
-<h3 id="63-暂时不做完整权限系统">6.3 暂时不做完整权限系统</h3>
-<p>当前重点是验证知识库问答闭环。权限、多租户、审计日志都应该做，但它们应该建立在核心流程稳定之后。</p>
-<h3 id="64-检索先可解释再追求复杂">6.4 检索先可解释，再追求复杂</h3>
-<p>向量检索、关键词检索、RRF、rerank 都可以逐步加入。但每加一个环节，都要能回答：它解决了哪个召回问题？它让结果更好，还是只是让链路更复杂？</p>
+<p>第一版架构的核心取舍，是先让闭环稳定、可解释，再决定哪些地方值得增加复杂度。文档处理确实适合异步化，但第一阶段先用简单链路跑通状态流转和错误处理，等文档处理量上来后，再把 parse、chunk、embedding 拆到队列里会更稳；本地文件系统也已经足够支撑 MVP，等需要多实例部署、备份、跨机器访问时，再接 MinIO 或云对象存储；权限、多租户、审计日志都应该做，但它们应该建立在知识库问答闭环稳定之后；检索也是同样的原则，向量检索、关键词检索、RRF、rerank 都可以逐步加入，但每加一个环节，都要能回答：它解决了哪个召回问题？它让结果更好，还是只是让链路更复杂？</p>
 <h2 id="七这一版真正想验证什么">七、这一版真正想验证什么</h2>
 <p>第一版 <code>my-rag</code> 不是为了证明“我能搭一个完整企业知识库平台”，而是验证三个更基础的问题：</p>
 <ol>
@@ -292,6 +278,9 @@ flowchart LR
 		</li>
 		<li class="tags__item">
 			<a class="tags__link btn" href="/tags/pgvector/" rel="tag">pgvector</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" rel="tag">知识库</a>
 		</li>
 	</ul>
 </div>
@@ -388,8 +377,11 @@ flowchart LR
 		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%8F%AF%E4%BF%A1%E9%97%AE%E7%AD%94/" title="可信问答">可信问答</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/" title="文档处理">文档处理</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" title="知识库">知识库</a>
 	</div>
 </div>
 <div class="widget-social widget">

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>文档处理 on Aaron Wang的博客</title>
+    <link>https://aarenwang.github.io/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/</link>
+    <description>Recent content in 文档处理 on Aaron Wang的博客</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 22 May 2026 09:20:00 +0800</lastBuildDate>
+    <atom:link href="https://aarenwang.github.io/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RAG 文档处理流水线：从上传文件到可检索 chunk</title>
+      <link>https://aarenwang.github.io/posts/agent/rag/rag-document-processing-pipeline/</link>
+      <pubDate>Fri, 22 May 2026 09:20:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/rag/rag-document-processing-pipeline/</guid>
+      <description>拆解 RAG 文档从上传到 READY 的处理链路，说明解析、切块、费用预估、embedding、状态流转和失败处理如何影响最终问答质量。</description>
+    </item>
+  </channel>
+</rss>

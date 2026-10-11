@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>从调用大模型到自主智能体：AI 应用的四级自主性光谱 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">从调用大模型到自主智能体：AI 应用的四级自主性光谱</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-10-11T15:00:00&#43;08:00">October 11, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一l1能力调用ai-是一个聪明的工具">一、L1：能力调用——AI 是一个聪明的工具</a></li>
+    <li><a href="#二l2智能决策ai-开始参与判断">二、L2：智能决策——AI 开始参与判断</a></li>
+    <li><a href="#三l3动态编排ai-开始决定下一步怎么做">三、L3：动态编排——AI 开始决定下一步怎么做</a></li>
+    <li><a href="#四l4自主执行ai-开始负责完成整个任务">四、L4：自主执行——AI 开始负责完成整个任务</a></li>
+    <li><a href="#五四个等级究竟有什么不同">五、四个等级，究竟有什么不同？</a></li>
+    <li><a href="#六这不是凭空创造的分类">六、这不是凭空创造的分类</a>
+      <ul>
+        <li><a href="#参考资料">参考资料</a></li>
+      </ul>
+    </li>
+    <li><a href="#七给开发者的坐标参考">七、给开发者的坐标参考</a>
+      <ul>
+        <li><a href="#场景一给现有系统加-ai-功能大概率落在-l1-到-l3">场景一：给现有系统加 AI 功能——大概率落在 L1 到 L3</a></li>
+        <li><a href="#场景二开发企业智能体l2-到-l4-怎么选">场景二：开发企业智能体——L2 到 L4 怎么选</a></li>
+        <li><a href="#结语">结语</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<p>过去几年，人工智能的发展非常快。</p>
+<p>最早，我们看到的是各种接入大语言模型的应用：智能客服、AI 翻译、文章摘要、智能搜索。后来，又出现了 AI 工作流、AI Agent（智能体）、多智能体协作等概念。</p>
+<p>热门的通用AI产品国外有Claude、ChatGPT等等，国内有WorkBuddy、豆包、千问办公等等。还有企业内部有自建或外部的各种各样AI应用</p>
+<p>这些产品都使用大语言模型，但它们的工作方式可能有很大不同。</p>
+<p>有的只是把问题交给大模型，拿到答案后展示给用户；有的能让大模型判断下一步该做什么；还有的甚至可以把一项复杂任务交给 AI，让它自己想办法完成。</p>
+<p>那么，它们之间究竟有什么区别？</p>
+<p>我认为，可以从一个很简单的角度理解：</p>
+<blockquote>
+<p>在一个 AI 应用中，究竟是谁决定下一步该做什么？是程序员事先写好的程序，还是大模型自己？</p>
+</blockquote>
+<p>沿着这个问题，我们可以把 AI 应用划分为四个等级：</p>
+<ul>
+<li><strong>L1：能力调用</strong>——程序调用 AI，让 AI 完成一个具体工作。</li>
+<li><strong>L2：智能决策</strong>——AI 参与判断，但整体流程仍由程序控制。</li>
+<li><strong>L3：动态编排</strong>——AI 可以自己选择工具，决定下一步怎么做。</li>
+<li><strong>L4：自主执行</strong>——AI 围绕一个任务目标，自主规划、执行、检查和调整。</li>
+</ul>
+<p>这四个等级并不是某家厂商发布的统一行业标准，而是我结合目前 AI 应用的技术实践，整理出来的一种理解方式。</p>
+<p>它们之间最重要的差别，并不是用了什么模型，也不是用了多少个 AI，而是 AI 对整个工作流程拥有多大的决定权。</p>
+<h2 id="一l1能力调用ai-是一个聪明的工具">一、L1：能力调用——AI 是一个聪明的工具</h2>
+<p>这是最容易理解、也最常见的 AI 应用形式。</p>
+<p>假设一家新闻网站增加了一个功能：用户打开一篇很长的新闻，点击“AI 总结”，系统就自动生成一段几百字的摘要。</p>
+<p>它的工作过程非常简单：</p>
+<ol>
+<li>用户点击“AI 总结”。</li>
+<li>网站把新闻内容发送给大模型。</li>
+<li>大模型生成摘要。</li>
+<li>网站把摘要展示给用户。</li>
+</ol>
+<p>整个过程中，AI 只负责一件事：把文章总结好。</p>
+<p>至于什么时候调用 AI、把什么内容交给 AI、拿到结果后怎么展示，全部由网站原来的程序决定。</p>
+<p>类似的例子还有很多：</p>
+<ul>
+<li>邮件软件中的“AI 润色”按钮。</li>
+<li>浏览器中的“翻译这个网页”功能。</li>
+<li>电商平台自动生成商品介绍。</li>
+<li>办公软件根据一段文字生成标题。</li>
+<li>客服系统调用 AI 生成一段建议回复。</li>
+</ul>
+<p>这些应用可能非常实用，但它们有一个共同特点：</p>
+<p><strong>AI 只负责完成一个具体的工作，并不决定整个应用接下来做什么。</strong></p>
+<p>我们可以把 L1 理解为：原来的软件增加了一件非常聪明的工具。</p>
+<h2 id="二l2智能决策ai-开始参与判断">二、L2：智能决策——AI 开始参与判断</h2>
+<p>到了第二级，AI 不再只是生成文字，而是开始参与业务决策。</p>
+<p>假设一家电商平台每天收到大量售后申请。</p>
+<p>过去，平台可能要求用户先选择问题类型：退款、退货、物流异常、商品损坏等。</p>
+<p>现在，平台可以让用户直接用自然语言描述问题：</p>
+<blockquote>
+<p>“我上周买的电饭煲，今天打开以后发现内胆有一道裂缝，我想换一个。”</p>
+</blockquote>
+<p>系统把这段话交给大模型，让它判断用户究竟想办理什么业务。</p>
+<p>大模型可能返回：</p>
+<ul>
+<li>问题类型：商品质量问题。</li>
+<li>用户诉求：换货。</li>
+</ul>
+<p>然后，系统根据这个判断，进入预先设计好的换货流程。</p>
+<p>这里发生了一个重要变化。</p>
+<p>在 L1 中，AI 只负责生成内容；在 L2 中，AI 的输出已经能够影响程序接下来走哪条路。</p>
+<p>不过，这个变化仍然是有限的。</p>
+<p>例如，平台可能只允许 AI 从“退款、退货、换货、人工客服”四个选项中选择。</p>
+<p>AI 可以决定选择哪一项，但不能自己发明一个新的售后流程，也不能随意调用其他业务系统。</p>
+<p>类似的应用还有：</p>
+<ul>
+<li>银行根据客户描述，自动判断需要办理什么业务。</li>
+<li>企业根据邮件内容，自动决定分配给哪个部门。</li>
+<li>数据分析系统根据用户的问题，判断应该查询哪张数据表。</li>
+<li>客服系统判断问题是否复杂，决定由 AI 回答还是转人工。</li>
+</ul>
+<p><strong>L2 的关键是：AI 获得了局部决策权，但整个业务流程仍然由程序控制。</strong></p>
+<p>这种方式特别适合企业应用，因为企业既希望利用 AI 灵活理解自然语言，又希望业务执行过程保持稳定、可预测。</p>
+<h2 id="三l3动态编排ai-开始决定下一步怎么做">三、L3：动态编排——AI 开始决定下一步怎么做</h2>
+<p>到了第三级，变化就更明显了。</p>
+<p>假设你对一个 AI 助手说：</p>
+<blockquote>
+<p>“帮我查一下北京明天的天气。如果下雨，帮我找几个适合带孩子去的室内景点。”</p>
+</blockquote>
+<p>如果采用 L2 的方式，程序员可能需要提前设计好完整的流程：</p>
+<p>先查天气，再判断是否下雨，如果下雨就查询景点，最后生成回复。</p>
+<p>但在 L3 中，程序员可以不必把每一步都写死。</p>
+<p>系统向 AI 提供几个可以使用的工具，例如：</p>
+<ul>
+<li>查询天气。</li>
+<li>搜索景点。</li>
+<li>查询地图。</li>
+<li>获取景点介绍。</li>
+</ul>
+<p>AI 根据用户的要求，自行决定先使用哪个工具、得到结果后是否需要调用其他工具，以及什么时候结束。</p>
+<p>例如，AI 可能先调用天气工具，发现明天有雨；随后搜索室内景点；再查询几个景点的位置；最后整理出一份建议。</p>
+<p>如果天气预报显示不下雨，AI 也可能直接告诉用户不需要特别安排室内活动。</p>
+<p>在这个过程中，AI 不再只是从几个固定选项中选择，而是能够根据中间结果，动态决定后续操作。</p>
+<p>类似的例子还有：</p>
+<ul>
+<li>AI 助手根据问题，自行选择搜索网页、查询数据库或者使用计算器。</li>
+<li>AI 客服根据客户诉求，选择查询订单、物流、退款政策等工具。</li>
+<li>AI 数据助手根据问题，选择查询数据、执行计算、生成图表。</li>
+<li>AI 编程助手根据开发者的问题，选择搜索代码、读取文件、运行测试。</li>
+</ul>
+<p>这里涉及一个重要概念：<strong>Tool Calling（工具调用）</strong>。</p>
+<p>大模型本身并不能直接查询天气、读取企业数据库或操作文件。开发者需要向它提供相应的工具接口，并由程序实际执行工具调用。</p>
+<p>但在 L3 中，模型已经可以决定使用什么工具，以及下一步需要做什么。</p>
+<p><strong>L3 的关键是：程序提供工具和规则，AI 在这些规则之内动态编排执行步骤。</strong></p>
+<p>需要注意的是，动态编排并不意味着 AI 可以不受限制地操作系统。它能使用哪些工具、能读取哪些数据、哪些操作需要审批，仍然可以由程序严格控制。</p>
+<h2 id="四l4自主执行ai-开始负责完成整个任务">四、L4：自主执行——AI 开始负责完成整个任务</h2>
+<p>前三个等级，AI 的自主性逐渐增强。</p>
+<p>到了第四级，我们不再只是让 AI 回答问题、做出判断或选择工具，而是直接交给它一个相对完整的任务。</p>
+<p>例如，你对一个 AI 编程助手说：</p>
+<blockquote>
+<p>“帮我给这个网站增加一个用户登录功能，包括密码登录、错误提示和必要的测试。”</p>
+</blockquote>
+<p>如果采用 L3 的方式，AI 可能根据指令选择读取文件、修改代码、运行命令等工具。</p>
+<p>但在 L4 中，我们希望它进一步具备完成整个任务的能力。</p>
+<p>它可能会：</p>
+<ol>
+<li>先查看项目结构，理解已有代码。</li>
+<li>制定一个实现计划。</li>
+<li>修改后端接口和前端页面。</li>
+<li>编写相应的测试。</li>
+<li>运行测试，发现错误。</li>
+<li>根据错误信息修改代码。</li>
+<li>再次验证，直到达到预定的完成标准。</li>
+<li>向用户汇报结果，以及仍然存在的问题。</li>
+</ol>
+<p>这时候，AI 已经不只是决定下一次调用哪个工具，而是在围绕任务目标，持续安排和调整自己的工作。</p>
+<p>类似的场景还有：</p>
+<ul>
+<li><strong>深度研究</strong>：用户要求研究一个行业的发展情况。AI 自行搜索资料、整理信息、交叉验证、发现信息不足后继续调查，最后形成报告。</li>
+<li><strong>数据分析</strong>：用户提供一份销售数据，要求找出业绩下降的原因。AI 自行检查数据、提出假设、进行计算、生成图表，并验证分析结论。</li>
+<li><strong>软件开发</strong>：用户提出一个功能需求，AI 自行阅读代码、修改程序、执行测试、修复问题，最终交付修改结果。</li>
+</ul>
+<p>L4 与 L3 的边界，有时并不十分清晰。</p>
+<p>一个使用工具的 AI，可能在某个任务中表现出很强的自主性；另一个看起来复杂的 AI 工作流，也可能只是执行事先规定好的步骤。</p>
+<p>因此，我更倾向于用下面这个问题判断：</p>
+<blockquote>
+<p>AI 是否不仅决定下一步做什么，还能够围绕整个任务目标，自主安排工作、检查结果并在必要时调整计划？</p>
+</blockquote>
+<p>如果答案是肯定的，那么这个应用就更接近 L4。</p>
+<p>当然，自主执行不意味着 AI 必须完全脱离人类监督。对于转账、删除重要数据、发布生产系统等高风险操作，仍然可以要求用户审批。</p>
+<h2 id="五四个等级究竟有什么不同">五、四个等级，究竟有什么不同？</h2>
+<p>回过头来看，这四个等级实际上描述了一个连续变化的过程。</p>
+<table>
+  <thead>
+      <tr>
+          <th>等级</th>
+          <th>AI 负责什么</th>
+          <th>程序负责什么</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>L1 能力调用</td>
+          <td>完成一次具体工作</td>
+          <td>决定整个流程</td>
+      </tr>
+      <tr>
+          <td>L2 智能决策</td>
+          <td>判断应该走哪条分支</td>
+          <td>规定可选择的流程</td>
+      </tr>
+      <tr>
+          <td>L3 动态编排</td>
+          <td>选择工具和后续步骤</td>
+          <td>提供工具、权限与执行环境</td>
+      </tr>
+      <tr>
+          <td>L4 自主执行</td>
+          <td>规划、执行、验证和调整任务</td>
+          <td>提供目标约束、运行环境与监督机制</td>
+      </tr>
+  </tbody>
+</table>
+<p>从 L1 到 L4，最重要的变化就是：</p>
+<p><strong>AI 从一个被程序调用的工具，逐渐成为能够参与甚至主导工作流程的执行者。</strong></p>
+<p>但这里需要特别强调：这不是一条所有软件都必须不断升级的道路。</p>
+<p>一个能够自动总结新闻的 L1 应用，完全可能已经很好地满足用户需求。</p>
+<p>一个负责银行转账审批的系统，也未必应该让 AI 自由决定整个流程。</p>
+<p>在某些场景中，确定性和可控性比自主性更重要。</p>
+<p>因此，L4 并不天然比 L2 更好。真正重要的是，选择与业务需求相匹配的自主性等级。</p>
+<h2 id="六这不是凭空创造的分类">六、这不是凭空创造的分类</h2>
+<p>关于 AI 应用的自主性，业界已经有不少类似讨论。</p>
+<p>例如，Anthropic 在《Building Effective Agents》中，区分了 Workflow（工作流）和 Agent（智能体）。</p>
+<p>它认为，Workflow 通常由预先定义的代码路径来编排，而 Agent 则让大模型动态决定工作过程以及工具使用。</p>
+<p>Hugging Face 也提出过 Levels of Agency（自主性等级）的概念，根据大模型对系统执行流程的影响程度，区分不同类型的 AI 应用。</p>
+<p>Microsoft 等厂商也在讨论从确定性程序编排到模型主导编排的连续变化。</p>
+<p>这些讨论虽然在具体分级数量、名称和边界上有所不同，但它们都指向一个重要问题：</p>
+<blockquote>
+<p>大模型究竟在多大程度上拥有系统的流程控制权？</p>
+</blockquote>
+<p>本文提出的四级光谱，正是尝试用一种更容易理解的方式，把这种变化描述清楚。</p>
+<h3 id="参考资料">参考资料</h3>
+<ul>
+<li>Anthropic：《Building Effective Agents》 <a href="https://www.anthropic.com/engineering/building-effective-agents">https://www.anthropic.com/engineering/building-effective-agents</a></li>
+<li>Hugging Face：《Smolagents — Levels of Agency》 <a href="https://huggingface.co/blog/smolagents">https://huggingface.co/blog/smolagents</a></li>
+<li>OpenAI：《A Practical Guide to Building AI Agents》 <a href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/">https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/</a></li>
+</ul>
+<h2 id="七给开发者的坐标参考">七、给开发者的坐标参考</h2>
+<p>讲了这么多等级，说到底它有什么用？</p>
+<p>我觉得它更像一张坐标图，帮你回答一个很实际的问题：<strong>我正在做的这件事，AI 到底该拿到多大的决定权。</strong> 下面按两种最常见的场景给一点参考。</p>
+<h3 id="场景一给现有系统加-ai-功能大概率落在-l1-到-l3">场景一：给现有系统加 AI 功能——大概率落在 L1 到 L3</h3>
+<p>给一个已经在跑的系统加能力时，先别急着问“要不要做 Agent”，而是问：这个新功能，把 AI 放在了流程的哪个位置？</p>
+<table>
+  <thead>
+      <tr>
+          <th>你想要的</th>
+          <th>对应等级</th>
+          <th>判断依据</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>新增一个聪明的动作，流程不变</td>
+          <td>L1</td>
+          <td>输入输出明确，只是原来由人做的某一步换成 AI 做</td>
+      </tr>
+      <tr>
+          <td>让 AI 接住模糊输入，但走哪条路仍由程序定</td>
+          <td>L2</td>
+          <td>原来靠人判断或规则匹配的分支，现在交给 AI 理解</td>
+      </tr>
+      <tr>
+          <td>让 AI 根据中间结果自己串工具、排步骤</td>
+          <td>L3</td>
+          <td>分支太多、穷举写死不划算，且工具边界清晰</td>
+      </tr>
+  </tbody>
+</table>
+<p>一个很实用的判断法：<strong>加这个功能，是加了一个动作，还是让 AI 选一条既有分支，还是让 AI 自己排步骤？</strong> 分别是 L1、L2、L3。</p>
+<p>建议是——<strong>能停在低层就别急着上高层。</strong> 每往上一级，AI 的决定权变大，你为“可控、可测、可信”付出的代价也随之变大。第一版通常停在 L1 或 L2 就够了。</p>
+<h3 id="场景二开发企业智能体l2-到-l4-怎么选">场景二：开发企业智能体——L2 到 L4 怎么选</h3>
+<p>这一档要选的是“让 AI 当多大程度的执行者”，看两件事就够：<strong>任务的可预测性</strong>，以及<strong>失败的代价</strong>。</p>
+<ul>
+<li><strong>L2：</strong> 流程受监管、结果必须可复现可审计（审批、合规、财务）——老老实实停在 L2，让 AI 只做判断，流程由程序兜底。</li>
+<li><strong>L3：</strong> 目标清楚但路径多变、工具边界明确（客服、数据查询、运维操作）——放开 L3，让 AI 自己编排，但工具与权限卡死。</li>
+<li><strong>L4：</strong> 要整体交付、需要多步迭代和自我纠错，且能接受过程不完全可预测（研发、深度研究）——可以上 L4，但必须同时给出<strong>完成标准</strong>和<strong>监督机制</strong>。</li>
+</ul>
+<p>一句话：<strong>不是越高越好，而是匹配业务。</strong> 决定权每高一级，就要多配一套权限控制、结果验证和审计手段，否则自主性就变成了不可控。</p>
+<h3 id="结语">结语</h3>
+<p>过去几十年，软件流程主要由程序员事先写死：定义规则、设计分支、安排顺序。大模型带来的是另一种可能——不必规定所有步骤，而是把一部分判断权、编排权甚至执行权交给 AI。</p>
+<p>但这不意味着传统程序会消失。恰恰相反，AI 自主性越高，权限控制、数据管理、运行环境、结果验证和安全监督就越重要。未来的软件，很可能是确定性流程与 AI 动态执行过程按业务需要灵活组合。</p>
+<p>所以这篇文章真正的价值，不是判断一个产品算不算 Agent，而是帮你先定位、再选型：<strong>哪些工作该交给 AI、交到哪一级，哪些仍然该由传统程序负责。</strong></p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agent/" rel="tag">Agent</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/ai-%E5%BA%94%E7%94%A8/" rel="tag">AI 应用</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%E8%87%AA%E4%B8%BB%E6%80%A7/" rel="tag">自主性</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+
+
+
+	
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">近期文章</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/">从调用大模型到自主智能体：AI 应用的四级自主性光谱</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-document-processing-pipeline/">RAG 文档处理流水线：从上传文件到可检索 chunk</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-system-architecture-design/">从零搭一个中文电子书 RAG：为什么先做最小闭环</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/">企业级 AI Agent 落地架构：从知识问答到流程执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">分类</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/go/">Go</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">标签</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ai-%E5%BA%94%E7%94%A8/" title="AI 应用">AI 应用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-agent/" title="Data Agent">Data Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enterprise-ai/" title="Enterprise AI">Enterprise AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mvp/" title="MVP">MVP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgvector/" title="Pgvector">Pgvector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rag/" title="RAG">RAG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rrf/" title="RRF">RRF</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector-database/" title="Vector Database">Vector Database</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%8F%AF%E4%BF%A1%E9%97%AE%E7%AD%94/" title="可信问答">可信问答</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/" title="文档处理">文档处理</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" title="知识库">知识库</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E8%87%AA%E4%B8%BB%E6%80%A7/" title="自主性">自主性</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">社交</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 Aaron Wang的博客.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

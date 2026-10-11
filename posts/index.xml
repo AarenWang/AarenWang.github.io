@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Aaron Wang的博客</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 22 May 2026 09:40:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2026 15:00:00 +0800</lastBuildDate>
     <atom:link href="https://aarenwang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从调用大模型到自主智能体：AI 应用的四级自主性光谱</title>
+      <link>https://aarenwang.github.io/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/</link>
+      <pubDate>Sun, 11 Oct 2026 15:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/</guid>
+      <description>用「谁决定下一步」这一条线索，把 AI 应用划分为 L1 能力调用、L2 智能决策、L3 动态编排、L4 自主执行四个等级，说明 AI 对工作流程拥有多少决定权。</description>
+    </item>
     <item>
       <title>混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</title>
       <link>https://aarenwang.github.io/posts/agent/rag/rag-hybrid-retrieval-optimization/</link>

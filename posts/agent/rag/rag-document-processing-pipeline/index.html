@@ -108,7 +108,7 @@
 </div><div class="content post__content clearfix">
 			<h1 id="rag-文档处理流水线从上传文件到可检索-chunk">RAG 文档处理流水线：从上传文件到可检索 chunk</h1>
 <blockquote>
-<p>系列定位：这是 <code>my-rag</code> 的 MVP 实战记录，重点是把真实链路讲清楚，而不是提前包装成完整企业平台。<br>
+<p>系列定位：这是 <a href="https://github.com/AarenWang/my-rag">my-rag</a> 的 MVP 实战记录，重点是把真实链路讲清楚，而不是提前包装成完整企业平台。<br>
 阅读时间：10 分钟<br>
 适合读者：正在做文档解析、chunk 切分、embedding 成本控制的开发者<br>
 关键词：文档解析、chunk、embedding、费用预估、状态流转</p>
@@ -123,7 +123,7 @@
 <li>半成品文档进入检索，回答就可能引用错误资料。</li>
 <li>向量化失败但状态没更新，用户会误以为系统不可用。</li>
 </ul>
-<p>所以在 <code>my-rag</code> 里，我把文档处理拆成一条明确的流水线：<strong>上传 -&gt; 解析 -&gt; 切块 -&gt; 费用预估 -&gt; embedding -&gt; READY</strong>。</p>
+<p>所以在 <a href="https://github.com/AarenWang/my-rag">my-rag</a> 里，我把文档处理拆成一条明确的流水线：<strong>上传 -&gt; 解析 -&gt; 切块 -&gt; 费用预估 -&gt; embedding -&gt; READY</strong>。</p>
 <p>这篇文章就讲这条流水线为什么这样设计。</p>
 <h2 id="一文档状态是整条链路的骨架">一、文档状态是整条链路的骨架</h2>
 <p>文档处理不是一个瞬间完成的动作，而是一组阶段性任务。每个阶段都应该有明确状态。</p>
@@ -158,7 +158,7 @@ stateDiagram-v2
 <p>第一版没有直接接对象存储，而是先使用本地文件系统。这个选择不复杂，但对 MVP 来说够用。真正需要多实例部署、统一备份和跨机器访问时，再把存储层替换成 MinIO 或云对象存储也不迟。</p>
 <h2 id="三解析阶段先把格式差异收敛掉">三、解析阶段：先把“格式差异”收敛掉</h2>
 <p>文档格式会带来很多差异：TXT 是纯文本，Markdown 有标题结构，PDF、EPUB、DOCX 可能需要专门解析库。</p>
-<p><code>my-rag</code> 的解析层使用 <code>DocumentParser</code> 抽象，把不同格式收敛成统一的 <code>ParsedDocument</code>。上层不用关心具体文件怎么读，只关心最终得到的结构化文本。</p>
+<p><a href="https://github.com/AarenWang/my-rag">my-rag</a> 的解析层使用 <code>DocumentParser</code> 抽象，把不同格式收敛成统一的 <code>ParsedDocument</code>。上层不用关心具体文件怎么读，只关心最终得到的结构化文本。</p>
 <p>核心思路是：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#069;font-weight:bold">private</span><span style="color:#bbb"> </span>DocumentParser<span style="color:#bbb"> </span><span style="color:#c0f">selectParser</span>(RagDocument<span style="color:#bbb"> </span>document)<span style="color:#bbb"> </span>{<span style="color:#bbb">
 </span></span></span><span style="display:flex;"><span><span style="color:#bbb">    </span>String<span style="color:#bbb"> </span>fileType<span style="color:#bbb"> </span><span style="color:#555">=</span><span style="color:#bbb"> </span>document.<span style="color:#309">getFileType</span>();<span style="color:#bbb">
@@ -174,7 +174,7 @@ stateDiagram-v2
 <p>更重要的是，解析失败必须落到状态机里。如果解析结果为空，系统不能继续切块，而应该把文档标记为 <code>FAILED</code>，并记录错误原因。</p>
 <h2 id="四切块阶段不是按字数切开那么简单">四、切块阶段：不是按字数切开那么简单</h2>
 <p>RAG 里的 chunk 不是普通分页。它既要适合 embedding，又要保留足够语义。</p>
-<p><code>my-rag</code> 的 chunk 逻辑围绕几个原则：</p>
+<p><a href="https://github.com/AarenWang/my-rag">my-rag</a> 的 chunk 逻辑围绕几个原则：</p>
 <ul>
 <li>优先按章节和段落组织内容。</li>
 <li>每个 chunk 有最小和最大字符数限制。</li>
@@ -197,7 +197,7 @@ stateDiagram-v2
 <p>比如用户问：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>RAG_EMBEDDING_BATCH_SIZE 怎么配置？
 </span></span></code></pre></div><p>这种问题里，环境变量名就是强信号。向量检索可能能理解“配置 embedding 批大小”，但关键词检索更直接。</p>
-<p>因此 <code>my-rag</code> 在 chunk 写入时，可以同步维护一份关键词检索索引：</p>
+<p>因此 <a href="https://github.com/AarenWang/my-rag">my-rag</a> 在 chunk 写入时，可以同步维护一份关键词检索索引：</p>
 <ul>
 <li><code>search_text</code> 保存章节标题和正文。</li>
 <li><code>search_vector</code> 保存 PostgreSQL 全文搜索向量。</li>
@@ -207,7 +207,7 @@ stateDiagram-v2
 <h2 id="六费用预估把-embedding-从自动动作改成用户确认">六、费用预估：把 embedding 从“自动动作”改成“用户确认”</h2>
 <p>embedding 是 RAG 系统里最容易被忽略的成本点。</p>
 <p>如果用户上传一本很长的电子书，系统自动把几百个 chunk 全部送去 embedding API，用户既不知道会花多少钱，也无法在索引前做判断。</p>
-<p>所以 <code>my-rag</code> 把文档索引拆成两步：</p>
+<p>所以 <a href="https://github.com/AarenWang/my-rag">my-rag</a> 把文档索引拆成两步：</p>
 <ol>
 <li>先解析并切块，得到 chunk 数和本地 token 估算。</li>
 <li>用户确认预估成本后，再生成 embedding。</li>
@@ -250,7 +250,7 @@ stateDiagram-v2
 </ol>
 <h2 id="结语rag-的质量从文件进入系统那一刻就开始了">结语：RAG 的质量从文件进入系统那一刻就开始了</h2>
 <p>一个 RAG 系统回答得好不好，不是从用户按下“发送”才开始决定的。更早的时候，答案质量就已经被文档解析、chunk 切分、embedding 校验和状态管理影响了。</p>
-<p><code>my-rag</code> 的文档流水线还不复杂，但它已经把最关键的闭环打通：文件上传后，系统知道它处在哪个阶段，知道它能不能被检索，也知道它的向量化成本大概是多少。</p>
+<p><a href="https://github.com/AarenWang/my-rag">my-rag</a> 的文档流水线还不复杂，但它已经把最关键的闭环打通：文件上传后，系统知道它处在哪个阶段，知道它能不能被检索，也知道它的向量化成本大概是多少。</p>
 <p>下一篇我会继续讲检索和问答：当文档已经 <code>READY</code>，系统如何把向量检索、关键词召回、RRF 排序和来源引用串起来，让回答更可信。</p>
 <hr>
 <p><strong>下一篇</strong>：《混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答》</p>

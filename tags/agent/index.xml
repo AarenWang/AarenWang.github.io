@@ -57,5 +57,12 @@
       <guid>https://aarenwang.github.io/posts/agent/deer-flow/how-to-prompt/</guid>
       <description>从 Deer-Flow 主 Agent 的 system prompt 入手，分析它如何通过记忆、澄清、工具与输出规范来约束智能体执行复杂任务。</description>
     </item>
+    <item>
+      <title>给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？</title>
+      <link>https://aarenwang.github.io/posts/agent/agent-principle-design/02-agent-core-principles/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/agent-principle-design/02-agent-core-principles/</guid>
+      <description>智能体的核心工作流程是通过一个循环将用户任务输入 智能体思考与判断 → 工具行动 → 观察结果 → 再判断 完成任务输出结果的这么一个过程</description>
+    </item>
   </channel>
 </rss>

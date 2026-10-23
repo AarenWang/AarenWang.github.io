@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？ - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="从大模型、工具、环境观察到 Agent Loop，用一个最小项目理解智能体的工作原理。">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？</h1>
+			<div class="post__meta meta"><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一一颗大脑和一副身体">一、一颗大脑，和一副身体</a></li>
+    <li><a href="#二一个智能体最基本由什么组成">二、一个智能体，最基本由什么组成？</a></li>
+    <li><a href="#三agent-的秘密不只是有工具而是有一个循环">三、Agent 的秘密，不只是有工具，而是有一个循环</a></li>
+    <li><a href="#四几十行核心逻辑就能看懂一个最小-agent">四、几十行核心逻辑，就能看懂一个最小 Agent</a></li>
+    <li><a href="#五能动手还不等于能可靠地办事">五、能动手，还不等于能可靠地办事</a></li>
+    <li><a href="#六真正重要的是形成一个可控的行动闭环">六、真正重要的，是形成一个可控的行动闭环</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<p>在上一篇《AI 不只是聊天：从回答问题到自己干活，四个等级智能划分》中，我们讨论了 AI 应用的一个重要变化：<strong>大模型不再只是被程序调用来回答问题，还开始决定下一步要做什么，甚至参与完成整个任务。</strong></p>
+<p>但一个新的问题随之而来：大模型明明主要是在生成文字，为什么接上一个智能体就能给人干活了呢，从编程、写文档、做数据分析、做PPT、剪辑视频</p>
+<p>要回答这个问题，可以先从一颗大脑说起。</p>
+<h2 id="一一颗大脑和一副身体">一、一颗大脑，和一副身体</h2>
+<p>大模型像一颗<strong>大脑</strong>：他有海量的知识和强大的思考推理能力，却没有感官也没有四肢。它读过大量文本，你问它“这个代码为什么写的不对”，它能列出十种可能的原因—，然后什么也做不了，因为它既看不见你的文件，也跑不了你的命令。</p>
+<p>给它接上<strong>五官</strong>，让它能读文件、查网页、看报错日志；接上<strong>手脚</strong>，让它能写文件、跑命令；再有一根神经，把每一步的结果传回大脑，让它据此重新判断下一步。有了这一整套流程，它才从“能出主意”变成“能把事办成”——这才叫智能体。</p>
+<h2 id="二一个智能体最基本由什么组成">二、一个智能体，最基本由什么组成？</h2>
+<p>我们先不谈多智能体、长期记忆、复杂工作流。一个最小的工具型智能体，可以先理解为五个部分。</p>
+<table>
+  <thead>
+      <tr>
+          <th>核心部分</th>
+          <th>通俗理解</th>
+          <th>在程序里负责什么</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>大模型（LLM）</td>
+          <td>思考与判断</td>
+          <td>理解任务，决定回答还是请求调用工具</td>
+      </tr>
+      <tr>
+          <td>工具（Tools）</td>
+          <td>观察与行动的接口</td>
+          <td>查询信息、读取文件、写文件、执行命令</td>
+      </tr>
+      <tr>
+          <td>上下文（Context）</td>
+          <td>当前工作的记录</td>
+          <td>保存用户要求、之前的回复、工具执行结果</td>
+      </tr>
+      <tr>
+          <td>执行循环（Agent Loop）</td>
+          <td>不断推进工作的机制</td>
+          <td>调用模型、执行工具、回填结果、决定继续或停止</td>
+      </tr>
+  </tbody>
+</table>
+<p>这里需要特别解释“眼睛”和“手脚”：<strong>它们往往都是工具，只是用途不同。</strong></p>
+<p>例如，<code>read_file</code> 读取文件，像是让 Agent 看见电脑里的内容；<code>write_file</code> 修改文件，像是让 Agent 动手；<code>run_command</code> 则能够让它通过命令完成更丰富的操作。对于智能体，所谓“感知”，通常并不是摄像头，而是<strong>文件内容、网页、数据库查询结果、程序报错</strong>等数字信息。</p>
+<div class="mermaid">
+flowchart TB
+    U[用户任务] --> R
+    subgraph R[Agent Runtime：执行和控制]
+        P[提示词 + 当前上下文] --> M[大模型 LLM]
+        M -->|请求动作| T[工具执行器 Tools]
+        T -->|观察结果 Observation| C[更新上下文 Context]
+        C --> P
+        M -->|无需继续调用工具| F[最终回答]
+    end
+    T <--> E[(文件 / 网页 / 数据库 / 其他软件)]
+</div>
+<p>需要注意，大模型并不是直接操纵电脑。它通常是输出一份<strong>工具调用请求</strong>，例如“读取 <code>上半年销售.xlsx</code>”；真正执行文件读取操作的，是智能体程序。</p>
+<h2 id="三agent-的秘密不只是有工具而是有一个循环">三、Agent 的秘密，不只是有工具，而是有一个循环</h2>
+<p>假设我们对一个智能体说：</p>
+<blockquote>
+<p>“帮我查一下公司上半年的主要产品线销售情况，整理成一份半年度经营汇报初稿，放到 <code>半年度汇报.xlsx</code> 里。”</p>
+</blockquote>
+<p>它可能这样工作。</p>
+<p><strong>第一轮：先找料。</strong> 模型不知道自己手上有什么材料，于是请求列出工作目录。智能体内部的工具返回目录内容，模型看到里面有几个 Excel 和一份去年的汇报文档。</p>
+<p><strong>第二轮：再读。</strong> 模型请求读取“上半年销售.xlsx”，程序把表格内容取出来返回。模型读后发现：只有两条产品线的数据完整，第三条线缺 5 月和 6 月——直接写下去，汇报就是错的。</p>
+<p><strong>第三轮：补信息，或者主动问你。</strong> 模型先去翻去年的汇报，看第三条线往年是什么口径；如果仍然对不上，它会停下来问你一句：“产品线 C 的 5–6 月数据没找到，您补一份给我？”</p>
+<p><strong>第四轮：动笔。</strong> 你告诉他产品线 C 的 5-6 月数据在哪里，信息齐了，模型生成汇报初稿，请求写入 <code>半年度汇报.pptx</code>。程序保存，并返回“写入成功”。</p>
+<p><strong>最后：复核。</strong> 模型对照前面的数据检查一遍，把“数据来源”和“待补充项”一并写进文末，然后告诉用户：初稿已完成，有两处需要你确认。</p>
+<p>整个过程不是模型在一次回答中“凭空把文件变出来”，而是多次执行一个基本循环：</p>
+<p><img src="image/agent-loop-ring.png" alt="Agent Loop"></p>
+<p>这就是 <strong>Agent Loop（智能体执行循环）</strong>：<strong>判断 → 行动 → 观察结果 → 再判断</strong>。 你电脑上运行的各种智能体，从简单的任务到运行几个小时的大型编程任务，最核心的工作原来就是这套执行循环来完成。</p>
+<p>工具让大模型有机会接触外部世界；循环则让它能够依据每一步的新信息继续做事。</p>
+<p>上面这个例子看着顺，其实每一步都可能是错的。第一轮列目录时可能一片空白；读 Excel 时可能发现文件加了密码；写入时可能因为文件正被编辑而失败。这些都不是“模型变笨了”，而是它<strong>拿到了一个具体的错误，然后据此换了下一步</strong>。</p>
+<p><strong>它不是一次就猜对，而是错了之后还能根据现场环境自我纠正。</strong> 循环真正的价值在这里，而不是在“一次做对”的那条路径上。</p>
+<p>当然，实际 Agent 还要限制最大执行步数、处理失败、控制费用，不能任由模型无限循环。</p>
+<h2 id="四几十行核心逻辑就能看懂一个最小-agent">四、几十行核心逻辑，就能看懂一个最小 Agent</h2>
+<p>如果你懂一点编程，下面这段<strong>示意性伪代码</strong>，几乎可以概括工具型 Agent 的基本工作方式：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>messages <span style="color:#555">=</span> [<span style="color:#c30">&#39;用户的输入任务&#39;</span>]
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">for</span> step <span style="color:#000;font-weight:bold">in</span> <span style="color:#366">range</span>(MAX_STEPS):
+</span></span><span style="display:flex;"><span>    <span style="color:#09f;font-style:italic"># 调用大模型的API</span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#555">=</span> call_llm(messages, available_tools) 
+</span></span><span style="display:flex;"><span>    messages<span style="color:#555">.</span>append(response)
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">if</span> response<span style="color:#555">.</span>has_tool_calls: <span style="color:#09f;font-style:italic"># 大模型判断要调用工具获取信息</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">for</span> tool_call <span style="color:#000;font-weight:bold">in</span> response<span style="color:#555">.</span>tool_calls:
+</span></span><span style="display:flex;"><span>            <span style="color:#09f;font-style:italic"># 执行工具调用</span>
+</span></span><span style="display:flex;"><span>            result <span style="color:#555">=</span> execute_tool_safely(tool_call)
+</span></span><span style="display:flex;"><span>            <span style="color:#09f;font-style:italic"># 工具调用结果信息追加到下一轮大模型API调用的输入</span>
+</span></span><span style="display:flex;"><span>            messages<span style="color:#555">.</span>append(tool_result_message(tool_call, result))
+</span></span><span style="display:flex;"><span>    <span style="color:#069;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#09f;font-style:italic"># 总结任务 保存任务修改结果 返回最终任务汇报 </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#069;font-weight:bold">return</span> response<span style="color:#555">.</span>final_answer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#069;font-weight:bold">return</span> <span style="color:#c30">&#34;任务已达到执行步数限制&#34;</span>
+</span></span></code></pre></div><p>代码不长，重要的是理解分工：<strong>模型决定是否请求工具；程序负责执行；工具返回结果；结果进入下一轮模型调用。</strong></p>
+<p>注意 <code>execute_tool_safely</code> 这一行的返回值——失败也要原样塞回 <code>messages</code>。新手常犯的错是把错误吞掉或者直接打印给用户，那样循环就断在这里了。真正的工程实现还需要参数校验、异常处理、权限控制等机制。</p>
+<p>为了让这套原理不只停留在纸面上，我做了一个循序渐进的教学项目：<a href="https://github.com/AarenWang/mini-agent">mini-agent</a>。</p>
+<p>它的 <code>v01_agent.py</code> 从最小 Agent 入手，提供文件读取、文件写入和命令执行等基础工具，供读者观察“模型请求工具—程序执行—结果回填—继续判断”的过程。可以先从这个版本开始，而不用一上来阅读复杂的 Agent 框架。</p>
+<blockquote>
+<p><strong>配图占位 3｜mini-agent 运行截图</strong>
+截取一次真实终端演示，展示 User 输入、模型选择工具、工具返回结果、最终回答。截图必须来自实际运行，避免把预期表现写成已经发生的结果。</p>
+</blockquote>
+<h2 id="五能动手还不等于能可靠地办事">五、能动手，还不等于能可靠地办事</h2>
+<p>拥有眼睛和手脚，只说明 Agent 开始具备执行能力；要完成更复杂的任务，还需要更可靠的工作方式。</p>
+<p>拿改代码来试，问题会明显变多：找错文件、改了不该改的地方、改对了却忘了跑测试、测试跑了但没看懂失败原因又凭感觉改了一遍。没有相应机制的话，Agent 就只能算“会动手”，谈不上“做得稳”。</p>
+<p>因此，最小 Agent 之外，还可以逐步添加这些能力：</p>
+<ul>
+<li>任务规划和进度跟踪能力</li>
+<li>文件变更精确跟踪能力</li>
+<li>结果验证能力，写好的代码是否能满足需求，文档风格前后是否一致</li>
+<li>记忆能力，包括使用者的偏好习惯，特定项目的约定等</li>
+<li>远程工具接入能力， 很多任务需要打通企业内部系统或外部系统读取数据，智能体执行完成任务之后，更新外部系统数据和文档</li>
+</ul>
+<p>这些能力并不要求所有 Agent 都具备。一个只需查询天气的 Agent，可能根本不需要长期记忆和任务计划；而要修改代码、复杂的数据整理、制作工作汇报的PPT或处理企业业务的智能体，测试、审计、权限与恢复机制就一个都省不掉。</p>
+<p>这里也可以呼应上一篇的四个等级划分：<strong>有工具调用能力，不等于天然达到最高自主性。</strong> 一个 Agent 能否自主规划、验证和修正完整任务，仍然取决于整个系统如何设计。</p>
+<h2 id="六真正重要的是形成一个可控的行动闭环">六、真正重要的，是形成一个可控的行动闭环</h2>
+<p>现在可以回答文章开头的问题了：</p>
+<ul>
+<li><strong>大模型</strong> 负责提供世界知识、理解任务、判断下一步；</li>
+<li><strong>工具</strong> 让它能够观察外部信息、执行实际操作；</li>
+<li><strong>上下文</strong> 让它知道当前任务已经发生了什么；</li>
+<li><strong>智能体循环</strong> 让判断、行动、反馈能够接续发生；</li>
+<li><strong>程序的权限与控制机制</strong>决定它可以做什么、什么时候应该停下来。</li>
+</ul>
+<p>所以，一个智能体并不是“更大的大模型”，也不是“给聊天机器人增加几个按钮”。它是一套让大模型能够<strong>在授权范围内观察、判断、行动并获取反馈</strong>的软件系统。</p>
+<p>如果只记住本文一句话，我希望是这一句：</p>
+<blockquote>
+<p><strong>大模型提供世界知识与思考，电脑上的智能体携带工具连接你的真实数字世界，执行循环让它能够持续推进任务。</strong></p>
+</blockquote>
+<p>接下来，我们就可以沿着 <a href="https://github.com/AarenWang/mini-agent">mini-agent</a> 的实践路线，逐步理解任务计划、工具系统、上下文与记忆、验证，以及一个 Agent 如何从“能运行”走向“可靠可用”。</p>
+<hr>
+<p><strong>延伸阅读</strong></p>
+<ul>
+<li><a href="https://github.com/AarenWang/mini-agent">mini-agent — 从零实现一个智能体</a>：本文对应的示例项目。</li>
+</ul>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agent/" rel="tag">Agent</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agentloop/" rel="tag">AgentLoop</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+
+
+
+	
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">近期文章</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/">从调用大模型到自主智能体：AI 应用的四级自主性光谱</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-document-processing-pipeline/">RAG 文档处理流水线：从上传文件到可检索 chunk</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-system-architecture-design/">从零搭一个中文电子书 RAG：为什么先做最小闭环</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/">企业级 AI Agent 落地架构：从知识问答到流程执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/etcd-action-part-2/">etcd集群自动化部署</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">分类</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/go/">Go</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">标签</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/agentloop/" title="AgentLoop">AgentLoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ai-%E5%BA%94%E7%94%A8/" title="AI 应用">AI 应用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-agent/" title="Data Agent">Data Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enterprise-ai/" title="Enterprise AI">Enterprise AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mvp/" title="MVP">MVP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgvector/" title="Pgvector">Pgvector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rag/" title="RAG">RAG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rrf/" title="RRF">RRF</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector-database/" title="Vector Database">Vector Database</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%8F%AF%E4%BF%A1%E9%97%AE%E7%AD%94/" title="可信问答">可信问答</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/" title="文档处理">文档处理</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" title="知识库">知识库</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E8%87%AA%E4%B8%BB%E6%80%A7/" title="自主性">自主性</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">社交</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 Aaron Wang的博客.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

@@ -113,7 +113,7 @@
 <p>综上所述，Nginx日志是Web服务器中非常重要的组成部分，通过对其进行分析，可以获得丰富的信息，帮助我们了解Web应用的状态和性能、识别潜在的安全风险和攻击行为、优化Web应用的体验和改善用户满意度、优化网站的搜索引擎排名和流量、优化业务流程和提升业务效率。</p>
 <p>本文介绍nginx日志采集和Logstash预处理</p>
 <p>整体采集架构如图
-<img src="image/nginx%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%88%86%E6%9E%90%E6%96%B9%E6%A1%88%E6%9E%B6%E6%9E%84.jpeg" alt="采集架构图"></p>
+<img src="/posts/nginx-log-logstash-es/image/nginx%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E5%88%86%E6%9E%90%E6%96%B9%E6%A1%88%E6%9E%B6%E6%9E%84_hu_fdc16edc7ae57a56.webp" alt="采集架构图" width="1425" height="699" loading="eager" decoding="async"></p>
 <p>在nginx机器上通过linux自带的rsyslog软件，将nginx访问日志access.log采集到logstash，logstash进行一些日志抽取、转换等动作，然后写入到ElastichSearch</p>
 <h1 id="服务搭建过程记录">服务搭建过程记录</h1>
 <p>本文重点记录nginx服务器的rsyslog配置和logstash配置，kibana和Elasticsearch搭建可以参考网上现有资料</p>
@@ -192,7 +192,7 @@ output {
 </span></span><span style="display:flex;"><span>logger  -T -n 127.0.0.1 -P <span style="color:#f60">1514</span>   <span style="color:#c30">&#34;39.101.78.53 \&#34;-\&#34; [17/Nov/2022:22:54:31 +0800] \&#34;GET / HTTP/1.1\&#34; 200 4833 \&#34;-\&#34; \&#34;curl/7.29.0\&#34; \&#34;-\&#34; \&#34;39.101.69.31\&#34;&#34;</span>
 </span></span></code></pre></div><p>这里推荐一个在线的grok在线调试工具 <a href="https://grokdebugger.com/">https://grokdebugger.com/</a></p>
 <p>这是我的的调试效果
-<img src="image/grok-debug.jpg" alt="Grok Debugger"></p>
+<img src="/posts/nginx-log-logstash-es/image/grok-debug_hu_75b632e5d070e415.webp" alt="Grok Debugger" width="1095" height="446" loading="lazy" decoding="async"></p>
 <h2 id="配置nginx将accesslog写到logstash">配置nginx，将access.log写到logstash</h2>
 <p>logstash配置没问题之后，我们需要在nginx服务上设置rsyslog，将nginx的access.log采集到logstash</p>
 <p>nginx日志不仅支持打印日志输出文件，还支持输出到rsyslog协议,因此有两种方案可选</p>

@@ -97,7 +97,7 @@
 Github代码<a href="https://github.com/spring-cloud/spring-cloud-consul">仓库</a></p>
 <h2 id="服务注册和发现功能准备">服务注册和发现功能准备</h2>
 <p>注册中心、服务提供者、服务消费者，三种之间关系如图
-<img src="image/service_register_arch.png" alt=""></p>
+<img src="/posts/service-mesh-consul-part-2/image/service_register_arch_hu_6e5ecc51f6a27ede.webp" alt="" width="505" height="219" loading="eager" decoding="async"></p>
 <p>服务提供者(provider)启动时讲服务注册到consul，服务消费者(consumer)在进行远程调用时，根据注册中心提供的服务信息，远程调用Provider</p>
 <p>下面我们看看spring cloud consul服务注册和服务调用的例子,分成provider和consumer两个工程
 pom.xml 引入依赖</p>
@@ -215,11 +215,10 @@ pom.xml 引入依赖</p>
 <li>demo-provider-service</li>
 </ul>
 <p>通过<a href="http://192.168.31.208:8500">Web UI /192.168.31.208:8500</a>  可以看到注册服务如下图
-<img src="image/all_registered_service.jpeg" alt="注册的服务"></p>
+<img src="/posts/service-mesh-consul-part-2/image/all_registered_service_hu_dd3d6cd5cbc14359.webp" alt="注册的服务" width="438" height="323" loading="lazy" decoding="async"></p>
 <p>我们访问本地demo-consumer应用的<code>listOrder</code> <a href="http://127.0.0.1:8090/listOrder">http://127.0.0.1:8090/listOrder</a></p>
 <p>可以看到输出的JSON信息</p>
-<p><img src="image/call_result.jpeg" alt="listOrder展示"></p>
-
+<a href="/posts/service-mesh-consul-part-2/image/call_result.jpeg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：listOrder展示"><img src="/posts/service-mesh-consul-part-2/image/call_result_hu_b4bc9e4fe79ef478.webp" alt="listOrder展示" width="660" height="762" loading="lazy" decoding="async"></a>
 		</div>
 		<footer class="post__footer">
 			

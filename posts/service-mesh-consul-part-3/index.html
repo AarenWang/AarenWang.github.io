@@ -139,10 +139,10 @@
 <h2 id="启动服务器">启动服务器</h2>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>consul agent -node<span style="color:#555">=</span>consul -config-dir<span style="color:#555">=</span><span style="color:#a00">${</span><span style="color:#033">CONSUL_CONFIG_DIR</span><span style="color:#a00">}</span>
 </span></span></code></pre></div><p>启动控制台输出
-<img src="image/consul_start" alt="consul agent start"></p>
+<img src="image/consul_start" alt="consul agent start" loading="eager" decoding="async"></p>
 <h2 id="通过命令行与consul交互">通过命令行与consul交互</h2>
 <p>没有token之前访问报错
-<img src="image/before_set_token.jpeg" alt=""></p>
+<img src="/posts/service-mesh-consul-part-3/image/before_set_token_hu_5c041ded2859a4e2.webp" alt="" width="506" height="40" loading="lazy" decoding="async"></p>
 <p>consul可以设置节点是否为引导节点和可以导出bookstreap token次数,我们的脚本里生成配置文件<code>agent-server-specific.hcl </code> <code>bootstrap_expect = 1 </code>
 通过引导token生成访问consul server,再生成后续访问的token</p>
 <p>设置一些环境变量</p>

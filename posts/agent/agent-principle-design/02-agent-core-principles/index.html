@@ -161,8 +161,7 @@ flowchart TB
 <p><strong>第四轮：动笔。</strong> 你告诉他产品线 C 的 5-6 月数据在哪里，信息齐了，模型生成汇报初稿，请求写入 <code>半年度汇报.pptx</code>。程序保存，并返回“写入成功”。</p>
 <p><strong>最后：复核。</strong> 模型对照前面的数据检查一遍，把“数据来源”和“待补充项”一并写进文末，然后告诉用户：初稿已完成，有两处需要你确认。</p>
 <p>整个过程不是模型在一次回答中“凭空把文件变出来”，而是多次执行一个基本循环：</p>
-<p><img src="image/agent-loop-ring.png" alt="Agent Loop"></p>
-<p>这就是 <strong>Agent Loop（智能体执行循环）</strong>：<strong>判断 → 行动 → 观察结果 → 再判断</strong>。 你电脑上运行的各种智能体，从简单的任务到运行几个小时的大型编程任务，最核心的工作原来就是这套执行循环来完成。</p>
+<a href="/posts/agent/agent-principle-design/02-agent-core-principles/image/agent-loop-ring.png" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：Agent Loop"><img src="/posts/agent/agent-principle-design/02-agent-core-principles/image/agent-loop-ring_hu_28af576b28f8fd71.webp" alt="Agent Loop" width="1080" height="830" loading="eager" decoding="async"></a><p>这就是 <strong>Agent Loop（智能体执行循环）</strong>：<strong>判断 → 行动 → 观察结果 → 再判断</strong>。 你电脑上运行的各种智能体，从简单的任务到运行几个小时的大型编程任务，最核心的工作原来就是这套执行循环来完成。</p>
 <p>工具让大模型有机会接触外部世界；循环则让它能够依据每一步的新信息继续做事。</p>
 <p>上面这个例子看着顺，其实每一步都可能是错的。第一轮列目录时可能一片空白；读 Excel 时可能发现文件加了密码；写入时可能因为文件正被编辑而失败。这些都不是“模型变笨了”，而是它<strong>拿到了一个具体的错误，然后据此换了下一步</strong>。</p>
 <p><strong>它不是一次就猜对，而是错了之后还能根据现场环境自我纠正。</strong> 循环真正的价值在这里，而不是在“一次做对”的那条路径上。</p>

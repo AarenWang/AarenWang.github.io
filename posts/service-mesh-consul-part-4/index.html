@@ -106,7 +106,7 @@
 <p>另一方面是如果实现这类基础框架时涉及到了语言特性，其他语言的开发者也很难直接翻译。 而 Service Mesh 的本质则是将此类通用的功能沉淀至 sidecar 中，由 sidecar 接管服务的流量并对其进行治理。</p>
 <p>在这个思路下，可以通过流量劫持的手段，做到代码零侵入性。这样可以让业务开发人员更关心业务功能。 而底层功能由于对业务零侵入，也使得基础功能的升级和快速的更新迭代成为可能。</p>
 <p>Service A，B，C之间的通过sidecar来通信
-<img src="image/sidecar.png" alt=""></p>
+<img src="/posts/service-mesh-consul-part-4/image/sidecar_hu_23079bbc4010661f.webp" alt="" width="886" height="430" loading="eager" decoding="async"></p>
 <p>本文，我们以<a href="https://developer.hashicorp.com/consul/tutorials/developer-mesh/service-mesh-with-envoy-proxy">consul官方一篇教程文档</a> 为例，讲述如何基于consul和envoy建立Service Mesh微服务调用</p>
 <h2 id="部署servicemesh例子">部署ServiceMesh例子</h2>
 <h3 id="准备">准备</h3>
@@ -116,7 +116,7 @@
 <li>准备两个Demo应用程序，通过Service Mesh加密通信，一个计数器服务<strong>Counting Service</strong>，一个大盘服务 <strong>Dashboard Service</strong> 查看计数值,例子<a href="https://github.com/hashicorp/demo-consul-101">github仓库</a></li>
 </ol>
 <p>Dashboard和Counting网络架构
-<img src="image/dashboard_count_arch.png" alt="Dashboard and Counting Network"></p>
+<img src="/posts/service-mesh-consul-part-4/image/dashboard_count_arch_hu_eadfda50e0d5ca65.webp" alt="Dashboard and Counting Network" width="1536" height="500" loading="lazy" decoding="async"></p>
 <h3 id="service-mesh注册">Service Mesh注册</h3>
 <p>Couning应用注册配置 counting.hcl</p>
 <pre tabindex="0"><code>service {
@@ -202,8 +202,7 @@ dashboard-sidecar-proxy
 </span></span><span style="display:flex;"><span>consul connect envoy -sidecar-for dashboard-1 
 </span></span></code></pre></div><h3 id="浏览应用">浏览应用</h3>
 <p>访问 <a href="http://127.0.0.1:9002">http://127.0.0.1:9002</a>，验证每次刷新页面计数器递加</p>
-<p><img src="image/Dashboard.jpeg" alt=""></p>
-
+<a href="/posts/service-mesh-consul-part-4/image/Dashboard.jpeg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图："><img src="/posts/service-mesh-consul-part-4/image/Dashboard_hu_42f7fe37e9167848.webp" alt="" width="892" height="774" loading="lazy" decoding="async"></a>
 		</div>
 		<footer class="post__footer">
 			

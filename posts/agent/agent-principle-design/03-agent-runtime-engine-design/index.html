@@ -119,8 +119,7 @@
 </ul>
 <p>这些问题涉及执行状态、配置、输入和存储，需要由模型之外的程序处理。在 <a href="https://github.com/haifa-agent/haifa-agent">Haifa Agent 项目</a>中，承担这些职责的是 Agent Runtime。</p>
 <p>本文讨论 Haifa Agent  中的 Runtime 设计。编码智能体 和个人助手（PA）承载不同的业务，SDK 提供开发接口，Runtime 则管理它们共同需要的执行机制：任务如何启动，模型和工具如何调用，何时等待用户，以及执行中断后如何处理已有状态。可以把它类比为应用之下的操作系统内核，不过这里讨论的范围是 Agent 任务的运行。</p>
-<p><img src="image/layer-agent-runtime-architecture.jpg" alt="智能体应用、SDK 组装层与 Agent Runtime 的分层关系"></p>
-<h2 id="一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</h2>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：智能体应用、SDK 组装层与 Agent Runtime 的分层关系"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture_hu_42690ccd10f7b838.webp" alt="智能体应用、SDK 组装层与 Agent Runtime 的分层关系" width="2752" height="1536" loading="eager" decoding="async"></a><h2 id="一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</h2>
 <p>假设一个任务启动时使用 Qwen模型，执行期间管理员把全局默认模型改成了 DeepSeek。如果每一轮都重新读取全局配置，同一个任务就可能在中途换用另一套配置。权限范围和技能清单也有同样的问题。</p>
 <p>Haifa Runtime 在 Run 启动时冻结已经解析出的配置，包括模型绑定、权限范围和技能清单。后续执行使用这份快照，全局配置的变更不会悄悄替换当前 Run 的配置。这样，即使任务持续运行半个小时，也能知道它依据哪套配置执行。</p>
 <p>任务的身份也需要独立于执行线程。线程可能退出，任务也可能因等待人工审批而挂起；仅靠线程状态，无法完整记录这件事的执行过程。</p>
@@ -154,8 +153,7 @@
 <h2 id="四工具调用如何校验结果未知时怎么办">四、工具调用如何校验，结果未知时怎么办</h2>
 <p>工具调用会让模型的决策影响外部系统。修改文件、执行命令、发送邮件或扣款，都可能产生副作用；外部接口所需的凭据也需要与模型上下文隔离。</p>
 <p>Haifa Runtime 通过 Tool Pipeline 管理工具执行。其中，执行日志、调用校验和凭据处理各自承担不同的职责。</p>
-<p><img src="image/tool-call-pipeline.jpg" alt="工具调用经过权限与策略校验、执行日志和凭据隔离后访问外部 API"></p>
-<h3 id="先记录执行意图">先记录执行意图</h3>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/tool-call-pipeline.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：工具调用经过权限与策略校验、执行日志和凭据隔离后访问外部 API"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/tool-call-pipeline_hu_e57553c90f92c481.webp" alt="工具调用经过权限与策略校验、执行日志和凭据隔离后访问外部 API" width="2752" height="1536" loading="lazy" decoding="async"></a><h3 id="先记录执行意图">先记录执行意图</h3>
 <p>真正调用外部 API 前，Runtime 会在 Tool Execution Journal 中记录准备执行的工具操作。</p>
 <p>如果请求发出后进程崩溃，恢复时可能只知道调用已经派发，却不知道外部系统是否完成了操作。例如，邮件可能已经发出，只是返回结果没来得及保存。此时重新发送请求，就可能发出第二封邮件。</p>
 <p>对于这种“已派发但结果未知”的状态，Runtime 不会盲目自动重放。执行日志保留了这项尚未确认的事实，恢复过程需要据此处理任务。</p>
@@ -174,16 +172,13 @@
 <h3 id="等待审批与接收追加输入">等待审批与接收追加输入</h3>
 <p>Haifa Runtime 为人机交互区分了两条通道。</p>
 <p><strong>Interaction</strong> 用于人工审批和提问澄清。任务执行到需要人类回应的位置时，保存检查点，进入等待挂起状态，并释放计算资源。收到回应后，再从保存的检查点恢复执行。</p>
-<p><img src="image/long-complex-mission-1.jpg" alt="Interaction 保存检查点并挂起，收到人工审批或澄清后启动新的 Attempt 继续执行"></p>
-<p><strong>Run Input（Steer）</strong> 用于接收运行中追加的输入。例如 Agent 正在执行时，用户补充“顺便把单元测试也写了”。这条消息会先被暂存，在下一轮循环开头的安全点（Safe Point）合入模型上下文，当前正在执行的动作不会因此被打断。</p>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-1.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：Interaction 保存检查点并挂起，收到人工审批或澄清后启动新的 Attempt 继续执行"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-1_hu_4593d6a7326fd4b9.webp" alt="Interaction 保存检查点并挂起，收到人工审批或澄清后启动新的 Attempt 继续执行" width="2752" height="1536" loading="lazy" decoding="async"></a><p><strong>Run Input（Steer）</strong> 用于接收运行中追加的输入。例如 Agent 正在执行时，用户补充“顺便把单元测试也写了”。这条消息会先被暂存，在下一轮循环开头的安全点（Safe Point）合入模型上下文，当前正在执行的动作不会因此被打断。</p>
 <p>追加输入还涉及一个并发问题：用户刚发出消息，任务恰好结束。Runtime 对这类竞争进行处理，避免消息已经提交，却在任务结束时被静默丢弃。</p>
-<p><img src="image/long-complex-mission-2.jpg" alt="Run Input 暂存用户追加的输入，在下一轮循环的安全点合入上下文"></p>
-<h3 id="异常中断后核对已有状态">异常中断后核对已有状态</h3>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-2.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：Run Input 暂存用户追加的输入，在下一轮循环的安全点合入上下文"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-2_hu_8ada68498b41a90.webp" alt="Run Input 暂存用户追加的输入，在下一轮循环的安全点合入上下文" width="2752" height="1536" loading="lazy" decoding="async"></a><h3 id="异常中断后核对已有状态">异常中断后核对已有状态</h3>
 <p>等待审批时，Runtime 有明确的挂起位置和检查点。机器断电或进程被杀时，情况就不同了：程序可能停在任意位置，某个外部操作也可能已经完成，但结果尚未记录。</p>
 <p>当任务失去执行所有权、成为孤儿任务时，<code>InterruptedRunSettler</code> 会核对已知的工具结果，取消停留在中途的步骤，收敛任务状态，并给出终止报告。它不会在尚有未知外部副作用时直接重启循环。</p>
 <p>因此，“重启后恢复”需要说明恢复到什么程度。对于有检查点的主动挂起，可以恢复执行；对于异常中断，需要先处理已有事实，结果也可能是终止任务并报告中断情况。</p>
-<p><img src="image/long-complex-mission-3.jpg" alt="进程异常中断后，InterruptedRunSettler 核对工具日志、终止失效 Attempt 并输出终止报告"></p>
-<h3 id="子-agent-的身份权限与派发防重">子 Agent 的身份、权限与派发防重</h3>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-3.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：进程异常中断后，InterruptedRunSettler 核对工具日志、终止失效 Attempt 并输出终止报告"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/long-complex-mission-3_hu_7c7fd37230d1bd75.webp" alt="进程异常中断后，InterruptedRunSettler 核对工具日志、终止失效 Attempt 并输出终止报告" width="2752" height="1536" loading="lazy" decoding="async"></a><h3 id="子-agent-的身份权限与派发防重">子 Agent 的身份、权限与派发防重</h3>
 <p>主 Agent 派发子任务时，Runtime 会为子 Agent 创建具有独立身份和完整生命周期的标准 AgentRun。</p>
 <p>子 Agent 的可用工具列表通过取交集收窄，限制其权限范围。派发还需要处理重试：子任务 ID 由父任务 ID 和工具调用 ID 派生，同一个派发请求再次出现时，系统会关联已有子任务，避免重复创建。</p>
 <p>这样，子任务的执行状态、权限范围和重复派发，都有对应的记录与处理机制。</p>

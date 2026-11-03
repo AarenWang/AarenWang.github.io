@@ -112,7 +112,7 @@
 <p>安装完成之后，我们以<strong>开发模式</strong>运行一个consul实例</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>consul agent -dev 
 </span></span></code></pre></div><p>启动输出信息如下，
-<img src="image/consul_agent_dev.jpeg" alt="consul agent -dev"></p>
+<img src="/posts/service-mesh-consul-part-1/image/consul_agent_dev_hu_cfe5e13b0c2a3896.webp" alt="consul agent -dev" width="700" height="284" loading="eager" decoding="async"></p>
 <p>这里解释下，这些选项意思</p>
 <table>
   <thead>
@@ -170,9 +170,9 @@
 </table>
 <p>浏览器访问<a href="http://127.0.0.1:8500/">http://127.0.0.1:8500/</a></p>
 <p>consul启动之后有一个自带的service，名称为consul
-<img src="image/consul_ui_service.jpeg" alt="Consul UI Service"></p>
+<img src="/posts/service-mesh-consul-part-1/image/consul_ui_service_hu_4ed8ffead2139df5.webp" alt="Consul UI Service" width="511" height="225" loading="lazy" decoding="async"></p>
 <p>单节点模式运行，一个运行节点
-<img src="image/consul_ui_node.jpeg" alt="Consul UI Node"></p>
+<img src="/posts/service-mesh-consul-part-1/image/consul_ui_node_hu_4c9a9b250ca7e83d.webp" alt="Consul UI Node" width="513" height="243" loading="lazy" decoding="async"></p>
 <p>使用<code>consul kv</code> 体验KV功能</p>
 <pre tabindex="0"><code>consul kv put consul/configuration/db_port 5432
 # 输出提示:  Success! Data written to: consul/configuration/db_port

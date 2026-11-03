@@ -119,7 +119,7 @@
 </ul>
 <p>这些问题涉及执行状态、配置、输入和存储，需要由模型之外的程序处理。在 <a href="https://github.com/haifa-agent/haifa-agent">Haifa Agent 项目</a>中，承担这些职责的是 Agent Runtime。</p>
 <p>本文讨论 Haifa Agent  中的 Runtime 设计。编码智能体 和个人助手（PA）承载不同的业务，SDK 提供开发接口，Runtime 则管理它们共同需要的执行机制：任务如何启动，模型和工具如何调用，何时等待用户，以及执行中断后如何处理已有状态。可以把它类比为应用之下的操作系统内核，不过这里讨论的范围是 Agent 任务的运行。</p>
-<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：智能体应用、SDK 组装层与 Agent Runtime 的分层关系"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture_hu_42690ccd10f7b838.webp" alt="智能体应用、SDK 组装层与 Agent Runtime 的分层关系" width="2752" height="1536" loading="eager" decoding="async"></a><h2 id="一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</h2>
+<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture.jpg" data-original-image="true" target="_blank" rel="noopener" aria-label="查看原图：智能体应用、SDK 组装层与 Agent Runtime 的分层关系"><img src="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/image/layer-agent-runtime-architecture_hu_ba0586a6fb4fbc29.webp" alt="智能体应用、SDK 组装层与 Agent Runtime 的分层关系" width="2752" height="1536" loading="eager" decoding="async"></a><h2 id="一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</h2>
 <p>假设一个任务启动时使用 Qwen模型，执行期间管理员把全局默认模型改成了 DeepSeek。如果每一轮都重新读取全局配置，同一个任务就可能在中途换用另一套配置。权限范围和技能清单也有同样的问题。</p>
 <p>Haifa Runtime 在 Run 启动时冻结已经解析出的配置，包括模型绑定、权限范围和技能清单。后续执行使用这份快照，全局配置的变更不会悄悄替换当前 Run 的配置。这样，即使任务持续运行半个小时，也能知道它依据哪套配置执行。</p>
 <p>任务的身份也需要独立于执行线程。线程可能退出，任务也可能因等待人工审批而挂起；仅靠线程状态，无法完整记录这件事的执行过程。</p>

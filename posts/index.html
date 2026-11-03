@@ -77,6 +77,23 @@
 	
 	<header class="list__header">
 		<h2 class="list__title post__title">
+			<a href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/" rel="bookmark">
+			Agent Runtime 如何管理任务的执行
+			</a>
+		</h2>
+		<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-11-03T08:00:00&#43;08:00">November 03, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		一个 Agent 任务可能持续几十分钟，期间会收到用户的新要求，也可能遇到上下文超限或进程中断。本文结合 Haifa Agent 的实现，说明 Runtime 如何组织执行循环、管理上下文并约束工具调用，重点区分等待审批后的继续执行与异常中断后的状态收敛。
+	</div>
+</article><article class="list__item post">
+	
+	<header class="list__header">
+		<h2 class="list__title post__title">
 			<a href="/posts/agent/agent-principle-design/02-agent-core-principles/" rel="bookmark">
 			给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？
 			</a>
@@ -226,23 +243,6 @@
 	<div class="content list__excerpt post__content clearfix">
 		本文介绍用Rsyslog协议采集nginx日志，用Logstash预处理日志 写入ES
 	</div>
-</article><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/posts/go-log-zap/" rel="bookmark">
-			Go语言高性能日志库-zap介绍
-			</a>
-		</h2>
-		<div class="list__meta meta">
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2023-01-30T20:16:55&#43;08:00">January 30, 2023</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/go/" rel="category">Go</a>
-	</span>
-</div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		zap库uber出品，go语言里性能最好的日志库介绍和使用
-	</div>
 </article>
 </main>
 
@@ -258,6 +258,7 @@
 	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/">Agent Runtime 如何管理任务的执行</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/02-agent-core-principles/">给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/">从调用大模型到自主智能体：AI 应用的四级自主性光谱</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
@@ -267,7 +268,6 @@
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
 			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
-			<li class="widget__item"><a class="widget__link" href="/posts/go-log-zap/">Go语言高性能日志库-zap介绍</a></li>
 		</ul>
 	</div>
 </div>
@@ -297,6 +297,7 @@
 	<div class="widget__content">
 		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/agentloop/" title="AgentLoop">AgentLoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/agentruntime/" title="AgentRUntime">AgentRUntime</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/ai-%E5%BA%94%E7%94%A8/" title="AI 应用">AI 应用</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
 		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>

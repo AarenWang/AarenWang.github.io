@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Aaron Wang的博客</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Oct 2026 15:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 08:00:00 +0800</lastBuildDate>
     <atom:link href="https://aarenwang.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent Runtime 如何管理任务的执行</title>
+      <link>https://aarenwang.github.io/posts/agent/agent-principle-design/03-agent-runtime-engine-design/</link>
+      <pubDate>Tue, 03 Nov 2026 08:00:00 +0800</pubDate>
+      <guid>https://aarenwang.github.io/posts/agent/agent-principle-design/03-agent-runtime-engine-design/</guid>
+      <description>一个 Agent 任务可能持续几十分钟，期间会收到用户的新要求，也可能遇到上下文超限或进程中断。本文结合 Haifa Agent 的实现，说明 Runtime 如何组织执行循环、管理上下文并约束工具调用，重点区分等待审批后的继续执行与异常中断后的状态收敛。</description>
+    </item>
     <item>
       <title>给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？</title>
       <link>https://aarenwang.github.io/posts/agent/agent-principle-design/02-agent-core-principles/</link>

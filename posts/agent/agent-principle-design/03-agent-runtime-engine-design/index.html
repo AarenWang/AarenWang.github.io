@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Agent Runtime 如何管理任务的执行 - Aaron Wang的博客</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="以 Haifa Agent 为例，说明 Agent Runtime 如何管理任务执行、控制工具副作用，并处理人工交互与异常中断。">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-90PNLQGFCE"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-90PNLQGFCE');
+        }
+      </script>
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="Aaron Wang的博客" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/img/ring.webp">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">Aaron Wang的博客</div>
+					<div class="logo__tagline">菩提本无树，明镜亦非台，本来无一物，何处惹尘埃</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/posts/about/">
+				
+				<span class="menu__text">关于</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+	
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">Agent Runtime 如何管理任务的执行</h1>
+			<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2026-11-03T08:00:00&#43;08:00">November 03, 2026</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/agent/" rel="category">Agent</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</a></li>
+    <li><a href="#二一轮-agent-loop-要处理什么">二、一轮 Agent Loop 要处理什么</a></li>
+    <li><a href="#三上下文怎样构建历史怎样压缩">三、上下文怎样构建，历史怎样压缩</a></li>
+    <li><a href="#四工具调用如何校验结果未知时怎么办">四、工具调用如何校验，结果未知时怎么办</a>
+      <ul>
+        <li><a href="#先记录执行意图">先记录执行意图</a></li>
+        <li><a href="#校验调用并执行策略裁决">校验调用并执行策略裁决</a></li>
+        <li><a href="#在调用边界处理凭据">在调用边界处理凭据</a></li>
+      </ul>
+    </li>
+    <li><a href="#五用户介入异常中断和子-agent-如何处理">五、用户介入、异常中断和子 Agent 如何处理</a>
+      <ul>
+        <li><a href="#等待审批与接收追加输入">等待审批与接收追加输入</a></li>
+        <li><a href="#异常中断后核对已有状态">异常中断后核对已有状态</a></li>
+        <li><a href="#子-agent-的身份权限与派发防重">子 Agent 的身份、权限与派发防重</a></li>
+      </ul>
+    </li>
+    <li><a href="#六回到一次任务的执行">六、回到一次任务的执行</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<h1 id="agent-runtime-如何管理任务的执行">Agent Runtime 如何管理任务的执行</h1>
+<p>在<a href="/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/">第一篇</a>里，我们用“谁决定下一步”区分了 AI 应用的自主性；<a href="/posts/agent/agent-principle-design/02-agent-core-principles/">第二篇</a>则通过一个最小 Agent，说明了模型判断、工具执行和结果回填如何组成 Agent Loop。这篇继续看第二篇示意图中负责“执行和控制”的 Agent Runtime，看看它怎样管理这个循环，以及任务需要等待审批、收到用户的新要求或意外中断时，该如何处理。</p>
+<p>一个简单的 <a href="https://github.com/AarenWang/mini-agent">Mini AI Agent</a>，几十行代码就能跑起来：用 <code>while</code> 循环把用户问题交给大模型，执行模型返回的工具调用，再把结果送回模型，直到任务结束。</p>
+<p>任务运行得久一些，就会遇到这个循环没有回答的问题：</p>
+<ul>
+<li>智能体在任务执行到一半时重启，任务该从哪里继续？ 如果上一步已经调用了发送邮件或扣款接口，再执行一次会有什么后果？</li>
+<li>一个任务已经跑了 20 分钟，用户此时更换了全局默认模型或权限配置，这些变更要不要影响正在执行的任务？</li>
+<li>用户发现 Agent 走错了方向，在运行中补充了一句话。这条输入什么时候生效？会不会与当前动作冲突？</li>
+<li>历史对话越来越长，超出了 Token 预算，哪些内容可以压缩？原始记录还要不要保留？</li>
+</ul>
+<p>这些问题涉及执行状态、配置、输入和存储，需要由模型之外的程序处理。在 <a href="https://github.com/haifa-agent/haifa-agent">Haifa Agent 项目</a>中，承担这些职责的是 Agent Runtime。</p>
+<p>本文讨论 Haifa Agent  中的 Runtime 设计。编码智能体 和个人助手（PA）承载不同的业务，SDK 提供开发接口，Runtime 则管理它们共同需要的执行机制：任务如何启动，模型和工具如何调用，何时等待用户，以及执行中断后如何处理已有状态。可以把它类比为应用之下的操作系统内核，不过这里讨论的范围是 Agent 任务的运行。</p>
+<p><img src="image/layer-agent-runtime-architecture.jpg" alt="智能体应用、SDK 组装层与 Agent Runtime 的分层关系"></p>
+<h2 id="一任务启动时先确定配置和身份">一、任务启动时，先确定配置和身份</h2>
+<p>假设一个任务启动时使用 Qwen模型，执行期间管理员把全局默认模型改成了 DeepSeek。如果每一轮都重新读取全局配置，同一个任务就可能在中途换用另一套配置。权限范围和技能清单也有同样的问题。</p>
+<p>Haifa Runtime 在 Run 启动时冻结已经解析出的配置，包括模型绑定、权限范围和技能清单。后续执行使用这份快照，全局配置的变更不会悄悄替换当前 Run 的配置。这样，即使任务持续运行半个小时，也能知道它依据哪套配置执行。</p>
+<p>任务的身份也需要独立于执行线程。线程可能退出，任务也可能因等待人工审批而挂起；仅靠线程状态，无法完整记录这件事的执行过程。</p>
+<p>Runtime 为此区分了两个概念：</p>
+<ul>
+<li><strong>Run</strong>：逻辑上的一次任务，记录这件事的身份和状态。</li>
+<li><strong>Attempt</strong>：一次具体的执行尝试。同一个 Run 在暂停、审批和恢复过程中，可以先后对应多个 Attempt,以web search工具调用为例子，可能第一次web search发生超时，第二次重试调用成功，Run一次,Attempt两次。</li>
+</ul>
+<p>这层区分让任务状态可以跨越某一次执行尝试持续追踪。底层使用 Java 21 虚拟线程进行异步调度时，Run 的生命周期也不必与某个线程绑定。异常中断后是否能够继续执行，还需要结合工具结果和外部副作用判断，后文会展开说明。</p>
+<h2 id="二一轮-agent-loop-要处理什么">二、一轮 Agent Loop 要处理什么</h2>
+<p>观察、决策、行动，可以概括 Agent 循环的基本过程。落实到一个生产级的Agent实现，还需要在模型调用前后处理恢复、预算和状态保存。</p>
+<p>在 Haifa Runtime 的 <code>DefaultAgentLoop</code> 中，一轮循环涉及以下十个步骤：</p>
+<ol>
+<li><strong>恢复检查点</strong>：检查是否有刚通过的人工审批结果。</li>
+<li><strong>检查控制信号和预算</strong>：通过 Guard 机制检查暂停、取消信号，以及 Token、调用次数和运行时间是否超限。</li>
+<li><strong>接收运行中追加的输入</strong>：在约定的处理位置合入用户的新消息。</li>
+<li><strong>核对待确认的工具执行</strong>：检查此前是否有已经发起、尚未得到结果的外部工具调用。</li>
+<li><strong>评估上下文压缩</strong>：判断上下文是否需要先做摘要压缩。</li>
+<li><strong>构建 Context IR</strong>：组装指令、历史消息、记忆和可用工具，形成结构化上下文。</li>
+<li><strong>调用模型</strong>：通过模型适配器请求 LLM，处理流式输出与重试。</li>
+<li><strong>分发决策</strong>：根据模型输出，调用工具、派发子 Agent、请求人工交互，或结束任务。</li>
+<li><strong>保存执行结果</strong>：持久化本轮结果，并向外广播持久化事件。</li>
+<li><strong>推进或退出</strong>：确定是否进入下一轮循环。</li>
+</ol>
+<p>模型调用位于这条执行流程中。它产生的决策还要经过 Runtime 的分发和检查，执行结果也需要保存下来，供后续循环或恢复过程使用。</p>
+<h2 id="三上下文怎样构建历史怎样压缩">三、上下文怎样构建，历史怎样压缩</h2>
+<p>模型每次收到的上下文可能包含系统指令、历史会话、长期记忆、已激活的 Skill 说明和工具声明。这些内容的来源和用途不同，还需要共同满足 Token 预算。</p>
+<p>Haifa Runtime 使用 Context IR，也就是上下文的中间表示。这个概念借用了编译原理中 IR 的思路：上下文构建器先将各部分内容组装成结构化表示，再投影为 OpenAI、Anthropic 或 Gemini 等模型所需的报文格式。上下文的组织与具体模型的请求格式由此分开处理。</p>
+<p>当任务持续运行、历史内容超出预算时，语义压缩协调器（Compaction）会划定需要压缩的历史范围，调用模型生成摘要。摘要通过校验后，替换上下文中的对应历史内容。</p>
+<p>这里需要区分模型当前看到的内容和存储中的原始记录。摘要是供模型使用的压缩视图；原始历史事实仍保存在底层存储中，不会因为这次压缩被物理删除。</p>
+<h2 id="四工具调用如何校验结果未知时怎么办">四、工具调用如何校验，结果未知时怎么办</h2>
+<p>工具调用会让模型的决策影响外部系统。修改文件、执行命令、发送邮件或扣款，都可能产生副作用；外部接口所需的凭据也需要与模型上下文隔离。</p>
+<p>Haifa Runtime 通过 Tool Pipeline 管理工具执行。其中，执行日志、调用校验和凭据处理各自承担不同的职责。</p>
+<p><img src="image/tool-call-pipeline.jpg" alt="工具调用经过权限与策略校验、执行日志和凭据隔离后访问外部 API"></p>
+<h3 id="先记录执行意图">先记录执行意图</h3>
+<p>真正调用外部 API 前，Runtime 会在 Tool Execution Journal 中记录准备执行的工具操作。</p>
+<p>如果请求发出后进程崩溃，恢复时可能只知道调用已经派发，却不知道外部系统是否完成了操作。例如，邮件可能已经发出，只是返回结果没来得及保存。此时重新发送请求，就可能发出第二封邮件。</p>
+<p>对于这种“已派发但结果未知”的状态，Runtime 不会盲目自动重放。执行日志保留了这项尚未确认的事实，恢复过程需要据此处理任务。</p>
+<h3 id="校验调用并执行策略裁决">校验调用并执行策略裁决</h3>
+<p>工具调用需要依次经过工具绑定检查、权限校验和输入 Schema 校验，并由策略中心（Policy）裁决：</p>
+<ul>
+<li><strong>ALLOW</strong>：允许执行。</li>
+<li><strong>DENY</strong>：拒绝执行。</li>
+<li><strong>ASK</strong>：挂起，等待人工审批。</li>
+</ul>
+<p>这些检查决定模型提出的工具调用能否执行，以及是否需要用户介入。</p>
+<h3 id="在调用边界处理凭据">在调用边界处理凭据</h3>
+<p>外部 API 所需的 API Key 不应写入 Prompt。Runtime 在实际发起调用的可信边界内，通过 Credential Broker 解析密钥并注入请求，同时对返回结果中的敏感信息做脱敏处理，避免凭据随结果进入模型上下文。</p>
+<h2 id="五用户介入异常中断和子-agent-如何处理">五、用户介入、异常中断和子 Agent 如何处理</h2>
+<p>长任务可能需要等待审批，也可能在执行中收到用户的新要求。这两种交互对任务状态的影响不同。任务还可能意外中断，或者派发新的子任务，Runtime 都需要记录对应的生命周期变化。</p>
+<h3 id="等待审批与接收追加输入">等待审批与接收追加输入</h3>
+<p>Haifa Runtime 为人机交互区分了两条通道。</p>
+<p><strong>Interaction</strong> 用于人工审批和提问澄清。任务执行到需要人类回应的位置时，保存检查点，进入等待挂起状态，并释放计算资源。收到回应后，再从保存的检查点恢复执行。</p>
+<p><img src="image/long-complex-mission-1.jpg" alt="Interaction 保存检查点并挂起，收到人工审批或澄清后启动新的 Attempt 继续执行"></p>
+<p><strong>Run Input（Steer）</strong> 用于接收运行中追加的输入。例如 Agent 正在执行时，用户补充“顺便把单元测试也写了”。这条消息会先被暂存，在下一轮循环开头的安全点（Safe Point）合入模型上下文，当前正在执行的动作不会因此被打断。</p>
+<p>追加输入还涉及一个并发问题：用户刚发出消息，任务恰好结束。Runtime 对这类竞争进行处理，避免消息已经提交，却在任务结束时被静默丢弃。</p>
+<p><img src="image/long-complex-mission-2.jpg" alt="Run Input 暂存用户追加的输入，在下一轮循环的安全点合入上下文"></p>
+<h3 id="异常中断后核对已有状态">异常中断后核对已有状态</h3>
+<p>等待审批时，Runtime 有明确的挂起位置和检查点。机器断电或进程被杀时，情况就不同了：程序可能停在任意位置，某个外部操作也可能已经完成，但结果尚未记录。</p>
+<p>当任务失去执行所有权、成为孤儿任务时，<code>InterruptedRunSettler</code> 会核对已知的工具结果，取消停留在中途的步骤，收敛任务状态，并给出终止报告。它不会在尚有未知外部副作用时直接重启循环。</p>
+<p>因此，“重启后恢复”需要说明恢复到什么程度。对于有检查点的主动挂起，可以恢复执行；对于异常中断，需要先处理已有事实，结果也可能是终止任务并报告中断情况。</p>
+<p><img src="image/long-complex-mission-3.jpg" alt="进程异常中断后，InterruptedRunSettler 核对工具日志、终止失效 Attempt 并输出终止报告"></p>
+<h3 id="子-agent-的身份权限与派发防重">子 Agent 的身份、权限与派发防重</h3>
+<p>主 Agent 派发子任务时，Runtime 会为子 Agent 创建具有独立身份和完整生命周期的标准 AgentRun。</p>
+<p>子 Agent 的可用工具列表通过取交集收窄，限制其权限范围。派发还需要处理重试：子任务 ID 由父任务 ID 和工具调用 ID 派生，同一个派发请求再次出现时，系统会关联已有子任务，避免重复创建。</p>
+<p>这样，子任务的执行状态、权限范围和重复派发，都有对应的记录与处理机制。</p>
+<h2 id="六回到一次任务的执行">六、回到一次任务的执行</h2>
+<p>用户交给 Agent 一个任务后，看到的是它查资料、读文件、调用工具，最后返回结果。这个过程可能持续很久，期间用户会补充要求，工具可能报错，程序也可能意外退出。Runtime 需要记录任务执行到了哪里，在合适的时机接收新输入，并根据已有结果决定如何继续处理。</p>
+<p>第一篇讨论了 AI 可以获得多少决定权，第二篇解释了模型如何通过 Agent Loop 持续判断和行动。这篇补充的是程序如何组织和控制这个过程：模型提出工具调用请求后，Runtime 检查权限、执行操作、保存结果，再把结果交给下一轮模型调用。模型参与的决策越多，这些执行规则就越需要明确。</p>
+<p>本文介绍的 Haifa Agent Runtime 目前运行在单节点上，对中断的处理也有边界。等待审批时，任务可以保存检查点，收到回应后继续执行；进程意外退出时，则需要先核对已经发生的操作。如果一封邮件可能已经发出，只是结果没来得及保存，程序就不能直接再发一次。此时，核对记录、停止任务并说明哪些结果尚未确认，也是 Runtime 需要完成的工作。</p>
+
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agent/" rel="tag">Agent</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/agentruntime/" rel="tag">AgentRUntime</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+
+
+
+	
+
+
+
+			</div>
+			<aside class="sidebar">
+<div class="widget-recent widget">
+	<h4 class="widget__title">近期文章</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/03-agent-runtime-engine-design/">Agent Runtime 如何管理任务的执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/02-agent-core-principles/">给大模型装上眼睛和手脚：一个 AI 智能体 是怎样工作的？</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/agent-principle-design/01-levels-of-ai-agent-autonomy/">从调用大模型到自主智能体：AI 应用的四级自主性光谱</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-hybrid-retrieval-optimization/">混合检索与 RAG 回答可信度：从召回 chunk 到带来源回答</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-document-processing-pipeline/">RAG 文档处理流水线：从上传文件到可检索 chunk</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/rag/rag-system-architecture-design/">从零搭一个中文电子书 RAG：为什么先做最小闭环</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/enterprise-agent/enterprise-agent-four-type-summary/">企业级 AI Agent 落地架构：从知识问答到流程执行</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/embedding-vector-rag-concent-anlyze/">Embedding、向量数据库与 RAG 概念解析</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/agent/deer-flow/how-to-prompt/">拆解 Deer-Flow 的 Prompt 设计：它如何引导 Agent 高效执行任务</a></li>
+			<li class="widget__item"><a class="widget__link" href="/posts/nginx-log-logstash-es/">用Rsyslog和Logstash采集分析Nginx日志</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-categories widget">
+	<h4 class="widget__title">分类</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/agent/">Agent</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/etcd/">Etcd</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/go/">Go</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%85%B3%E4%BA%8E/">关于</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E5%86%99%E4%BD%9C/">写作</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%97%A5%E5%BF%97/">日志</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC/">服务网格</a></li>
+		</ul>
+	</div>
+</div>
+<div class="widget-taglist widget">
+	<h4 class="widget__title">标签</h4>
+	<div class="widget__content">
+		<a class="widget-taglist__link widget__link btn" href="/tags/agent/" title="Agent">Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/agentloop/" title="AgentLoop">AgentLoop</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/agentruntime/" title="AgentRUntime">AgentRUntime</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ai-%E5%BA%94%E7%94%A8/" title="AI 应用">AI 应用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/chunk/" title="Chunk">Chunk</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/consul/" title="Consul">Consul</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/data-agent/" title="Data Agent">Data Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/deer-flow/" title="Deer-Flow">Deer-Flow</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/embedding/" title="Embedding">Embedding</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/enterprise-ai/" title="Enterprise AI">Enterprise AI</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/etcd/" title="Etcd">Etcd</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="Go">Go</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/hugo/" title="Hugo">Hugo</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/loggin/" title="Loggin">Loggin</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/logstash/" title="Logstash">Logstash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/microservice/" title="MicroService">MicroService</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/mvp/" title="MVP">MVP</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/nginx/" title="Nginx">Nginx</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/pgvector/" title="Pgvector">Pgvector</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/prompt/" title="Prompt">Prompt</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rag/" title="RAG">RAG</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rrf/" title="RRF">RRF</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/rsyslog/" title="Rsyslog">Rsyslog</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/servicemesh/" title="ServiceMesh">ServiceMesh</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/springcloud/" title="SpringCloud">SpringCloud</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/tls/" title="TLS">TLS</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/vector-database/" title="Vector Database">Vector Database</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/workflow-agent/" title="Workflow Agent">Workflow Agent</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%85%B3%E4%BA%8E/" title="关于">关于</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%86%99%E4%BD%9C%E5%B9%B3%E5%8F%B0/" title="写作平台">写作平台</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E5%8F%AF%E4%BF%A1%E9%97%AE%E7%AD%94/" title="可信问答">可信问答</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86/" title="文档处理">文档处理</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%9D%A5%E6%BA%90%E5%BC%95%E7%94%A8/" title="来源引用">来源引用</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2/" title="混合检索">混合检索</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" title="知识库">知识库</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E8%87%AA%E4%B8%BB%E6%80%A7/" title="自主性">自主性</a>
+	</div>
+</div>
+<div class="widget-social widget">
+	<h4 class="widget-social__title widget__title">社交</h4>
+	<div class="widget-social__content widget__content">
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="LinkedIn" rel="noopener noreferrer" href="https://linkedin.com/in/wangrenjun" target="_blank">
+				<svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0,40v272c0,21.9,18.1,40,40,40h272c21.9,0,40-18.1,40-40V40c0-21.9-18.1-40-40-40H40C18.1,0,0,18.1,0,40z M312,32 c4.6,0,8,3.4,8,8v272c0,4.6-3.4,8-8,8H40c-4.6,0-8-3.4-8-8V40c0-4.6,3.4-8,8-8H312z M59.5,87c0,15.2,12.3,27.5,27.5,27.5 c15.2,0,27.5-12.3,27.5-27.5c0-15.2-12.3-27.5-27.5-27.5C71.8,59.5,59.5,71.8,59.5,87z M187,157h-1v-21h-45v152h47v-75 c0-19.8,3.9-39,28.5-39c24.2,0,24.5,22.4,24.5,40v74h47v-83.5c0-40.9-8.7-72-56.5-72C208.5,132.5,193.3,145.1,187,157z M64,288h47.5 V136H64V288z"/></svg>
+				<span>LinkedIn</span>
+			</a>
+		</div>
+		<div class="widget-social__item widget__item">
+			<a class="widget-social__link widget__link btn" title="GitHub" rel="noopener noreferrer" href="https://github.com/AarenWang" target="_blank">
+				<svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0c-106.1 0-192 85.8-192 191.7 0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2 0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8 0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7 0 0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4 0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5 0 25.6-.2 46.3-.2 52.6 0 5.1 3.5 11.1 13.2 9.2 76.2-25.5 131.2-97.3 131.2-182 0-105.9-86-191.7-192-191.7z"/></svg>
+				<span>GitHub</span>
+			</a>
+		</div>
+
+		
+	</div>
+</div>
+</aside>
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2026 Aaron Wang的博客.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+</body>
+</html>

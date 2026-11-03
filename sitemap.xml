@@ -3,24 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://aarenwang.github.io/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/categories/agent/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/tags/agent/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://aarenwang.github.io/tags/agentloop/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <loc>https://aarenwang.github.io/posts/agent/agent-principle-design/03-agent-runtime-engine-design/</loc>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/agentruntime/</loc>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/categories/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/posts/</loc>
-    <lastmod>2026-10-23T15:00:00+08:00</lastmod>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/tags/</loc>
+    <lastmod>2026-11-03T08:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://aarenwang.github.io/tags/agentloop/</loc>
     <lastmod>2026-10-23T15:00:00+08:00</lastmod>
   </url><url>
     <loc>https://aarenwang.github.io/posts/agent/agent-principle-design/02-agent-core-principles/</loc>
